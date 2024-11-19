@@ -3,8 +3,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GoogleAICacheManager,GoogleAIFileManager,FileState } from '@google/generative-ai/server';
 import 'dotenv/config'
 import { config } from '~/config';
-/*
-const api_key = 'AIzaSyDHLRq62Fy6vrefNEjvk88EelC_XDnNeZQ'*/
+
 const genAI = new GoogleGenerativeAI(config.ApiKey);
 const cacheManager = new GoogleAICacheManager(config.ApiKey)
 

@@ -1,14 +1,18 @@
 import {google} from 'googleapis'
 
 import { JWT } from 'google-auth-library';
-
+import { config } from '~/config';
+/*
 // Inicializo la librearia cliente de google y configuro la auth con credenciales de la cuenta de servicio
 const auth = new google.auth.GoogleAuth({
     keyFile:'./calendarchatbot.json',
     scopes:['https://www.googleapis.com/auth/calendar']
 });
-
-
+*/
+const auth = new google.auth.GoogleAuth({
+    credentials: JSON.parse(config.CalendarKey),
+    scopes:['https://www.googleapis.com/auth/calendar']
+});
 
 const calendar = google.calendar({version: "v3"});
 

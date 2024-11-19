@@ -9,5 +9,7 @@ export const config = {
     version: "v21.0",
     // AI
     Model:process.env.Model,
-    ApiKey: process.env.ApiKey
+    ApiKey: process.env.ApiKey,
+    //calendar
+    CalendarKey:process.env.CALENDAR
 }
