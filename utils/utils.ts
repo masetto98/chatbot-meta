@@ -8,11 +8,8 @@ import { readFileSync } from 'fs'; // Importa el módulo fs para manejar archivo
 import { join } from 'path'; // Útil para manejar rutas de archivos
 import axios from "axios";
 
-const fichasDoc = xlsx.readFile('./fichas.xlsx');
-const fichasHoja = fichasDoc.Sheets[fichasDoc.SheetNames[0]];
-const fichasdata = xlsx.utils.sheet_to_json(fichasHoja);
 
-
+/*
 // Función para cargar datos del Excel
 async function cargarDatosExcel(): Promise<Propiedad[]> {
     const fichasDoc = xlsx.readFile('./fichas.xlsx');
@@ -37,7 +34,7 @@ async function cargarDatosExcel(): Promise<Propiedad[]> {
     
     return propiedades;
 }
-
+*/
 function actualizarExcel(rutaArchivo: string, nuevoDato: DatosUsuario) {
     let agenda: xlsx.WorkBook;
     let agendasheet: xlsx.WorkSheet;
@@ -164,4 +161,4 @@ async function descargarYLeerExcel(): Promise<Propiedad[]> {
 
     return propiedades;
 }
-export{cargarDatosExcel,actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel}
+export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel}
