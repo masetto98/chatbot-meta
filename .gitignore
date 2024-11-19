@@ -1,0 +1,12 @@
+dist/*
+node_modules
+.env
+gmailapi.json
+calendarchatbot.json
+
+*_sessions
+*tokens
+.wwebjs*
+
+*.log
+*qr.png
