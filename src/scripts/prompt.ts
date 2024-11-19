@@ -1,4 +1,4 @@
-import { cargarDatosExcel } from "utils/utils"
+import { cargarDatosExcel,descargarYLeerExcel } from "utils/utils"
 
 
 /*-En el caso de que un cliente tenga interes sobre alguna propiedad y quiera que lo contacte un agente, solicitá al cliente, solamente cuando exprese interes sobre una propiedad, su nombre, apellido y un horario disponible para poder comunicarnos. Luego agradece y escribe, solamente cuando recopiles todos estos datos: su nombre, apellido, horario disponible y enlace de la propiedad interesada en este formato: {{nombre: nombre del cliente}},{{horario: horario disponible del cliente}}, {{enlace: enlace propiedad interesada del cliente}}*/
@@ -39,7 +39,8 @@ const PROMPT = `BASE_DE_DATOS="{context}"\n
  * @returns 
  */
 
-const DATE_BASE = await cargarDatosExcel();
+//const DATE_BASE = await cargarDatosExcel();
+const DATE_BASE = await descargarYLeerExcel()
 const generatePrompt = (name: string): string => {
 
     const context = DATE_BASE.map(prop => 

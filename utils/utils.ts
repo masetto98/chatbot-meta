@@ -6,7 +6,7 @@ import { DateTime } from 'luxon'
 import { chat } from "~/scripts/gemini";
 import { readFileSync } from 'fs'; // Importa el módulo fs para manejar archivos
 import { join } from 'path'; // Útil para manejar rutas de archivos
-
+import axios from "axios";
 
 const fichasDoc = xlsx.readFile('./fichas.xlsx');
 const fichasHoja = fichasDoc.Sheets[fichasDoc.SheetNames[0]];
@@ -135,4 +135,33 @@ async function cargarInstrucciones(): Promise<string>{
         }
     
 }
-export{cargarDatosExcel,actualizarExcel,iso2text,text2iso,cargarInstrucciones}
+
+async function descargarYLeerExcel(): Promise<Propiedad[]> {
+    const url = 'https://docs.google.com/spreadsheets/d/11elV0LdHSeMS3srRATf1Ja6dMSR7vz6t/edit?usp=sharing&ouid=111590046753094012259&rtpof=true&sd=true'; // Sustituye con el enlace de tu archivo
+    const localPath = './fichas2.xlsx';
+
+    // Descargar el archivo
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
+    fs.writeFileSync(localPath, response.data);
+
+    // Leer el archivo descargado
+    const fichasDoc = xlsx.readFile(localPath);
+    const fichasHoja = fichasDoc.Sheets[fichasDoc.SheetNames[0]];
+    const fichasdata = xlsx.utils.sheet_to_json<any>(fichasHoja, { header: 1 });
+
+    const propiedades: Propiedad[] = [];
+
+    fichasdata.slice(1).forEach((row: any) => {
+        propiedades.push({
+            tipo: row[0] as string,
+            categoria: row[1] as string,
+            caracteristica: row[2] as string,
+            precio: row[3] as number,
+            enlace: row[4] as string,
+            descripcion: row[5] as string,
+        });
+    });
+
+    return propiedades;
+}
+export{cargarDatosExcel,actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel}
