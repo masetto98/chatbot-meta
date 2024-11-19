@@ -118,19 +118,30 @@ async function text2iso(text:string) {
     return response.trim();
 }
 
-// Ruta al archivo .txt
-const filePath = join('./', 'instrucciones.txt'); // Asegúrate de que "archivo.txt" está en el mismo directorio
-async function cargarInstrucciones(): Promise<string>{
-    // Lee el archivo y almacena su contenido en una variable
-        try {
-            const fileContent: string = readFileSync(filePath, 'utf-8'); // Codificación utf-8
-            console.log('Contenido del archivo:', fileContent); // Muestra el contenido en la consola
-            return fileContent
-            
-        } catch (error) {
-            console.error('Error al leer el archivo:', error);
-        }
-    
+const localFilePath = join('./', 'instrucciones.txt'); // Ruta temporal para guardar el archivo descargado
+
+async function cargarInstrucciones(): Promise<string> {
+    const googleDriveFileUrl = 'https://drive.google.com/file/d/1sg53GTXpOZGZlC4K0DdAE8r0Zkat23SS/view?usp=sharing'; // Reemplaza con el enlace de tu archivo en Google Drive
+
+    try {
+        // Descargar el archivo desde Google Drive
+        const response = await axios.get(googleDriveFileUrl, { responseType: 'arraybuffer' });
+
+        // Guardar el archivo temporalmente
+        fs.writeFileSync(localFilePath, response.data);
+
+        // Leer el contenido del archivo descargado
+        const fileContent = fs.readFileSync(localFilePath, 'utf-8');
+        console.log('Contenido del archivo:', fileContent); // Mostrar el contenido en consola
+
+        // Eliminar el archivo temporal después de usarlo
+        fs.unlinkSync(localFilePath);
+
+        return fileContent;
+    } catch (error) {
+        console.error('Error al descargar o leer el archivo:', error);
+        throw new Error('No se pudo procesar el archivo de Google Drive.');
+    }
 }
 
 async function descargarYLeerExcel(): Promise<Propiedad[]> {
