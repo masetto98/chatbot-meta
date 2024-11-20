@@ -19,9 +19,9 @@ const afirmativeFlow = addKeyword('Sí')
                                 console.log(startDate)
                                 console.log(nextAvailableslot)
                                 if(!nextAvailableslot){
-                                    date = startDate.toISOString()
+                                    date = startDate
                                     dateFormat = startDate.toLocaleString()
-                                    console.log('1')
+                                    console.log('1'+ startDate.toISOString())
                                 }
                                 else{
                                     
