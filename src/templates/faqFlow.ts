@@ -37,7 +37,7 @@ let cache;
 const faqFlow = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, ctxFn) => {
         cargarfaq()
-        const book = './faq.txt';
+        const book = './faq2.txt';
         const bookFile = await uploadToGemini(book, 'text/plain');
         console.log(`${book} uploaded to Google.`);
         // console.log(bookFile)

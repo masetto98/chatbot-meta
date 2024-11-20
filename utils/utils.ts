@@ -143,7 +143,7 @@ async function cargarInstrucciones(): Promise<string> {
     }
 }
 
-const localFilePath2 = join('./', 'faq.txt'); // Ruta temporal para guardar el archivo descargado
+const localFilePath2 = join('./', 'faq2.txt'); // Ruta temporal para guardar el archivo descargado
 
 async function cargarfaq() {
     const googleDriveFileUrl = 'https://drive.google.com/uc?id=1OjbLlqIJeEwDGqSjKC6Qt0zm4FOGyAmy'; // Reemplaza con el enlace de tu archivo en Google Drive
