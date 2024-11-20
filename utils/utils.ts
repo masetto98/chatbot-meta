@@ -118,7 +118,7 @@ async function text2iso(text:string) {
     return response.trim();
 }
 
-const localFilePath = join('./', 'instrucciones.txt'); // Ruta temporal para guardar el archivo descargado
+const localFilePath = join('./', 'instrucciones2.txt'); // Ruta temporal para guardar el archivo descargado
 
 async function cargarInstrucciones(): Promise<string> {
     const googleDriveFileUrl = 'https://drive.google.com/file/d/1sg53GTXpOZGZlC4K0DdAE8r0Zkat23SS/view?usp=sharing'; // Reemplaza con el enlace de tu archivo en Google Drive
