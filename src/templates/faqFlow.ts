@@ -85,14 +85,14 @@ const faqFlow = addKeyword(EVENTS.ACTION)
                 topP:0.8,
                 topK:20*/
             },
-            history: [{
+            history: [/*{
                   role: "user",
                   parts: [{ text: `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Necesito ayuda para resolver algunas dudas. Utiliza solamente el contexto proporcionado para responder.`}],
                 },
                 {
                   role: "model",
                   parts: [{ text: `Ok.`}],
-                },
+                },*/
                   ...newHistory],
               cachedContent: cache.name
             });
@@ -120,7 +120,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
         
         //Limito el historial a los ultimos 4 mensajes(ultimas 2 interacciones completas user-model)
         console.log(updatedHistory.length)
-        const limitedHistory = updatedHistory.slice(-6);
+        const limitedHistory = updatedHistory.slice(-10);
 
         //chattest.history = updatedHistory;
         chattest.history = limitedHistory;
