@@ -1,10 +1,10 @@
-import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS} from '@builderbot/bot'
+import {  addKeyword, EVENTS} from '@builderbot/bot'
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GoogleAICacheManager,GoogleAIFileManager,FileState } from '@google/generative-ai/server';
 import 'dotenv/config'
 import { cargarfaq } from 'utils/utils';
 import { config } from '~/config';
-import { welcomeFlow } from './welcomeFlow';
+
 
 const genAI = new GoogleGenerativeAI(config.ApiKey);
 const cacheManager = new GoogleAICacheManager(config.ApiKey)
