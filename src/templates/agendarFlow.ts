@@ -1,6 +1,17 @@
 import { addKeyword,EVENTS } from "@builderbot/bot"
 import { text2iso } from "utils/utils"
 import { createEvent, getNextAvailableSlot, isDateAvailable } from "~/scripts/calendar"
+import { welcomeFlow } from "./welcomeFlow"
+
+
+const afirmativeFlow2 = addKeyword('Sí')
+                        .addAction(async (ctx,ctxFn) => {
+                            return ctxFn.gotoFlow(welcomeFlow)
+                        })
+const negativeFlow2 = addKeyword('No')
+                        .addAction(async (ctx,ctxFn) => {
+                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte.')
+                        })                       
 
 
 const afirmativeFlow = addKeyword('Sí')
@@ -24,20 +35,29 @@ const afirmativeFlow = addKeyword('Sí')
                                     console.log('1'+ startDate.toISOString())
                                 }
                                 else{
-                                    
+
                                     date = nextAvailableslot.start.toISOString()
                                     dateFormat = nextAvailableslot.start.toLocaleString()
                                     console.log('2')
-                                   
-                                    
+
                                 }
                                
                                 const eventId = await createEvent(eventName,description,date)
                                 ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${dateFormat}. Nos vemos pronto.`)
+                            
                                 
                                 
     }
 )
+.addAnswer(`¿Necesitas que te ayude con otra consulta?`,{
+    capture:true,
+    buttons: [
+        {body:'Sí'},
+        {body:'No'},
+    ]
+    },null,[afirmativeFlow2,negativeFlow2])
+
+    
 
 const negativeFlow = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
@@ -75,6 +95,10 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
     })
     .addAction(async (ctx,ctxFn) => {
         const solicitedDate = await text2iso(ctx.body)
+        let clearStartDate;
+        let clearNextAvailableslot;
+        await ctxFn.state.update({startDate:clearStartDate})
+        await ctxFn.state.update({startDate:clearNextAvailableslot})
         console.log("Fecha solicitada: " + solicitedDate)
         if(solicitedDate.includes('false')){
             return ctxFn.endFlow('No se pudo deducir una fecha. Por favor, volve a intentarlo')

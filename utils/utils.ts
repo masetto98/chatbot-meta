@@ -143,6 +143,32 @@ async function cargarInstrucciones(): Promise<string> {
     }
 }
 
+const localFilePath2 = join('./', 'faq.txt'); // Ruta temporal para guardar el archivo descargado
+
+async function cargarfaq() {
+    const googleDriveFileUrl = 'https://drive.google.com/uc?id=1OjbLlqIJeEwDGqSjKC6Qt0zm4FOGyAmy'; // Reemplaza con el enlace de tu archivo en Google Drive
+    
+    try {
+        // Descargar el archivo desde Google Drive
+        const response = await axios.get(googleDriveFileUrl, { responseType: 'arraybuffer' });
+
+        // Guardar el archivo temporalmente
+        fs.writeFileSync(localFilePath2, response.data);
+
+        // Leer el contenido del archivo descargado
+        const fileContent = fs.readFileSync(localFilePath2, 'utf-8');
+        console.log('Contenido del archivo:', fileContent); // Mostrar el contenido en consola
+
+        // Eliminar el archivo temporal después de usarlo
+        //fs.unlinkSync(localFilePath2);
+
+        
+    } catch (error) {
+        console.error('Error al descargar o leer el archivo:', error);
+        throw new Error('No se pudo procesar el archivo de Google Drive.');
+    }
+}
+
 async function descargarYLeerExcel(): Promise<Propiedad[]> {
     const url = 'https://drive.google.com/uc?id=11elV0LdHSeMS3srRATf1Ja6dMSR7vz6t'; // Sustituye con el enlace de tu archivo
     const localPath = './fichas2.xlsx';
@@ -171,4 +197,4 @@ async function descargarYLeerExcel(): Promise<Propiedad[]> {
 
     return propiedades;
 }
-export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel}
+export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq}

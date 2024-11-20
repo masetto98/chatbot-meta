@@ -2,6 +2,7 @@ import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS} from 
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GoogleAICacheManager,GoogleAIFileManager,FileState } from '@google/generative-ai/server';
 import 'dotenv/config'
+import { cargarfaq } from 'utils/utils';
 import { config } from '~/config';
 
 const genAI = new GoogleGenerativeAI(config.ApiKey);
@@ -35,7 +36,7 @@ let cache;
 
 const faqFlow = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, ctxFn) => {
-        
+        cargarfaq()
         const book = './faq.txt';
         const bookFile = await uploadToGemini(book, 'text/plain');
         console.log(`${book} uploaded to Google.`);
