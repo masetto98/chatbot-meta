@@ -30,7 +30,7 @@ async function uploadToGemini(path, mimeType) {
 
 const afirmativeFlow2 = addKeyword('Sí')
                         .addAction(async (ctx,ctxFn) => {
-                            return ctxFn.gotoFlow(welcomeFlow)
+                            return ctxFn.gotoFlow(faqFlow)
                         })
 const negativeFlow2 = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
