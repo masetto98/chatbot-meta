@@ -4,6 +4,7 @@ import { GoogleAICacheManager,GoogleAIFileManager,FileState } from '@google/gene
 import 'dotenv/config'
 import { cargarfaq } from 'utils/utils';
 import { config } from '~/config';
+import { welcomeFlow } from './welcomeFlow';
 
 const genAI = new GoogleGenerativeAI(config.ApiKey);
 const cacheManager = new GoogleAICacheManager(config.ApiKey)
@@ -27,9 +28,24 @@ async function uploadToGemini(path, mimeType) {
   return file;
 }
 
-
+const afirmativeFlow2 = addKeyword('Sí')
+                        .addAction(async (ctx,ctxFn) => {
+                            return ctxFn.gotoFlow(welcomeFlow)
+                        })
+const negativeFlow2 = addKeyword('No')
+                        .addAction(async (ctx,ctxFn) => {
+                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
+                        })           
 
 let cache;
+const finFlow = addKeyword(EVENTS.ACTION)
+.addAnswer(`¿Necesitas que te ayude con otra consulta?`,{
+  capture:true,
+  buttons: [
+      {body:'Sí'},
+      {body:'No'},
+  ]
+  },null,[afirmativeFlow2,negativeFlow2])
 
 const faqFlow = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, ctxFn) => {
@@ -56,7 +72,8 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             - Utiliza solamente el contexto proporcionado para responder. Antes de responder revisa si la respuesta esta dentro del contexto dado. Si la respuesta no se encuentra dentro del contexto dado, comunicale esta situación al usuario.\n
             - Mantené una conversación agradable y profesional. No inventes respuestas que no se encuentran en el contexto dado.\n
             - Siempre ante cada respuesta que le des consultale al usuario si podes ayudarlo con otra consulta o duda.\n
-            - Si la repuesta contiene mucha información, resumila y presentasela al usuario. Luego consultale si quiere saber más detalle.`
+            - Si la repuesta contiene mucha información, resumila y presentasela al usuario. Luego consultale si quiere saber más detalle.
+            - Solo si ya resolviste todas las dudas del usuario y el usuario no desea consultar más nada, escribe la siguiente palabra con este formato: {{FIN}}.`
             const ttlSeconds = 120 // Asignacion de la cantidad de segundos que esta disponible el cache
             cache = await cacheManager.create({
                         model,
@@ -108,7 +125,9 @@ const faqFlow = addKeyword(EVENTS.ACTION)
         
         const response = await chattest.sendMessage(ctx.body.trimEnd());
         const resp = response.response.text().trimEnd();
-        
+        if(resp === '{{FIN}}'){
+          return ctxFn.gotoFlow(finFlow)
+        }
         await ctxFn.flowDynamic(resp);
         newHistory.push({
           role:'user',
