@@ -10,7 +10,7 @@ const afirmativeFlow2 = addKeyword('Sí')
                         })
 const negativeFlow2 = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
-                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte.')
+                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
                         })                       
 
 
@@ -30,7 +30,7 @@ const afirmativeFlow = addKeyword('Sí')
                                 console.log(startDate)
                                 console.log(nextAvailableslot)
                                 if(!nextAvailableslot){
-                                    date = startDate
+                                    date = startDate.toISOString()
                                     dateFormat = startDate.toLocaleString()
                                     console.log('1'+ startDate.toISOString())
                                 }
