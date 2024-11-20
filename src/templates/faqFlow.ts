@@ -48,7 +48,11 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             const displayName = 'faq'
             //const model = 'models/gemini-1.5-flash-001'
             const model = 'models/gemini-1.5-flash-8b'
-            const systemInstruction = `Sos Santiago, el asistente virtual de la inmobiliaria Martin + Tettamanzi en Argentina. Tu función principal es resolver las consultas, dudas o inquietudes del usuario teniendo en cuenta solamente el contexto dado. Utiliza solamente el contexto proporcionado para responder. Antes de responder revisa si la respuesta esta dentro del contexto dado. Si la respuesta no se encuentra dentro del contexto dado, comunicale esta situación al usuario. Mantené una conversación agradable y profesional. No inventes respuestas que no se encuentran en el contexto dado. Ante cada respuesta consultale si podes ayudarlo con otra consulta o duda.`
+            const systemInstruction = `Sos Santiago, el asistente virtual de la inmobiliaria Martin + Tettamanzi en Argentina. A continuación te dejo las premisas que debes seguir para responder a los mensajes:\n
+            - Tu función principal es resolver las consultas, dudas o inquietudes del usuario teniendo en cuenta solamente el contexto dado.\n
+            - Utiliza solamente el contexto proporcionado para responder. Antes de responder revisa si la respuesta esta dentro del contexto dado. Si la respuesta no se encuentra dentro del contexto dado, comunicale esta situación al usuario.\n
+            - Mantené una conversación agradable y profesional. No inventes respuestas que no se encuentran en el contexto dado.\n
+            - Ante cada respuesta consultale si podes ayudarlo con otra consulta o duda.`
             const ttlSeconds = 120 // Asignacion de la cantidad de segundos que esta disponible el cache
             cache = await cacheManager.create({
                         model,
@@ -70,7 +74,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
                           ttlSeconds,
                         });
             modelo = genAI.getGenerativeModelFromCachedContent(cache)
-            console.log(cache)
+            
             
             chattest = modelo.startChat({
             generationConfig: {
@@ -81,7 +85,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             },
             history: [{
                   role: "user",
-                  parts: [{ text: `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`}],
+                  parts: [{ text: `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Necesito ayuda para resolver algunas dudas. Utiliza solamente el contexto proporcionado para responder.`}],
                 },
                 {
                   role: "model",
@@ -97,8 +101,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             console.log(expireTime)         
         }
         
-        console.log(cache) 
-        console.log(bookFile)
+        
         const response = await chattest.sendMessage(ctx.body.trimEnd());
         const resp = response.response.text().trimEnd();
         
