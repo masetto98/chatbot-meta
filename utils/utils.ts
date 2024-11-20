@@ -144,9 +144,9 @@ async function cargarInstrucciones(): Promise<string> {
 }
 
 async function descargarYLeerExcel(): Promise<Propiedad[]> {
-    const url = 'https://docs.google.com/spreadsheets/d/11elV0LdHSeMS3srRATf1Ja6dMSR7vz6t/edit?usp=sharing&ouid=111590046753094012259&rtpof=true&sd=true'; // Sustituye con el enlace de tu archivo
+    const url = 'https://drive.google.com/uc?id=11elV0LdHSeMS3srRATf1Ja6dMSR7vz6t'; // Sustituye con el enlace de tu archivo
     const localPath = './fichas2.xlsx';
-
+   
     // Descargar el archivo
     const response = await axios.get(url, { responseType: 'arraybuffer' });
     fs.writeFileSync(localPath, response.data);
