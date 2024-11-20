@@ -29,9 +29,6 @@ async function uploadToGemini(path, mimeType) {
 
 
 
-
-let modelo;
-let chattest;
 let cache;
 
 const faqFlow = addKeyword(EVENTS.ACTION)
@@ -43,8 +40,10 @@ const faqFlow = addKeyword(EVENTS.ACTION)
         // console.log(bookFile)
         const newHistory = (ctxFn.state.getMyState()?.history ?? [])
         const expireTime = (ctxFn.state.getMyState()?.expireTime ?? String)
+        let modelo = await ctxFn.state.get('modelo');
+        let chattest= await ctxFn.state.get('chattest')
         // Si el cache no está creado o si esta creado pero ya expiró inicializó todo nuevamente
-        if(!cache || expireTime < new Date().toISOString()){
+        if(!cache || expireTime < new Date().toISOString() || !modelo){
             
             const displayName = 'faq'
             //const model = 'models/gemini-1.5-flash-001'
@@ -72,11 +71,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
                         });
             modelo = genAI.getGenerativeModelFromCachedContent(cache)
             console.log(cache)
-            newHistory.push({
-              role:'user',
-              parts: [{ text: ctx.body}]
-            })
-          
+            
             chattest = modelo.startChat({
             generationConfig: {
                 maxOutputTokens: 200,  // Adjust based on desired response length
@@ -97,6 +92,8 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             });
             const lastExpireTime = (await cacheManager.get(cache.name)).expireTime
             await ctxFn.state.update({expireTime:lastExpireTime})
+            await ctxFn.state.update({chattest:chattest})
+            await ctxFn.state.update({modelo:modelo}) 
             console.log(expireTime)         
         }
         
@@ -130,6 +127,8 @@ const faqFlow = addKeyword(EVENTS.ACTION)
         ime
         await ctxFn.state.update({expireTime:lastExpireTime})*/
         await ctxFn.state.update({history:limitedHistory})
+        await ctxFn.state.update({chattest:chattest})
+        await ctxFn.state.update({modelo:modelo})
         console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
         console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
         console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
