@@ -44,8 +44,18 @@ const afirmativeFlow = addKeyword('Sí')
                                 }
                                 const rows = await getUserVisits(ctx.from)
                                 console.log(rows)
+                                const dateForMysql = date.toLocaleString('en-CA', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit',
+                                    second: '2-digit',
+                                    hour12: false,
+                                  }).replace(',', ''); // Remover coma si aparece
+                                console.log(dateForMysql)
                                 const eventId = await createEvent(eventName,description,date)
-                                const values = [[ctx.from, name, eventId,dateFormat]];
+                                const values = [[ctx.from, name, eventId,dateForMysql]];
                                 const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent) values ?';
                                 pool.query(sql, [values]);      
                                 ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${dateFormat}. Nos vemos pronto.`)
