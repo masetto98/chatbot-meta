@@ -27,12 +27,7 @@ const afirmativeFlow = addKeyword('Sí')
                                 let dateFormat;
                                 const startDate = ctxFn.state.get('startDate')
                                 const nextAvailableslot = ctxFn.state.get('nextAvailableslot')
-                                console.log(startDate)
-                                console.log(nextAvailableslot)
-                                console.log(startDate.toISOString())
-                                console.log(nextAvailableslot.start.toISOString())
-                                console.log(startDate.toLocaleString())
-                                console.log(nextAvailableslot.start.toLocaleString())
+                                
                                 if(!nextAvailableslot){
                                     date = startDate.toISOString()
                                     dateFormat = startDate.toLocaleString()
@@ -113,6 +108,8 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
         console.log(startDate)
         console.log(startDate.toLocaleString())
         console.log(new Date().toLocaleString())
+        console.log('Zona horaria actual:', Intl.DateTimeFormat().resolvedOptions().timeZone);
+        console.log('Desplazamiento de zona horaria (minutos):', new Date().getTimezoneOffset());
         if(startDate.toLocaleString() >= new Date().toLocaleString()){
             console.log("Start Date: " + startDate)
 
