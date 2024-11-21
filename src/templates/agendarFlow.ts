@@ -1,8 +1,9 @@
 import { addKeyword,EVENTS } from "@builderbot/bot"
-import { text2iso } from "utils/utils"
+import { getUserVisits, text2iso } from "utils/utils"
 import { createEvent, getNextAvailableSlot, isDateAvailable } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
+
 
 
 const afirmativeFlow2 = addKeyword('Sí')
@@ -41,10 +42,11 @@ const afirmativeFlow = addKeyword('Sí')
                                    
 
                                 }
-                                
+                                const rows = getUserVisits(ctx.from)
+                                console.log(rows)
                                 const eventId = await createEvent(eventName,description,date)
-                                const values = [[ctx.from, name, eventId]];
-                                const sql = 'INSERT INTO visits (phoneNumber, name, eventID) values ?';
+                                const values = [[ctx.from, name, eventId,date]];
+                                const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent) values ?';
                                 pool.query(sql, [values]);      
                                 ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${dateFormat}. Nos vemos pronto.`)
                             

@@ -7,6 +7,8 @@ import { chat } from "~/scripts/gemini";
 import { readFileSync } from 'fs'; // Importa el módulo fs para manejar archivos
 import { join } from 'path'; // Útil para manejar rutas de archivos
 import axios from "axios";
+import { pool } from "~/db"
+
 
 
 /*
@@ -197,4 +199,24 @@ async function descargarYLeerExcel(): Promise<Propiedad[]> {
 
     return propiedades;
 }
-export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq}
+
+
+
+async function getUserVisits(phoneNumber: string) {
+  try {
+    const [rows] = await pool.execute(
+      'SELECT * FROM visits WHERE phoneNumber = ? AND dateStartEvent >= NOW()',
+      [phoneNumber]
+    );
+    console.log(rows);
+  } catch (error) {
+    console.error('Error retrieving user visits:', error);
+  }
+}
+
+
+
+
+
+
+export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits}
