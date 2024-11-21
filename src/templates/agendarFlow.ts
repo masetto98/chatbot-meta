@@ -45,7 +45,7 @@ const afirmativeFlow = addKeyword('Sí')
                                 const rows = await getUserVisits(ctx.from)
                                 console.log(rows)
                                 const eventId = await createEvent(eventName,description,date)
-                                const values = [[ctx.from, name, eventId,date]];
+                                const values = [[ctx.from, name, eventId,dateFormat]];
                                 const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent) values ?';
                                 pool.query(sql, [values]);      
                                 ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${dateFormat}. Nos vemos pronto.`)
