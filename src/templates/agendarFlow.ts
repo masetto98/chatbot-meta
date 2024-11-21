@@ -31,13 +31,13 @@ const afirmativeFlow = addKeyword('Sí')
                                 if(!nextAvailableslot){
                                     date = startDate.toISOString()
                                     dateFormat = startDate.toLocaleString()
-                                    console.log('1'+ startDate.toISOString())
+                                    
                                 }
                                 else{
 
                                     date = nextAvailableslot.start.toISOString()
                                     dateFormat = nextAvailableslot.start.toLocaleString()
-                                    console.log('2')
+                                   
 
                                 }
                                
@@ -104,12 +104,8 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
         
         }
         const startDate = new Date(solicitedDate)
-        console.log(new Date())
-        console.log(startDate)
-        console.log(startDate.toLocaleString())
-        console.log(new Date().toLocaleString())
-        console.log('Zona horaria actual:', Intl.DateTimeFormat().resolvedOptions().timeZone);
-        console.log('Desplazamiento de zona horaria (minutos):', new Date().getTimezoneOffset());
+        
+        
         if(startDate.toLocaleString() >= new Date().toLocaleString()){
             console.log("Start Date: " + startDate)
 
