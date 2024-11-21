@@ -4,7 +4,16 @@ import { createEvent, getNextAvailableSlot, isDateAvailable } from "~/scripts/ca
 import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
 
-function formatDateForMySQL(date: Date): string {
+function formatDateForMySQL(dateString: string): string {
+    // Convertir la fecha de formato MM/DD/YYYY, HH:MM:SS AM/PM a un objeto Date
+    const date = new Date(dateString); 
+  
+    // Verificar si la fecha fue parseada correctamente
+    if (isNaN(date.getTime())) {
+      throw new Error("Fecha inválida");
+    }
+  
+    // Formatear la fecha en el formato YYYY-MM-DD HH:MM:SS
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses empiezan en 0
     const day = String(date.getDate()).padStart(2, '0');
@@ -54,10 +63,10 @@ const afirmativeFlow = addKeyword('Sí')
                                 }
                                 const rows = await getUserVisits(ctx.from)
                                 console.log(rows)
-                                const dateForMysql = formatDateForMySQL(dateFormat)
-                                console.log(dateForMysql)
+                                const dateforMySql = formatDateForMySQL(dateFormat)
+                                console.log(dateforMySql)
                                 const eventId = await createEvent(eventName,description,date)
-                                const values = [[ctx.from, name, eventId,dateForMysql]];
+                                const values = [[ctx.from, name, eventId,dateforMySql]];
                                 const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent) values ?';
                                 pool.query(sql, [values]);      
                                 ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${dateFormat}. Nos vemos pronto.`)
