@@ -109,7 +109,8 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
         
         }
         const startDate = new Date(solicitedDate)
-        
+        console.log(new Date())
+        console.log(startDate)
         if(startDate >= new Date()){
             console.log("Start Date: " + startDate)
 
