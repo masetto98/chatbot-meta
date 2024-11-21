@@ -29,6 +29,10 @@ const afirmativeFlow = addKeyword('Sí')
                                 const nextAvailableslot = ctxFn.state.get('nextAvailableslot')
                                 console.log(startDate)
                                 console.log(nextAvailableslot)
+                                console.log(startDate.toISOString())
+                                console.log(nextAvailableslot.start.toISOString())
+                                console.log(startDate.toLocaleString())
+                                console.log(nextAvailableslot.start.toLocaleString())
                                 if(!nextAvailableslot){
                                     date = startDate.toISOString()
                                     dateFormat = startDate.toLocaleString()
@@ -95,8 +99,8 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
     })
     .addAction(async (ctx,ctxFn) => {
         const solicitedDate = await text2iso(ctx.body)
-        let clearStartDate;
-        let clearNextAvailableslot;
+        let clearStartDate = undefined;
+        let clearNextAvailableslot = undefined;
         await ctxFn.state.update({startDate:clearStartDate})
         await ctxFn.state.update({startDate:clearNextAvailableslot})
         console.log("Fecha solicitada: " + solicitedDate)
