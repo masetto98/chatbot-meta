@@ -42,7 +42,7 @@ const afirmativeFlow = addKeyword('Sí')
                                    
 
                                 }
-                                const rows = getUserVisits(ctx.from)
+                                const rows = await getUserVisits(ctx.from)
                                 console.log(rows)
                                 const eventId = await createEvent(eventName,description,date)
                                 const values = [[ctx.from, name, eventId,date]];
