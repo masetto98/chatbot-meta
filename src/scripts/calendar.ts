@@ -257,8 +257,16 @@ export async function getEventById(eventId: string): Promise<any> {
       throw error;
     }
   }
+
 export async function deleteEvent(eventId: string): Promise<void> {
-    
+    const auth = new google.auth.GoogleAuth({
+            credentials: JSON.parse(config.CalendarKey),
+            scopes:['https://www.googleapis.com/auth/calendar']
+                });
+
+    const calendar = google.calendar({version: "v3"});
+
+        const calendarID = 'fe54b32f48982404ffd079ef35374adf6ebf126697e458e4416d68cad51d0c66@group.calendar.google.com';
   
     try {
       await calendar.events.delete({
