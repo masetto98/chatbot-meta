@@ -104,7 +104,7 @@ export async function listAvailableSlots(startDate = new Date(), endDate?: Date)
             endDate = new Date(startDate);
             endDate.setDate(startDate.getDate() + dateLimit);
         }
-
+        
         const response = await calendar.events.list({
             calendarId: calendarID,
             timeMin: startDate.toISOString(),
@@ -241,4 +241,20 @@ export async function isDateAvailable(date:Date) {
     }
     
 }
+
+export async function getEventById(eventId: string): Promise<any> {
+
+    try {
+      const response = await calendar.events.get({
+        calendarId: calendarID,
+        eventId,
+      });
+  
+      console.log('Evento encontrado:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Error al obtener el evento:', error);
+      throw error;
+    }
+  }
 

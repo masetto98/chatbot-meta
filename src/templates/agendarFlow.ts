@@ -1,6 +1,6 @@
 import { addKeyword,EVENTS } from "@builderbot/bot"
 import { getUserVisits, text2iso } from "utils/utils"
-import { createEvent, getNextAvailableSlot, isDateAvailable } from "~/scripts/calendar"
+import { createEvent, getEventById, getNextAvailableSlot, isDateAvailable } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
 
@@ -23,12 +23,36 @@ function formatDateForMySQL(dateString: string): string {
   
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
-  
+
+const afirmativeChangeEvent = addKeyword('Sí')
+  .addAction(async (ctx,ctxFn) => {
+      return ctxFn.gotoFlow(welcomeFlow)
+  })
+const negativeChangeEvent = addKeyword('No')
+  .addAction(async (ctx,ctxFn) => {
+      await ctxFn.state.update({intention:undefined})
+      return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
+  })                       
+const changeEvent =  addKeyword(EVENTS.ACTION)
+                     .addAnswer('Tenes una visita/reunión pendiente, ¿Queres que la reagendemos?',{
+                        capture:true,
+                        buttons: [
+                            {body:'Sí'},
+                            {body:'No'},
+                        ]
+                        },null,[afirmativeChangeEvent,negativeChangeEvent])
 
 const afirmativeFlow2 = addKeyword('Sí')
                         .addAction(async (ctx,ctxFn) => {
-                            return ctxFn.gotoFlow(welcomeFlow)
-                        })
+                            const events = await getUserVisits(ctx.from);
+                            for (const event of events) {
+                                const eventId = event.eventID; // Asegúrate de que la columna de tu base de datos se llame 'eventID'
+                                const Event = await getEventById(eventId);
+                                console.log(Event)
+                            
+                            }
+                    }
+                )
 const negativeFlow2 = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
                             await ctxFn.state.update({intention:undefined})
@@ -62,8 +86,13 @@ const afirmativeFlow = addKeyword('Sí')
                                    
 
                                 }
-                                const rows = await getUserVisits(ctx.from)
-                                console.log('visitas: ' + rows)
+                                const events = await getUserVisits(ctx.from);
+                                
+                                if(events.length > 0){
+
+                                    return ctxFn.gotoFlow(changeEvent)
+
+                                }
                             
                                 const dateforMySql = formatDateForMySQL(dateFormat)
                                 console.log(dateforMySql)

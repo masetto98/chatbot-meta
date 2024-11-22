@@ -8,6 +8,7 @@ import { readFileSync } from 'fs'; // Importa el módulo fs para manejar archivo
 import { join } from 'path'; // Útil para manejar rutas de archivos
 import axios from "axios";
 import { pool } from "~/db"
+import { RowDataPacket } from "mysql2/promise";
 
 
 
@@ -202,13 +203,14 @@ async function descargarYLeerExcel(): Promise<Propiedad[]> {
 
 
 
-async function getUserVisits(phoneNumber: string) {
+async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
   try {
-    const [rows] = await pool.execute(
-      'SELECT * FROM visits WHERE phoneNumber = ? AND dateStartEvent >= NOW()',
-      [phoneNumber]
-    );
-    console.log(rows);
+    const [rows]: [RowDataPacket[], any] = await pool.execute<RowDataPacket[]>(
+        'SELECT * FROM visits WHERE phoneNumber = ? AND dateStartEvent >= NOW()',
+        [phoneNumber]
+      );
+    // Retornar los eventos encontrados
+    return rows;
   } catch (error) {
     console.error('Error retrieving user visits:', error);
   }
