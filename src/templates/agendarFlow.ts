@@ -197,12 +197,12 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
                         const events = await getUserVisits(ctx.from);
                         console.log(events.length)
                         if(events.length > 0){
-                            for (const event of events) {
+                           /* for (const event of events) {
                                 const eventId = event.eventID; // Asegúrate de que la columna de tu base de datos se llame 'eventID'
                                 const Event = await getEventById(eventId);
                                 ctxFn.flowDynamic(`Tenes una visita pendiente el ${Event.start}`)
                             
-                            }
+                            }*/
                             return ctxFn.gotoFlow(changeEvent)
 
                         }
