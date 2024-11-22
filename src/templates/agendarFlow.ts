@@ -62,7 +62,8 @@ const afirmativeFlow = addKeyword('Sí')
 
                                 }
                                 const rows = await getUserVisits(ctx.from)
-                                console.log(rows)
+                                console.log('visitas: ' + rows)
+                            
                                 const dateforMySql = formatDateForMySQL(dateFormat)
                                 console.log(dateforMySql)
                                 const eventId = await createEvent(eventName,description,date)
@@ -124,14 +125,15 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
         let clearStartDate = undefined;
         let clearNextAvailableslot = undefined;
         await ctxFn.state.update({startDate:clearStartDate})
-        await ctxFn.state.update({startDate:clearNextAvailableslot})
+        await ctxFn.state.update({nextAvailableslot:clearNextAvailableslot})
         console.log("Fecha solicitada: " + solicitedDate)
         if(solicitedDate.includes('false')){
             return ctxFn.endFlow('No se pudo deducir una fecha. Por favor, volve a intentarlo')
         
         }
         const startDate = new Date(solicitedDate)
-        
+        console.log(startDate.toLocaleString())
+        console.log(new Date().toLocaleString())
         
         if(startDate.toLocaleString() >= new Date().toLocaleString()){
             console.log("Start Date: " + startDate)
