@@ -3,7 +3,7 @@ import { mainFlow } from "./mainFlow";
 import { operacionFlow } from "./operacionFlow";
 import { faqFlow } from "./faqFlow";
 import { welcomeFlow } from "./welcomeFlow";
-import { agendarFlow } from "./agendarFlow";
+import { verificoVisita } from "./agendarFlow";
 import { ventasFlow } from "./ventasFlow";
 import { backtoMenuFlow } from "./backtoMenuFlow";
 import { desarrolloFlow } from "./desarrolloFlow";
@@ -15,7 +15,7 @@ import { agenteFlow } from "./agenteFlow";
       welcomeFlow,
       operacionFlow,
       faqFlow,
-      agendarFlow,
+      verificoVisita,
       ventasFlow,
       backtoMenuFlow,
       desarrolloFlow,

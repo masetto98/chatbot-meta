@@ -3,6 +3,7 @@ import { getUserVisits, text2iso } from "utils/utils"
 import { createEvent, getEventById, getNextAvailableSlot, isDateAvailable } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
+import { createContext } from "vm"
 
 function formatDateForMySQL(dateString: string): string {
     // Convertir la fecha de formato MM/DD/YYYY, HH:MM:SS AM/PM a un objeto Date
@@ -25,14 +26,22 @@ function formatDateForMySQL(dateString: string): string {
   }
 
 const afirmativeChangeEvent = addKeyword('Sí')
-  .addAction(async (ctx,ctxFn) => {
-      return ctxFn.gotoFlow(welcomeFlow)
-  })
+                         .addAction(async (ctx,ctxFn) => {
+                            const events = await getUserVisits(ctx.from);
+                            for (const event of events) {
+                                const eventId = event.eventID; // Asegúrate de que la columna de tu base de datos se llame 'eventID'
+                                const Event = await getEventById(eventId);
+                                console.log(Event.start)
+                            
+                            }
+                        })
+
 const negativeChangeEvent = addKeyword('No')
-  .addAction(async (ctx,ctxFn) => {
-      await ctxFn.state.update({intention:undefined})
-      return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
-  })                       
+                            .addAction(async (ctx,ctxFn) => {
+                            await ctxFn.state.update({intention:undefined})
+                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
+                            })
+
 const changeEvent =  addKeyword(EVENTS.ACTION)
                      .addAnswer('Tenes una visita/reunión pendiente, ¿Queres que la reagendemos?',{
                         capture:true,
@@ -44,14 +53,10 @@ const changeEvent =  addKeyword(EVENTS.ACTION)
 
 const afirmativeFlow2 = addKeyword('Sí')
                         .addAction(async (ctx,ctxFn) => {
-                            const events = await getUserVisits(ctx.from);
-                            for (const event of events) {
-                                const eventId = event.eventID; // Asegúrate de que la columna de tu base de datos se llame 'eventID'
-                                const Event = await getEventById(eventId);
-                                console.log(Event)
+                            return ctxFn.gotoFlow(welcomeFlow)
                             
                             }
-                    }
+                    
                 )
 const negativeFlow2 = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
@@ -86,13 +91,7 @@ const afirmativeFlow = addKeyword('Sí')
                                    
 
                                 }
-                                const events = await getUserVisits(ctx.from);
-                                console.log(events.length)
-                                if(events.length > 0){
-
-                                    return ctxFn.gotoFlow(changeEvent)
-
-                                }
+                                
                             
                                 const dateforMySql = formatDateForMySQL(dateFormat)
                                 console.log(dateforMySql)
@@ -145,7 +144,8 @@ const noavailableFlow = addKeyword(EVENTS.ACTION)
                         },
                         null
                         ,[afirmativeFlow,negativeFlow])
-                        
+   
+
 const agendarFlow = addKeyword(EVENTS.ACTION)
     .addAnswer('😄 ¡Perfecto! Por favor, indicame que día y horario te parece conveniente para la visita',{
         capture:true
@@ -192,5 +192,24 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
         
     },null,[availableFlow,noavailableFlow])
     
+const verificoVisita = addKeyword(EVENTS.ACTION)
+                    .addAction(async (ctx,ctxFn) => {
+                        const events = await getUserVisits(ctx.from);
+                        console.log(events.length)
+                        if(events.length > 0){
+                            for (const event of events) {
+                                const eventId = event.eventID; // Asegúrate de que la columna de tu base de datos se llame 'eventID'
+                                const Event = await getEventById(eventId);
+                                ctxFn.flowDynamic(`Tenes una visita pendiente el ${Event.start}`)
+                            
+                            }
+                            return ctxFn.gotoFlow(changeEvent)
 
-export {agendarFlow}
+                        }
+                        else {
+                            return ctxFn.gotoFlow(agendarFlow)
+                        }
+
+                        },null,[changeEvent,agendarFlow])
+
+export {verificoVisita}

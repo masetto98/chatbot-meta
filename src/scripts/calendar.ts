@@ -257,4 +257,19 @@ export async function getEventById(eventId: string): Promise<any> {
       throw error;
     }
   }
+export async function deleteEvent(eventId: string): Promise<void> {
+    
+  
+    try {
+      await calendar.events.delete({
+        calendarId:calendarID,
+        eventId,
+      });
+  
+      console.log(`Evento con ID ${eventId} eliminado correctamente.`);
+    } catch (error) {
+      console.error('Error al eliminar el evento:', error);
+      throw error;
+    }
+  }
 

@@ -2,7 +2,7 @@ import { addKeyword,EVENTS } from "@builderbot/bot"
 import { operacionFlow } from "./operacionFlow"
 import { faqFlow } from "./faqFlow";
 import { welcomeFlow } from "./welcomeFlow";
-import { agendarFlow } from "./agendarFlow";
+import { verificoVisita } from "./agendarFlow";
 import { ventasFlow } from "./ventasFlow";
 import { desarrolloFlow } from "./desarrolloFlow";
 import { tasacionFlow } from "./tasacionFlow";
@@ -46,7 +46,7 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
                 case 'tas':
                 return gotoFlow(tasacionFlow)
                 case 'vis':
-                return gotoFlow(agendarFlow)
+                return gotoFlow(verificoVisita)
                 case 'faq':
                 return gotoFlow(faqFlow)
                 default:
