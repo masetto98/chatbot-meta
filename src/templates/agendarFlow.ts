@@ -134,8 +134,10 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
         const startDate = new Date(solicitedDate)
         console.log(startDate.toLocaleString())
         console.log(new Date().toLocaleString())
+        console.log(startDate)
+        console.log(new Date())
         
-        if(startDate.toLocaleString() >= new Date().toLocaleString()){
+        if(startDate > new Date()){
             console.log("Start Date: " + startDate)
 
             const dateAvailable = await isDateAvailable(startDate)
