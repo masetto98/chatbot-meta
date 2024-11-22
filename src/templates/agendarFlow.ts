@@ -87,7 +87,7 @@ const afirmativeFlow = addKeyword('Sí')
 
                                 }
                                 const events = await getUserVisits(ctx.from);
-                                
+                                console.log(events.length)
                                 if(events.length > 0){
 
                                     return ctxFn.gotoFlow(changeEvent)
@@ -104,7 +104,7 @@ const afirmativeFlow = addKeyword('Sí')
                             
                                 
                                 
-    }
+    },null,[changeEvent]
 )
 .addAnswer(`¿Necesitas que te ayude con otra consulta?`,{
     capture:true,
