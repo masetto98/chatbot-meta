@@ -146,7 +146,7 @@ const noavailableFlow = addKeyword(EVENTS.ACTION)
                         ,[afirmativeFlow,negativeFlow])
    
 
-const agendarFlow = addKeyword(EVENTS.ACTION)
+const visitaFlow = addKeyword(EVENTS.ACTION)
     .addAnswer('😄 ¡Perfecto! Por favor, indicame que día y horario te parece conveniente para la visita',{
         capture:true
     })
@@ -192,7 +192,7 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
         
     },null,[availableFlow,noavailableFlow])
     
-const verificoVisita = addKeyword(EVENTS.ACTION)
+const agendarFlow = addKeyword(EVENTS.ACTION)
                     .addAction(async (ctx,ctxFn) => {
                         const events = await getUserVisits(ctx.from);
                         console.log(events.length)
@@ -210,6 +210,6 @@ const verificoVisita = addKeyword(EVENTS.ACTION)
                             return ctxFn.gotoFlow(agendarFlow)
                         }
 
-                        },null,[changeEvent,agendarFlow])
+                        },null,[changeEvent,visitaFlow])
 
-export {verificoVisita}
+export {agendarFlow}
