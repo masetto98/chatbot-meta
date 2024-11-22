@@ -31,6 +31,7 @@ const afirmativeFlow2 = addKeyword('Sí')
                         })
 const negativeFlow2 = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
+                            await ctxFn.state.update({intention:undefined})
                             return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
                         })                       
 
@@ -132,10 +133,6 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
         
         }
         const startDate = new Date(solicitedDate)
-        console.log(startDate.toLocaleString())
-        console.log(new Date().toLocaleString())
-        console.log(startDate)
-        console.log(new Date())
         
         if(startDate > new Date()){
             console.log("Start Date: " + startDate)
