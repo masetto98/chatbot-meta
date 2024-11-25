@@ -26,10 +26,12 @@ function formatDateForMySQL(dateString: string): string {
   }
 
 const afirmativeChangeEvent = addKeyword('Sí')
-                         .addAction(async (ctx,ctxFn) => {
-                            const EventID = ctxFn.state.get('Event')
-                            await deleteEvent(EventID)
-                            return await ctxFn.gotoFlow(visitaFlow)
+                                .addAction(async (ctx,ctxFn) => {
+                                    const EventID = ctxFn.state.get('EventID')
+                                    console.log(EventID)
+                                    await deleteEvent(EventID)
+
+                                    return await ctxFn.gotoFlow(visitaFlow)
 
                         })
 
