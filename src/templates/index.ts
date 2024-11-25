@@ -3,7 +3,7 @@ import { mainFlow } from "./mainFlow";
 import { operacionFlow } from "./operacionFlow";
 import { faqFlow } from "./faqFlow";
 import { welcomeFlow } from "./welcomeFlow";
-import { agendarFlow, visitaFlow,changeEvent } from "./agendarFlow";
+import { agendarFlow, visitaFlow,changeEvent,negativeChangeEvent } from "./agendarFlow";
 import { ventasFlow } from "./ventasFlow";
 import { backtoMenuFlow } from "./backtoMenuFlow";
 import { desarrolloFlow } from "./desarrolloFlow";
@@ -22,6 +22,7 @@ import { agenteFlow } from "./agenteFlow";
       tasacionFlow
       ,agenteFlow,
       visitaFlow,
-      changeEvent
+      changeEvent,
+      negativeChangeEvent
       
  ]);

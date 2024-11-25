@@ -48,7 +48,7 @@ const afirmativeChangeEvent = addKeyword('Reagendar')
                         })
 
 const negativeChangeEvent = addKeyword('Cancelar')
-                            .addAnswer('¿Estás seguro que queres cancelar la visita pendiente?🤗',{
+                            .addAnswer('¿Estás seguro que queres cancelar la visita pendiente?',{
                                 capture:true,
                                 buttons: [
                                 {body:'Sí'},
@@ -239,4 +239,4 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
 
                         },null,[changeEvent,visitaFlow])
 
-export {agendarFlow,visitaFlow,changeEvent}
+export {agendarFlow,visitaFlow,changeEvent,negativeChangeEvent}
