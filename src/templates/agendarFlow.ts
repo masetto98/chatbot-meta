@@ -195,17 +195,14 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
 const agendarFlow = addKeyword(EVENTS.ACTION)
                     .addAction(async (ctx,ctxFn) => {
                         const events = await getUserVisits(ctx.from);
-                        const eventsID = events[0].eventID;
-                        console.log(eventsID)
                         console.log(events.length)
                         if(events.length > 0){
-                           /*for (const event of events) {
+                           for(let event of events) {
                                 const eventId = event.eventID; // Asegúrate de que la columna de tu base de datos se llame 'eventID'
-                                const Event = await getEventById(eventId);
+                                let Event = await getEventById(eventId);
                                 console.log(Event)
                                 //ctxFn.flowDynamic(`Tenes una visita pendiente el ${Event.start}`)
-                            
-                            }*/ // NO ANDA ESTA PARTE la funcion getEventbyId REVISAR
+                            }
                             return ctxFn.gotoFlow(changeEvent)
 
                         }

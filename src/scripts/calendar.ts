@@ -259,25 +259,27 @@ export async function getEventById(eventId: string): Promise<any> {
   }
 
 export async function deleteEvent(eventId: string): Promise<void> {
-    const auth = new google.auth.GoogleAuth({
-            credentials: JSON.parse(config.CalendarKey),
-            scopes:['https://www.googleapis.com/auth/calendar']
-                });
+    try{
+        const authClient = await auth.getClient() as JWT;
+        google.options({auth:authClient});
 
-    const calendar = google.calendar({version: "v3"});
-
-        const calendarID = 'fe54b32f48982404ffd079ef35374adf6ebf126697e458e4416d68cad51d0c66@group.calendar.google.com';
-  
-    try {
-      await calendar.events.delete({
-        calendarId:calendarID,
-        eventId,
-      });
-  
-      console.log(`Evento con ID ${eventId} eliminado correctamente.`);
-    } catch (error) {
-      console.error('Error al eliminar el evento:', error);
-      throw error;
-    }
+    
+            try {
+            await calendar.events.delete({
+                calendarId:calendarID,
+                eventId,
+            });
+        
+            console.log(`Evento con ID ${eventId} eliminado correctamente.`);
+            } catch (error) {
+            console.error('Error al eliminar el evento:', error);
+            throw error;
+            }
+        }
+        catch(err){
+            console.error('Error al conectar con calendar:', err);
+            throw err;
+        }
+    
   }
 
