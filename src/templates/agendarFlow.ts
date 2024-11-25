@@ -208,7 +208,7 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
 
                         }
                         else {
-                            return ctxFn.gotoFlow(agendarFlow)
+                            return ctxFn.gotoFlow(visitaFlow)
                         }
 
                         },null,[changeEvent,visitaFlow])
