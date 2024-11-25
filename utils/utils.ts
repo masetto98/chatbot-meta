@@ -205,6 +205,7 @@ async function descargarYLeerExcel(): Promise<Propiedad[]> {
 
 async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
   try {
+    await pool.execute('SET time_zone = "America/Buenos_Aires"');
     const [rows]: [RowDataPacket[], any] = await pool.execute<RowDataPacket[]>(
         'SELECT * FROM visits WHERE phoneNumber = ? AND dateStartEvent >= NOW()',
         [phoneNumber]
