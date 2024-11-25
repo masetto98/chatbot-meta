@@ -151,6 +151,7 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
         capture:true
     })
     .addAction(async (ctx,ctxFn) => {
+        console.log(ctx.body)
         const solicitedDate = await text2iso(ctx.body)
         let clearStartDate = undefined;
         let clearNextAvailableslot = undefined;
