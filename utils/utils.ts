@@ -160,7 +160,7 @@ async function cargarfaq() {
 
         // Leer el contenido del archivo descargado
         const fileContent = fs.readFileSync(localFilePath2, 'utf-8');
-        console.log('Contenido del archivo:', fileContent); // Mostrar el contenido en consola
+        
 
         // Eliminar el archivo temporal después de usarlo
         //fs.unlinkSync(localFilePath2);

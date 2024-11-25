@@ -64,17 +64,18 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             const displayName = 'faq'
             //const model = 'models/gemini-1.5-flash-001'
             const model = 'models/gemini-1.5-flash-8b'
-            const systemInstruction = `Sos Santiago, el asistente virtual de la inmobiliaria Martin + Tettamanzi en Argentina. A continuación te dejo las premisas que debes seguir para responder a los mensajes:\n
+            const systemInstruction = `Sos Santiago, el asistente virtual de la inmobiliaria Martin + Tettamanzi en Argentina. A continuación te dejo las premisas que debes seguir ANTES de responder a los mensajes:\n
             - Tu función principal es resolver las consultas, dudas o inquietudes del usuario teniendo en cuenta solamente el contexto dado.\n
             - Al comenzar la conversación no digas Hola y comentale que tu función es asistirlo en lo que necesite y que te diga en que podes ayudarlo.\n
             - Responde de manera breve, directa y natural, adecuada para WhatsApp.\n
+            - Siempre ante cada respuesta que le presentes al usuario, consultale al usuario si podes ayudarlo con otra consulta o duda.\n
             - Manten un tono profesional y siempre responde en primera persona.\n
-            - Utiliza solamente el contexto proporcionado para responder. Antes de responder revisa si la respuesta esta dentro del contexto dado. Si la respuesta no se encuentra dentro del contexto dado, comunicale esta situación al usuario.\n
+            - Utiliza solamente el contexto proporcionado para responder.\n
+            - Antes de responder revisa si la respuesta esta dentro del contexto dado. Si la respuesta no se encuentra dentro del contexto dado, comunicale esta situación al usuario.\n
             - Mantené una conversación agradable y profesional. No inventes respuestas que no se encuentran en el contexto dado.\n
-            - Siempre ante cada respuesta que le des consultale al usuario si podes ayudarlo con otra consulta o duda.\n
-            - Si la repuesta contiene mucha información, resumila y presentasela al usuario. Luego consultale si quiere saber más detalle.
+            - Si la repuesta contiene mucha información, resumila y presentasela al usuario. Luego consultale si quiere saber más detalle.\n
             - Solo si ya resolviste todas las dudas del usuario y el usuario no desea consultar más nada, escribe la siguiente palabra con este formato: {{FIN}}.`
-            const ttlSeconds = 120 // Asignacion de la cantidad de segundos que esta disponible el cache
+            const ttlSeconds = 180 // Asignacion de la cantidad de segundos que esta disponible el cache
             cache = await cacheManager.create({
                         model,
                         displayName,
@@ -100,9 +101,9 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             chattest = modelo.startChat({
             generationConfig: {
                 maxOutputTokens: 200,  // Adjust based on desired response length
-                /*temperature:0.3,
-                topP:0.8,
-                topK:20*/
+                temperature:0.1,
+               // topP:0.8,
+               // topK:20
             },
             history: [/*{
                   role: "user",
@@ -119,7 +120,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             await ctxFn.state.update({expireTime:lastExpireTime})
             await ctxFn.state.update({chattest:chattest})
             await ctxFn.state.update({modelo:modelo}) 
-            console.log(expireTime)         
+                     
         }
         
         
@@ -140,13 +141,13 @@ const faqFlow = addKeyword(EVENTS.ACTION)
         });
         
         //Limito el historial a los ultimos 4 mensajes(ultimas 2 interacciones completas user-model)
-        console.log(updatedHistory.length)
+        
         const limitedHistory = updatedHistory.slice(-10);
 
         //chattest.history = updatedHistory;
         chattest.history = limitedHistory;
 
-        console.log(chattest.history)
+       
        
 
         /*const lastExpireTime = (await cacheManager.get(cache.name)).expireT
