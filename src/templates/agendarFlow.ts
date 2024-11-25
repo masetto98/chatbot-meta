@@ -195,6 +195,8 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
 const agendarFlow = addKeyword(EVENTS.ACTION)
                     .addAction(async (ctx,ctxFn) => {
                         const events = await getUserVisits(ctx.from);
+                        const eventsID = events[0].eventID;
+                        console.log(eventsID)
                         console.log(events.length)
                         if(events.length > 0){
                            /*for (const event of events) {
