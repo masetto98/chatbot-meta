@@ -195,7 +195,8 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
 const agendarFlow = addKeyword(EVENTS.ACTION)
                     .addAction(async (ctx,ctxFn) => {
                         const events = await getUserVisits(ctx.from);
-                        console.log(events.length)
+                        console.log("Contenido de events:", events);
+                        console.log("Longitud de events:", events?.length || 0);
                         if(events.length > 0){
                            for(let event of events) {
                                 const eventId = event.eventID; // Asegúrate de que la columna de tu base de datos se llame 'eventID'
