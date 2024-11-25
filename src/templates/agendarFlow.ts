@@ -194,6 +194,7 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
     
 const agendarFlow = addKeyword(EVENTS.ACTION)
                     .addAction(async (ctx,ctxFn) => {
+                        
                         const events = await getUserVisits(ctx.from);
                         console.log("Contenido de events:", events);
                         console.log("Longitud de events:", events?.length || 0);
@@ -208,7 +209,7 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
 
                         }
                         else {
-                            return ctxFn.gotoFlow(visitaFlow)
+                            return await ctxFn.gotoFlow(visitaFlow)
                         }
 
                         },null,[changeEvent,visitaFlow])
