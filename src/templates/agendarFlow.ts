@@ -148,7 +148,7 @@ const noavailableFlow = addKeyword(EVENTS.ACTION)
 
 const visitaFlow = addKeyword(EVENTS.ACTION)
     .addAnswer('😄 ¡Perfecto! Por favor, indicame que día y horario te parece conveniente para la visita',{
-        capture:true
+        capture:true,
     })
     .addAction(async (ctx,ctxFn) => {
         console.log(ctx.body)
@@ -191,7 +191,7 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
             return ctxFn.fallBack('La fecha solicitada no está disponible. Porfavor, intentalo nuevamente.')
         }
         
-    },null,[availableFlow,noavailableFlow])
+},null,[availableFlow,noavailableFlow])
     
 const agendarFlow = addKeyword(EVENTS.ACTION)
                     .addAction(async (ctx,ctxFn) => {
@@ -215,4 +215,4 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
 
                         },null,[changeEvent,visitaFlow])
 
-export {agendarFlow}
+export {agendarFlow,visitaFlow}
