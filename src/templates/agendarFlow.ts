@@ -217,4 +217,4 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
 
                         },null,[changeEvent,visitaFlow])
 
-export {agendarFlow,visitaFlow}
+export {agendarFlow,visitaFlow,changeEvent}
