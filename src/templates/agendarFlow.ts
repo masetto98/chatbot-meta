@@ -30,7 +30,7 @@ const afirmative3 = addKeyword('Sí')
                         const EventID = ctxFn.state.get('EventID')
                         console.log(EventID)
                         await deleteEvent(EventID)
-                        const sql = `UPDATE visits SET state = "deleted" WHERE eventID = ${EventID}`;
+                        const sql = `UPDATE visits SET state = 'deleted' WHERE eventID = '${EventID}'`;
                         pool.query(sql);
                         await ctxFn.state.update({intention:undefined})
                         return ctxFn.endFlow('La visita ha sido cancelada 🤗. Si necesitas ayuda con otra consulta escribe *menu*.')
