@@ -243,7 +243,8 @@ export async function isDateAvailable(date:Date) {
 }
 
 export async function getEventById(eventId: string): Promise<any> {
-
+    const authClient = await auth.getClient() as JWT;
+    google.options({auth:authClient});
     try {
       const response = await calendar.events.get({
         calendarId: calendarID,
@@ -260,8 +261,8 @@ export async function getEventById(eventId: string): Promise<any> {
 
 export async function deleteEvent(eventId: string): Promise<void> {
     try{
-        const authClient = await auth.getClient() as JWT;
-        google.options({auth:authClient});
+            const authClient = await auth.getClient() as JWT;
+            google.options({auth:authClient});
 
     
             try {
