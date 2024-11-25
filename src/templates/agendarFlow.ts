@@ -1,6 +1,6 @@
 import { addKeyword,EVENTS } from "@builderbot/bot"
 import { getUserVisits, text2iso } from "utils/utils"
-import { createEvent, getEventById, getNextAvailableSlot, isDateAvailable } from "~/scripts/calendar"
+import { createEvent, deleteEvent, getEventById, getNextAvailableSlot, isDateAvailable } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
 import { createContext } from "vm"
@@ -27,13 +27,10 @@ function formatDateForMySQL(dateString: string): string {
 
 const afirmativeChangeEvent = addKeyword('Sí')
                          .addAction(async (ctx,ctxFn) => {
-                            const events = await getUserVisits(ctx.from);
-                            for (const event of events) {
-                                const eventId = event.eventID; // Asegúrate de que la columna de tu base de datos se llame 'eventID'
-                                const Event = await getEventById(eventId);
-                                console.log(Event.start)
-                            
-                            }
+                            const EventID = ctxFn.state.get('Event')
+                            await deleteEvent(EventID)
+                            return await ctxFn.gotoFlow(visitaFlow)
+
                         })
 
 const negativeChangeEvent = addKeyword('No')
@@ -43,7 +40,7 @@ const negativeChangeEvent = addKeyword('No')
                             })
 
 const changeEvent =  addKeyword(EVENTS.ACTION)
-                     .addAnswer('Tenes una visita/reunión pendiente, ¿Queres que la reagendemos?',{
+                     .addAnswer('¿Queres que la reagendemos?🤗',{
                         capture:true,
                         buttons: [
                             {body:'Sí'},
@@ -201,10 +198,13 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
                         console.log("Longitud de events:", events?.length || 0);
                         if(events.length > 0){
                            for(let event of events) {
-                                const eventId = event.eventID; // Asegúrate de que la columna de tu base de datos se llame 'eventID'
+                                const eventId = event.eventID;
+                                const dateStartEvent = event.dateStartEvent // Asegúrate de que la columna de tu base de datos se llame 'eventID'
                                 let Event = await getEventById(eventId);
+                                await ctxFn.state.update({EventID:eventId})
+                                await ctxFn.state.update({dateStartEvent:dateStartEvent})
                                 console.log(Event)
-                                //ctxFn.flowDynamic(`Tenes una visita pendiente el ${Event.start}`)
+                                ctxFn.flowDynamic(`Tenes una visita pendiente el ${dateStartEvent.toLocaleString()}`)
                             }
                             return ctxFn.gotoFlow(changeEvent)
 
