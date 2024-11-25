@@ -30,6 +30,8 @@ const afirmative3 = addKeyword('Sí')
                         const EventID = ctxFn.state.get('EventID')
                         console.log(EventID)
                         await deleteEvent(EventID)
+                        const sql = `UPDATE visits SET state = "deleted" WHERE eventID = ${EventID}`;
+                        pool.query(sql);
                         await ctxFn.state.update({intention:undefined})
                         return ctxFn.endFlow('La visita ha sido cancelada 🤗. Si necesitas ayuda con otra consulta escribe *menu*.')
 
@@ -43,7 +45,6 @@ const afirmativeChangeEvent = addKeyword('Reagendar')
                                     console.log(EventID)
                                     await deleteEvent(EventID)
                                     return await ctxFn.gotoFlow(visitaFlow)
-
                         })
 
 const negativeChangeEvent = addKeyword('Cancelar')
@@ -116,8 +117,8 @@ const afirmativeFlow = addKeyword('Sí')
                                 const dateforMySql = formatDateForMySQL(dateFormat)
                                 console.log(dateforMySql)
                                 const eventId = await createEvent(eventName,description,date)
-                                const values = [[ctx.from, name, eventId,dateforMySql]];
-                                const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent) values ?';
+                                const values = [[ctx.from, name, eventId,dateforMySql,'active']];
+                                const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state) values ?';
                                 pool.query(sql, [values]);      
                                 ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${dateFormat}. Nos vemos pronto.`)
                             
