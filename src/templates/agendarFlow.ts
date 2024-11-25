@@ -25,30 +25,51 @@ function formatDateForMySQL(dateString: string): string {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
 
-const afirmativeChangeEvent = addKeyword('Sí')
+const afirmative3 = addKeyword('Sí')
+                    .addAction(async (ctx,ctxFn) => {
+                        const EventID = ctxFn.state.get('EventID')
+                        console.log(EventID)
+                        await deleteEvent(EventID)
+                        await ctxFn.state.update({intention:undefined})
+                        return ctxFn.endFlow('La visita ha sido cancelada 🤗. Si necesitas ayuda con otra consulta escribe *menu*.')
+
+                    })
+const negative3 = addKeyword('No')
+                    .addAction(async (ctx,ctxFn) => {return ctxFn.gotoFlow(welcomeFlow)})
+
+const afirmativeChangeEvent = addKeyword('Reagendar')
                                 .addAction(async (ctx,ctxFn) => {
                                     const EventID = ctxFn.state.get('EventID')
                                     console.log(EventID)
                                     await deleteEvent(EventID)
-
                                     return await ctxFn.gotoFlow(visitaFlow)
 
                         })
 
-const negativeChangeEvent = addKeyword('No')
+const negativeChangeEvent = addKeyword('Cancelar')
+                            .addAnswer('¿Estás seguro que queres cancelar la visita pendiente?🤗',{
+                                capture:true,
+                                buttons: [
+                                {body:'Sí'},
+                                {body:'No'},
+                                ]
+                                },null,[afirmative3,negative3])
+                            
+const salirChangeEvent = addKeyword('Salir')
                             .addAction(async (ctx,ctxFn) => {
                             await ctxFn.state.update({intention:undefined})
                             return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
                             })
 
 const changeEvent =  addKeyword(EVENTS.ACTION)
-                     .addAnswer('¿Queres que la reagendemos?🤗',{
+                     .addAnswer('¿Queres cancelar o reagendar la visita?🤗',{
                         capture:true,
                         buttons: [
-                            {body:'Sí'},
-                            {body:'No'},
+                            {body:'Reagendar'},
+                            {body:'Cancelar'},
+                            {body:'Salir'},
                         ]
-                        },null,[afirmativeChangeEvent,negativeChangeEvent])
+                        },null,[afirmativeChangeEvent,negativeChangeEvent,salirChangeEvent])
 
 const afirmativeFlow2 = addKeyword('Sí')
                         .addAction(async (ctx,ctxFn) => {
