@@ -44,10 +44,10 @@ const afirmativeChangeEvent = addKeyword('Reagendar')
                                     const EventID = ctxFn.state.get('EventID')
                                     console.log(EventID)
                                     await deleteEvent(EventID)
-                                    return await ctxFn.gotoFlow(visitaFlow)
+                                    return await ctxFn.gotoFlow(visitaFlowAlquiler)
                         })
 
-const negativeChangeEvent = addKeyword('Cancelar')
+const negativeChangeEventAlq = addKeyword('Cancelar')
                             .addAnswer('¿Estás seguro que queres cancelar la visita pendiente?',{
                                 capture:true,
                                 buttons: [
@@ -62,7 +62,7 @@ const salirChangeEvent = addKeyword('Salir')
                             return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
                             })
 
-const changeEvent =  addKeyword(EVENTS.ACTION)
+const changeEventAlquiler =  addKeyword(EVENTS.ACTION)
                      .addAnswer('¿Queres cancelar o reagendar la visita?🤗',{
                         capture:true,
                         buttons: [
@@ -70,7 +70,7 @@ const changeEvent =  addKeyword(EVENTS.ACTION)
                             {body:'Cancelar'},
                             {body:'Salir'},
                         ]
-                        },null,[afirmativeChangeEvent,negativeChangeEvent,salirChangeEvent])
+                        },null,[afirmativeChangeEvent,negativeChangeEventAlq,salirChangeEvent])
 
 const afirmativeFlow2 = addKeyword('Sí')
                         .addAction(async (ctx,ctxFn) => {
@@ -124,7 +124,7 @@ const afirmativeFlow = addKeyword('Sí')
                             
                                 
                                 
-    },null,[changeEvent]
+    },null,[changeEventAlquiler]
 )
 .addAnswer(`¿Necesitas que te ayude con otra consulta?`,{
     capture:true,
@@ -138,7 +138,7 @@ const afirmativeFlow = addKeyword('Sí')
 
 const negativeFlow = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
-                               return ctxFn.gotoFlow(agendarFlow)
+                               return ctxFn.gotoFlow(agendarFlowAlquiler)
                                 
     }
 )
@@ -167,18 +167,7 @@ const noavailableFlow = addKeyword(EVENTS.ACTION)
                         ,[afirmativeFlow,negativeFlow])
    
 
-const visitaFlow = addKeyword(EVENTS.ACTION)
-    .addAnswer('Genial! Vamos a agendar una visita/reunión.. Antes nos gustaría conocer algunos detalles..')
-    .addAnswer('Por favor.. Indicanos tu nombre completo',{
-        capture:true
-    },async (ctx,ctxFn) => {
-        await ctxFn.state.update({cliente:ctx.body})
-    })
-    .addAnswer('¿Ya tenes vista alguna propiedad en particular? Sí es así por favor indicanos de que propiedad se trata. Si no tenes vista alguna propiedad comentame brevemente el asunto de la reunión/visita',{
-        capture:true
-    },async (ctx,ctxFn) => {
-        await ctxFn.state.update({propiedad:ctx.body})
-    })
+const visitaFlowAlquiler = addKeyword(EVENTS.ACTION)
     .addAnswer('😄 ¡Perfecto! Por favor, indicame que día y horario te parece conveniente para la visita',{
         capture:true,
     })
@@ -225,7 +214,7 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
         
 },null,[availableFlow,noavailableFlow])
     
-const agendarFlow = addKeyword(EVENTS.ACTION)
+const agendarFlowAlquiler = addKeyword(EVENTS.ACTION)
                     .addAction(async (ctx,ctxFn) => {
                         
                         const events = await getUserVisits(ctx.from);
@@ -241,13 +230,13 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
                                 console.log(Event)
                                 ctxFn.flowDynamic(`Tenes una visita pendiente el ${dateStartEvent.toLocaleString()}`)
                             }
-                            return ctxFn.gotoFlow(changeEvent)
+                            return ctxFn.gotoFlow(changeEventAlquiler)
 
                         }
                         else {
-                            return await ctxFn.gotoFlow(visitaFlow)
+                            return await ctxFn.gotoFlow(visitaFlowAlquiler)
                         }
 
-                        },null,[changeEvent,visitaFlow])
+                        },null,[changeEventAlquiler,visitaFlowAlquiler])
 
-export {agendarFlow,visitaFlow,changeEvent,negativeChangeEvent}
+export {agendarFlowAlquiler,visitaFlowAlquiler,changeEventAlquiler,negativeChangeEventAlq}

@@ -13,6 +13,7 @@ import { config } from '~/config';
 import aiServices from '~/services/aiServices';
 import { agendarFlow } from './agendarFlow';
 import { agenteFlow } from './agenteFlow';
+import { agendarFlowAlquiler } from './agendarFlowAlquiler';
 
 
 
@@ -100,7 +101,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           
          // Asigna el resultado de replace a resp
           resp = resp.replace(patron, ' ').trimStart();
-          return ctxFn.gotoFlow(agendarFlow)/*
+          return ctxFn.gotoFlow(agendarFlowAlquiler)/*
           actualizarExcel('./visitas.xlsx',datos);
           console.log(datos);*/
         }

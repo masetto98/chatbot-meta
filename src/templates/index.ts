@@ -9,6 +9,7 @@ import { backtoMenuFlow } from "./backtoMenuFlow";
 import { desarrolloFlow } from "./desarrolloFlow";
 import { tasacionFlow } from "./tasacionFlow";
 import { agenteFlow } from "./agenteFlow";
+import { agendarFlowAlquiler, changeEventAlquiler, negativeChangeEventAlq, visitaFlowAlquiler } from "./agendarFlowAlquiler";
 
  export default createFlow([
       mainFlow,
@@ -24,6 +25,10 @@ import { agenteFlow } from "./agenteFlow";
       visitaFlow,
       changeEvent,
       negativeChangeEvent,
-      finFlow
+      finFlow,
+      agendarFlowAlquiler,
+      visitaFlowAlquiler,
+      changeEventAlquiler,
+      negativeChangeEventAlq,
       
  ]);
