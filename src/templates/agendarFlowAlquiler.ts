@@ -44,6 +44,8 @@ const afirmativeChangeEvent = addKeyword('Reagendar')
                                     const EventID = ctxFn.state.get('EventID')
                                     console.log(EventID)
                                     await deleteEvent(EventID)
+                                    const sql = `UPDATE visits SET state = 'modified' WHERE eventID = '${EventID}'`;
+                                    pool.query(sql);
                                     return await ctxFn.gotoFlow(visitaFlowAlquiler)
                         })
 
