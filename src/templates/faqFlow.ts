@@ -70,7 +70,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             - Tu función principal es resolver las consultas, dudas o inquietudes del usuario teniendo en cuenta solamente el contexto dado.\n
             - Al comenzar la conversación no digas {{FIN}}. Luego comentale que tu función es asistirlo en lo que necesite y que te diga en que podes ayudarlo, recorda que solo en esta respuesta no debes incluir la palabra {{FIN}}.\n
             - Responde de manera breve, directa y natural, adecuada para WhatsApp.\n
-            - A partir de la segunda respuesta, al final de las respuestas que le presentes al usuario escribe la siguiente palabra con este formato: {{FIN}}.\n
+            - Siempre a partir de la segunda respuesta, al final de las respuestas que le presentes al usuario escribe la siguiente palabra con este formato: {{FIN}}.\n
             - Manten un tono profesional y siempre responde en primera persona.\n
             - Utiliza solamente el contexto proporcionado para responder.\n
             - Antes de responder revisa si la respuesta esta dentro del contexto dado. Si la respuesta no se encuentra dentro del contexto dado, comunicale esta situación al usuario.\n
@@ -102,7 +102,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             
             chattest = modelo.startChat({
             generationConfig: {
-                maxOutputTokens: 200,  // Adjust based on desired response length
+                maxOutputTokens: 250,  // Adjust based on desired response length
                 temperature:0.1,
                // topP:0.8,
                // topK:20
