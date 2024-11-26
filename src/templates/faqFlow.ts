@@ -131,6 +131,9 @@ const faqFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.flowDynamic(respuesta);
           return ctxFn.gotoFlow(finFlow)
         }
+        else{
+          await ctxFn.flowDynamic(resp);
+        }
       //  await ctxFn.flowDynamic(resp);
         newHistory.push({
           role:'user',
