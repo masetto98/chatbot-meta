@@ -168,17 +168,18 @@ const noavailableFlow = addKeyword(EVENTS.ACTION)
    
 
 const visitaFlow = addKeyword(EVENTS.ACTION)
-    .addAnswer('Genial! Vamos a agendar una visita/reunión.. Antes nos gustaría conocer algunos detalles..')
+    .addAnswer('Genial! 😁 Vamos a agendar una visita/reunión.. Antes nos gustaría conocer algunos detalles..')
     .addAnswer('Por favor.. Indicanos tu nombre completo',{
         capture:true
         ,delay:2000
     },async (ctx,ctxFn) => {
         await ctxFn.state.update({cliente:ctx.body})
     })
-    .addAnswer('¿Ya tenes vista alguna propiedad en particular? Sí es así por favor indicanos de que propiedad se trata. Si no tenes vista alguna propiedad comentame brevemente el asunto de la reunión/visita',{
+    .addAnswer('¿Ya tenes vista alguna propiedad en particular? Sí es así porfavor indicanos de qué propiedad se trata. Si no tenes vista alguna propiedad comentame brevemente el asunto de la reunión/visita',{
         capture:true
     },async (ctx,ctxFn) => {
         await ctxFn.state.update({propiedad:ctx.body})
+        await ctxFn.state.update({tel:ctx.from})
     })
     .addAnswer('😄 ¡Perfecto! Por favor, indicame que día y horario te parece conveniente para la visita',{
         capture:true,
