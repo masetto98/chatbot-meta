@@ -102,7 +102,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             
             chattest = modelo.startChat({
             generationConfig: {
-                maxOutputTokens: 250,  // Adjust based on desired response length
+                maxOutputTokens: 280,  // Adjust based on desired response length
                 temperature:0.1,
                // topP:0.8,
                // topK:20
@@ -170,4 +170,4 @@ const faqFlow = addKeyword(EVENTS.ACTION)
     },null,[finFlow]
   )
 
-export {faqFlow}
+export {faqFlow,finFlow}

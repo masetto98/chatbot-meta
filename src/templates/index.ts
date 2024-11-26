@@ -1,7 +1,7 @@
 import { createFlow } from "@builderbot/bot";
 import { mainFlow } from "./mainFlow";
 import { operacionFlow } from "./operacionFlow";
-import { faqFlow } from "./faqFlow";
+import { faqFlow, finFlow } from "./faqFlow";
 import { welcomeFlow } from "./welcomeFlow";
 import { agendarFlow, visitaFlow,changeEvent,negativeChangeEvent } from "./agendarFlow";
 import { ventasFlow } from "./ventasFlow";
@@ -23,6 +23,7 @@ import { agenteFlow } from "./agenteFlow";
       ,agenteFlow,
       visitaFlow,
       changeEvent,
-      negativeChangeEvent
+      negativeChangeEvent,
+      finFlow
       
  ]);
