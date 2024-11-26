@@ -50,12 +50,7 @@ const finFlow = addKeyword(EVENTS.ACTION)
 
 const faqFlow = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, ctxFn) => {
-        if(ctx.body == 'Sí'){
-          return ctxFn.gotoFlow(afirmativeFlow2)
-        }
-        else if(ctx.body == 'No'){
-          return ctxFn.gotoFlow(negativeFlow2)
-        }
+        
         await cargarfaq()
         const book = './faq2.txt';
         const bookFile = await uploadToGemini(book, 'text/plain');
@@ -172,7 +167,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
         console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
         console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
         
-    },null,[afirmativeFlow2,negativeFlow2]
+    },null,[finFlow]
   )
 
 export {faqFlow}
