@@ -171,6 +171,7 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
     .addAnswer('Genial! Vamos a agendar una visita/reunión.. Antes nos gustaría conocer algunos detalles..')
     .addAnswer('Por favor.. Indicanos tu nombre completo',{
         capture:true
+        ,delay:2000
     },async (ctx,ctxFn) => {
         await ctxFn.state.update({cliente:ctx.body})
     })
