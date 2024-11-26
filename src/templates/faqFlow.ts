@@ -28,11 +28,11 @@ async function uploadToGemini(path, mimeType) {
   return file;
 }
 
-const afirmativeFlow2 = addKeyword('Sí')
+const afirmativeFlow2 = addKeyword(EVENTS.ACTION)
                         .addAction(async (ctx,ctxFn) => {
                             return ctxFn.gotoFlow(faqFlow)
                         })
-const negativeFlow2 = addKeyword('No')
+const negativeFlow2 = addKeyword(EVENTS.ACTION)
                         .addAction(async (ctx,ctxFn) => {
                             await ctxFn.state.update({intention:undefined})
                             return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
@@ -50,6 +50,12 @@ const finFlow = addKeyword(EVENTS.ACTION)
 
 const faqFlow = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, ctxFn) => {
+        if(ctx.body == 'Sí'){
+          return ctxFn.gotoFlow(afirmativeFlow2)
+        }
+        else if(ctx.body == 'No'){
+          return ctxFn.gotoFlow(negativeFlow2)
+        }
         await cargarfaq()
         const book = './faq2.txt';
         const bookFile = await uploadToGemini(book, 'text/plain');
