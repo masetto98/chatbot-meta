@@ -39,7 +39,7 @@ const negativeFlow2 = addKeyword('No')
 
 let cache;
 const finFlow = addKeyword(EVENTS.ACTION)
-.addAnswer(`¿Necesitas que te ayude con otra consulta?`,{
+.addAnswer(`¿Necesitas más detalle o te puedo ayudar con otra consulta? 🤗`,{
   capture:true,
   buttons: [
       {body:'Sí'},
@@ -68,13 +68,13 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             - Tu función principal es resolver las consultas, dudas o inquietudes del usuario teniendo en cuenta solamente el contexto dado.\n
             - Al comenzar la conversación no digas Hola y comentale que tu función es asistirlo en lo que necesite y que te diga en que podes ayudarlo.\n
             - Responde de manera breve, directa y natural, adecuada para WhatsApp.\n
-            - Siempre ante cada respuesta que le presentes al usuario, consultale al usuario si podes ayudarlo con otra consulta o duda.\n
+            - Siempre al final de todas las respuesta, excepto la respuesta de presentación, que le presentes al usuario escribe la siguiente palabra con este formato: {{FIN}}.\n
             - Manten un tono profesional y siempre responde en primera persona.\n
             - Utiliza solamente el contexto proporcionado para responder.\n
             - Antes de responder revisa si la respuesta esta dentro del contexto dado. Si la respuesta no se encuentra dentro del contexto dado, comunicale esta situación al usuario.\n
             - Mantené una conversación agradable y profesional. No inventes respuestas que no se encuentran en el contexto dado.\n
             - Si la repuesta contiene mucha información, resumila y presentasela al usuario. Luego consultale si quiere saber más detalle.\n
-            - Solo si ya resolviste todas las dudas del usuario y el usuario no desea consultar más nada, escribe la siguiente palabra con este formato: {{FIN}}.`
+            `
             const ttlSeconds = 180 // Asignacion de la cantidad de segundos que esta disponible el cache
             cache = await cacheManager.create({
                         model,
@@ -126,10 +126,12 @@ const faqFlow = addKeyword(EVENTS.ACTION)
         
         const response = await chattest.sendMessage(ctx.body.trimEnd());
         const resp = response.response.text().trimEnd();
-        if(resp === '{{FIN}}'){
+        if(resp.includes('{{FIN}}')){
+          const respuesta = resp.replace('{{FIN}}','')
+          await ctxFn.flowDynamic(respuesta);
           return ctxFn.gotoFlow(finFlow)
         }
-        await ctxFn.flowDynamic(resp);
+      //  await ctxFn.flowDynamic(resp);
         newHistory.push({
           role:'user',
           parts: [{ text: ctx.body}]
@@ -160,7 +162,7 @@ const faqFlow = addKeyword(EVENTS.ACTION)
         console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
         console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
         
-    }
+    },null,[afirmativeFlow2,negativeFlow2]
   )
 
 export {faqFlow}
