@@ -10,6 +10,7 @@ import { desarrolloFlow } from "./desarrolloFlow";
 import { tasacionFlow } from "./tasacionFlow";
 import { agenteFlow } from "./agenteFlow";
 import { agendarFlowAlquiler, changeEventAlquiler, negativeChangeEventAlq, visitaFlowAlquiler } from "./agendarFlowAlquiler";
+import { idleFlow } from "utils/idle-custom";
 
  export default createFlow([
       mainFlow,
@@ -30,5 +31,5 @@ import { agendarFlowAlquiler, changeEventAlquiler, negativeChangeEventAlq, visit
       visitaFlowAlquiler,
       changeEventAlquiler,
       negativeChangeEventAlq,
-      
+      idleFlow,
  ]);
