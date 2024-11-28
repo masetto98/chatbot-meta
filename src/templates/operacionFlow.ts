@@ -14,15 +14,12 @@ import aiServices from '~/services/aiServices';
 import { agendarFlow } from './agendarFlow';
 import { agenteFlow } from './agenteFlow';
 import { agendarFlowAlquiler } from './agendarFlowAlquiler';
-import { createMessageQueue, QueueConfig } from 'utils/fast-entires';
+
 
 
 
 const genAI = new GoogleGenerativeAI(config.ApiKey);
 const cacheManager = new GoogleAICacheManager(config.ApiKey)
-
-const queueConfig: QueueConfig = { gapMilliseconds: 3000 };
-const enqueueMessage = createMessageQueue(queueConfig);
 
 let cache;
 
@@ -61,8 +58,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             chattest = modelo.startChat({
             generationConfig: {
                 maxOutputTokens: 300,  // Adjust based on desired response length
-                temperature:0.1,
-               /*topP:0.8,
+                /*temperature:0.1,
+                topP:0.8,
                 topK:20*/
             },
             history: [{
@@ -83,7 +80,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
            // await ctxFn.state.update({cache:cache})   
         }
       
-      
+         
+          
         const response = await chattest.sendMessage(ctx.body.trimEnd());
         let resp = response.response.text().trimEnd();
         //const patron = /{{nombre: (.*)}},{{horario: (.*)}}, {{enlace: (.*)}}/;
@@ -147,7 +145,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
         console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
         console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
-
+        
     }
   )
 
