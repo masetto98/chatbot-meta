@@ -1,8 +1,10 @@
 import { addKeyword,EVENTS } from "@builderbot/bot"
+import { start } from "utils/idle-custom"
 
 
 
 const welcomeFlow = addKeyword(EVENTS.ACTION)
+    .addAction(async (ctx, { gotoFlow }) => start(ctx, gotoFlow, 20000))
     .addAnswer('👋¡Hola! Soy el asistente virtual de la inmobiliaria Martin + Tettamanzi. Estoy para ayudarte con tus consultas.',
         {
             capture:false

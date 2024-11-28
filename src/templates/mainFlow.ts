@@ -6,12 +6,14 @@ import { agendarFlow } from "./agendarFlow";
 import { ventasFlow } from "./ventasFlow";
 import { desarrolloFlow } from "./desarrolloFlow";
 import { tasacionFlow } from "./tasacionFlow";
+import { reset } from "utils/idle-custom";
 
 
 
 const mainFlow = addKeyword(EVENTS.WELCOME)
     .addAction(
         async (ctx,{gotoFlow,state}) => {
+           
             const intention = (state.getMyState()?.intention ?? String)
             console.log(intention)
             switch(ctx.body){
@@ -38,17 +40,23 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
             console.log(intentionUpdate)
             switch(intentionUpdate){
                 case 'alq':
-                return gotoFlow(operacionFlow)
+                    reset(ctx, gotoFlow, 20000);
+                    return gotoFlow(operacionFlow)
                 case 'vta':
-                return gotoFlow(ventasFlow)
+                    reset(ctx, gotoFlow, 20000);
+                    return gotoFlow(ventasFlow)
                 case 'des':
-                return gotoFlow(desarrolloFlow)
+                    reset(ctx, gotoFlow, 20000);
+                    return gotoFlow(desarrolloFlow)
                 case 'tas':
-                return gotoFlow(tasacionFlow)
+                    reset(ctx, gotoFlow, 20000);
+                    return gotoFlow(tasacionFlow)
                 case 'vis':
-                return gotoFlow(agendarFlow)
+                    reset(ctx, gotoFlow, 20000);
+                    return gotoFlow(agendarFlow)
                 case 'faq':
-                return gotoFlow(faqFlow)
+                    reset(ctx, gotoFlow, 20000);
+                    return gotoFlow(faqFlow)
                 default:
                 return gotoFlow(welcomeFlow)
             }

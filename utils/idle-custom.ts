@@ -6,8 +6,9 @@ const timers = {};
 
 // Flow for handling inactivity
 const idleFlow = addKeyword(EVENTS.ACTION).addAction(
-    async (_, { endFlow }) => {
-        return endFlow("Response time has expired");
+    async (_, { endFlow,state }) => {
+        await state.update({intention:undefined})
+        return endFlow("Pasó el tiempo y voy a tener que cerrar nuestra conversación para seguir ayudando a más personas. De todos modos, cuando me necesites, volvé a escribirme. 🤗");
     }
 );
 
