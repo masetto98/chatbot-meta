@@ -14,12 +14,15 @@ import aiServices from '~/services/aiServices';
 import { agendarFlow } from './agendarFlow';
 import { agenteFlow } from './agenteFlow';
 import { agendarFlowAlquiler } from './agendarFlowAlquiler';
+import { createMessageQueue, QueueConfig } from 'utils/fast-entires';
 
 
 
 const genAI = new GoogleGenerativeAI(config.ApiKey);
 const cacheManager = new GoogleAICacheManager(config.ApiKey)
 
+const queueConfig: QueueConfig = { gapMilliseconds: 3000 };
+const enqueueMessage = createMessageQueue(queueConfig);
 
 let cache;
 
@@ -80,10 +83,10 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
            // await ctxFn.state.update({cache:cache})   
         }
       
-         
-          
-        const response = await chattest.sendMessage(ctx.body.trimEnd());
-        let resp = response.response.text().trimEnd();
+        try {
+          enqueueMessage(ctx, async (body) => {
+              const response = await chattest.sendMessage(body.trimEnd());
+              let resp = response.response.text().trimEnd();
         //const patron = /{{nombre: (.*)}},{{horario: (.*)}}, {{enlace: (.*)}}/;
         const patron = /{{cliente: (.*)}},{{enlace: (.*)}},{{VISITA}}/;
         const coincidencia = patron.exec(resp);
@@ -145,7 +148,14 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
         console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
         console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
-        
+             
+          });
+        } catch (error) {
+          console.error('Error processing message:', error);
+        } 
+          
+       
+
     }
   )
 
