@@ -84,7 +84,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         }
       
         try {
-          enqueueMessage(ctx, async (body) => {
+        enqueueMessage(ctx, async (body) => {
+              console.log(body)
               const response = await chattest.sendMessage(body.trimEnd());
               let resp = response.response.text().trimEnd();
         //const patron = /{{nombre: (.*)}},{{horario: (.*)}}, {{enlace: (.*)}}/;
