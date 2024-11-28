@@ -40,25 +40,25 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
             console.log(intentionUpdate)
             switch(intentionUpdate){
                 case 'alq':
-                    reset(ctx, gotoFlow, 20000);
+                    reset(ctx, gotoFlow, 3600000);
                     return gotoFlow(operacionFlow)
                 case 'vta':
-                    reset(ctx, gotoFlow, 20000);
+                    reset(ctx, gotoFlow, 3600000);
                     return gotoFlow(ventasFlow)
                 case 'des':
-                    reset(ctx, gotoFlow, 20000);
+                    reset(ctx, gotoFlow, 3600000);
                     return gotoFlow(desarrolloFlow)
                 case 'tas':
-                    reset(ctx, gotoFlow, 20000);
+                    reset(ctx, gotoFlow, 3600000);
                     return gotoFlow(tasacionFlow)
                 case 'vis':
-                    reset(ctx, gotoFlow, 20000);
+                    reset(ctx, gotoFlow, 3600000);
                     return gotoFlow(agendarFlow)
                 case 'faq':
-                    reset(ctx, gotoFlow, 20000);
+                    reset(ctx, gotoFlow, 3600000);
                     return gotoFlow(faqFlow)
                 default:
-                return gotoFlow(welcomeFlow)
+                    return gotoFlow(welcomeFlow)
             }
             
         }
