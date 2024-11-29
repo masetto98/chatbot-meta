@@ -31,7 +31,7 @@ BASE_DE_DATOS="{context}"\n
 NOMBRE_DEL_CLIENTE="{customer_name}"\n`
 */
 
-
+/*
 const generatePrompt = async (name: string): Promise<string> => {
     const PROMPT = `BASE_DE_DATOS="{context}"\n
                 NOMBRE_DEL_CLIENTE="{customer_name}"\n`
@@ -41,6 +41,22 @@ const generatePrompt = async (name: string): Promise<string> => {
     ).join('\n');
     return PROMPT.replaceAll('{customer_name}', name).replaceAll('{context}', context)
 }
+*/
 
+const generatePrompt = async (name: string): Promise<string> => {
+    const PROMPT = `BASE_DE_DATOS="{context}"\n
+                     NOMBRE_DEL_CLIENTE="{customer_name}"\n`
+    const DATE_BASE = await descargarYLeerExcel()
+    const context = DATE_BASE.map(prop => `
+      **Tipo:** ${prop.tipo}
+      **Categoría:** ${prop.categoria}
+      **Característica:** ${prop.caracteristica}
+      **Precio:** ${prop.precio}
+      **Enlace:** ${prop.enlace}
+      **Descripción:**
+      ${prop.descripcion.replace(/\n/g, '\n\n')}
+    `).join('\n\n');
+    return PROMPT.replaceAll('{customer_name}', name).replaceAll('{context}', context)
+  }
 
 export { generatePrompt }
