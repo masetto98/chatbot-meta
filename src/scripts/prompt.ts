@@ -46,30 +46,23 @@ interface RowData {
     [key: string]: any;
   }
   
-const generatePrompt = async (name: string): Promise<string> => {
+  const generatePrompt = async (name: string): Promise<string> => {
     const PROMPT = `BASE_DE_DATOS="{context}"\n
                      NOMBRE_DEL_CLIENTE="{customer_name}"\n`;
+    
+    // Obtener las propiedades del Excel
     const properties = await descargarYLeerExcel();
 
-    console.log(properties)
-    
-    const headers = properties[0];
-
-    
-    const data = properties.slice(1);
-
-    const context = data.map(prop => {
+    // Generar el contexto con los datos
+    const context = properties.map((prop) => {
         const propertyString = Object.entries(prop)
-            .map(([key, value], index) => {
-                const header = headers[index];
-                
-                return `**${header}:** ${value || "N/A"}`;
-            })
+            .map(([key, value]) => `**${key}:** ${value || "N/A"}`)
             .join('\n');
 
         return propertyString;
     }).join('\n\n');
 
+    // Reemplazar las variables en el prompt
     return PROMPT.replaceAll('{customer_name}', name).replaceAll('{context}', context);
 };
 
