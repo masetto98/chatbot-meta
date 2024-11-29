@@ -46,10 +46,10 @@ interface RowData {
     [key: string]: any;
   }
   
-const generatePrompt = async (name: string, properties: RowData[]): Promise<string> => {
+const generatePrompt = async (name: string): Promise<string> => {
     const PROMPT = `BASE_DE_DATOS="{context}"\n
                      NOMBRE_DEL_CLIENTE="{customer_name}"\n`;
-  
+    const properties = await descargarYLeerExcel();
     const context = properties.map(prop => {
       // Construimos el string para cada propiedad de forma dinámica
       const propertyString = Object.entries(prop)

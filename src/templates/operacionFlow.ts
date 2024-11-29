@@ -37,8 +37,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             const displayName = 'propiedades'
             //const model = 'models/gemini-1.5-flash-001'
             const model = 'models/gemini-1.5-flash-8b'
-            const properties = await descargarYLeerExcel();
-            const contexto = await generatePrompt(name,properties)
+            
+            const contexto = await generatePrompt(name)
             console.log(contexto)
             //const systemInstruction = `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`
             const systemInstruction = await cargarInstrucciones()
