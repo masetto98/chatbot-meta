@@ -184,7 +184,7 @@ async function descargarYLeerExcel(): Promise<Propiedad[]> {
     const fichasDoc = xlsx.readFile(localPath);
     const fichasHoja = fichasDoc.Sheets[fichasDoc.SheetNames[0]];
     const fichasdata = xlsx.utils.sheet_to_json<any>(fichasHoja, { header: 1 });
-    console.log(fichasdata)
+    
     const propiedades: Propiedad[] = [];
 
     fichasdata.slice(1).forEach((row: any) => {
@@ -196,7 +196,7 @@ async function descargarYLeerExcel(): Promise<Propiedad[]> {
             enlace: row[4] as string,
             descripcion: row[5] as string,
         });
-        console.log(row)
+       
     });
 
     return propiedades;
