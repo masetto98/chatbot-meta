@@ -217,20 +217,10 @@ async function descargarYLeerExcel(): Promise<RowData[]> {
     const fichasDoc = xlsx.readFile(localPath);
     const fichasHoja = fichasDoc.Sheets[fichasDoc.SheetNames[0]];
     const fichasdata = xlsx.utils.sheet_to_json<any>(fichasHoja, { header: 0 });
-    console.log(fichasdata)
+   
     const headers = Object.keys(fichasdata[0]); // Obtener los nombres de las columnas
     const propiedades: RowData[] = [];
-    console.log(headers)
-
-    /*
-    fichasdata.slice(1).forEach((row: any) => {
-        const propiedad: RowData = {};
-        headers.forEach(header => {
-          propiedad[header] = row[header];
-        });
-        propiedades.push(propiedad);
-      });
-      */
+    
       fichasdata.slice(1).forEach((row: any) => {
         const propiedad: RowData = {};
         headers.forEach((header, index) => {
