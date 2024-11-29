@@ -39,7 +39,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             const model = 'models/gemini-1.5-flash-8b'
             
             const contexto = await generatePrompt(name)
-            console.log(contexto)
+           // console.log(contexto)
             //const systemInstruction = `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`
             const systemInstruction = await cargarInstrucciones()
             const ttlSeconds = 600 // Asignacion de la cantidad de segundos que esta disponible el cache
