@@ -46,22 +46,23 @@ interface RowData {
     [key: string]: any;
   }
   
-  const generatePrompt = async (name: string): Promise<string> => {
+const generatePrompt = async (name: string): Promise<string> => {
     const PROMPT = `BASE_DE_DATOS="{context}"\n
                      NOMBRE_DEL_CLIENTE="{customer_name}"\n`;
     const properties = await descargarYLeerExcel();
 
-    // Obtener los encabezados de la primera fila
+    console.log(properties)
+    console.log(properties[0])
     const headers = properties[0];
 
-    // Eliminar la primera fila (encabezados) de los datos
+    
     const data = properties.slice(1);
 
     const context = data.map(prop => {
         const propertyString = Object.entries(prop)
             .map(([key, value], index) => {
                 const header = headers[index];
-                // Evitamos repetir el encabezado como valor
+                
                 return `**${header}:** ${value || "N/A"}`;
             })
             .join('\n');

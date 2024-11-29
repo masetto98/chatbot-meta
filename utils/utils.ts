@@ -228,7 +228,7 @@ async function descargarYLeerExcel(): Promise<RowData[]> {
         });
         propiedades.push(propiedad);
       });
-    
+      
       return propiedades;
 }
 
