@@ -54,7 +54,7 @@ const generatePrompt = async (name: string): Promise<string> => {
       **Precio:** ${prop.precio}
       **Enlace:** ${prop.enlace}
       **Descripción:**
-      ${prop.descripcion.replace(/\n/g, '\n\n')}
+      ${prop.descripcion ? prop.descripcion.replace(/\n/g, '\n\n') : 'Descripción no disponible'}
     `).join('\n\n');
     return PROMPT.replaceAll('{customer_name}', name).replaceAll('{context}', context)
   }
