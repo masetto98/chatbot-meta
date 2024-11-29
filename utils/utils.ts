@@ -220,7 +220,7 @@ async function descargarYLeerExcel(): Promise<RowData[]> {
     const headers = Object.keys(fichasdata[0]); // Obtener los nombres de las columnas
     const propiedades: RowData[] = [];
 
-
+/*
     fichasdata.slice(1).forEach((row: any) => {
         const propiedad: RowData = {};
         headers.forEach(header => {
@@ -228,7 +228,14 @@ async function descargarYLeerExcel(): Promise<RowData[]> {
         });
         propiedades.push(propiedad);
       });
-      
+      */
+      fichasdata.slice(1).forEach((row: any) => {
+        const propiedad: RowData = {};
+        headers.forEach((header, index) => {
+            propiedad[header] = row[index];
+        });
+        propiedades.push(propiedad);
+        });
       return propiedades;
 }
 
