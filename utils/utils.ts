@@ -216,7 +216,7 @@ async function descargarYLeerExcel(): Promise<RowData[]> {
     // Leer el archivo descargado
     const fichasDoc = xlsx.readFile(localPath);
     const fichasHoja = fichasDoc.Sheets[fichasDoc.SheetNames[0]];
-    const fichasdata = xlsx.utils.sheet_to_json<any>(fichasHoja, { header: 1 });
+    const fichasdata = xlsx.utils.sheet_to_json<any>(fichasHoja, { header: 0 });
     console.log(fichasdata)
     const headers = Object.keys(fichasdata[0]); // Obtener los nombres de las columnas
     const propiedades: RowData[] = [];
