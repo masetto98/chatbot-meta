@@ -42,21 +42,24 @@ const generatePrompt = async (name: string): Promise<string> => {
     return PROMPT.replaceAll('{customer_name}', name).replaceAll('{context}', context)
 }
 */
-
-const generatePrompt = async (name: string): Promise<string> => {
-    const PROMPT = `BASE_DE_DATOS="{context}"\n
-                     NOMBRE_DEL_CLIENTE="{customer_name}"\n`
-    const DATE_BASE = await descargarYLeerExcel()
-    const context = DATE_BASE.map(prop => `
-      **Tipo:** ${prop.tipo}
-      **Categoría:** ${prop.categoria}
-      **Característica:** ${prop.caracteristica}
-      **Precio:** ${prop.precio}
-      **Enlace:** ${prop.enlace}
-      **Descripción:**
-      ${prop.descripcion ? prop.descripcion.replace(/\n/g, '\n\n') : 'Descripción no disponible'}
-    `).join('\n\n');
-    return PROMPT.replaceAll('{customer_name}', name).replaceAll('{context}', context)
+interface RowData {
+    [key: string]: any;
   }
+  
+const generatePrompt = async (name: string, properties: RowData[]): Promise<string> => {
+    const PROMPT = `BASE_DE_DATOS="{context}"\n
+                     NOMBRE_DEL_CLIENTE="{customer_name}"\n`;
+  
+    const context = properties.map(prop => {
+      // Construimos el string para cada propiedad de forma dinámica
+      const propertyString = Object.entries(prop)
+        .map(([key, value]) => `**${key}:** ${value}`)
+        .join('\n');
+  
+      return propertyString;
+    }).join('\n\n');
+  
+    return PROMPT.replaceAll('{customer_name}', name).replaceAll('{context}', context);
+  };
 
 export { generatePrompt }

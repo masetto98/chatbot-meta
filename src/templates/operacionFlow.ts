@@ -1,7 +1,7 @@
 import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS} from '@builderbot/bot'
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GoogleAICacheManager } from '@google/generative-ai/server';
-import { actualizarExcel, cargarInstrucciones } from 'utils/utils';
+import { actualizarExcel, cargarInstrucciones, descargarYLeerExcel } from 'utils/utils';
 import { DatosUsuario } from 'utils/visitas';
 import { generatePrompt } from '~/scripts/prompt';
 import {  createEvent,isDateAvailable,getNextAvailableSlot } from '~/scripts/calendar'
@@ -37,7 +37,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             const displayName = 'propiedades'
             //const model = 'models/gemini-1.5-flash-001'
             const model = 'models/gemini-1.5-flash-8b'
-            const contexto = await generatePrompt(name)
+            const properties = await descargarYLeerExcel();
+            const contexto = await generatePrompt(name,properties)
             console.log(contexto)
             //const systemInstruction = `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`
             const systemInstruction = await cargarInstrucciones()
