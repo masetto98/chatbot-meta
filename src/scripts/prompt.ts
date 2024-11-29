@@ -31,18 +31,11 @@ BASE_DE_DATOS="{context}"\n
 NOMBRE_DEL_CLIENTE="{customer_name}"\n`
 */
 
-const PROMPT = `BASE_DE_DATOS="{context}"\n
+
+const generatePrompt = async (name: string): Promise<string> => {
+    const PROMPT = `BASE_DE_DATOS="{context}"\n
                 NOMBRE_DEL_CLIENTE="{customer_name}"\n`
-/**
- * 
- * @param name 
- * @returns 
- */
-
-//const DATE_BASE = await cargarDatosExcel();
-const DATE_BASE = await descargarYLeerExcel()
-const generatePrompt = (name: string): string => {
-
+    const DATE_BASE = await descargarYLeerExcel()
     const context = DATE_BASE.map(prop => 
         `Tipo: ${prop.tipo}, Categoría: ${prop.categoria}, Característica: ${prop.caracteristica}, Precio: ${prop.precio}, Descripción: ${prop.descripcion}, Enlace: ${prop.enlace}`
     ).join('\n');
