@@ -52,7 +52,7 @@ const generatePrompt = async (name: string): Promise<string> => {
     const properties = await descargarYLeerExcel();
 
     console.log(properties)
-    console.log(properties[0])
+    
     const headers = properties[0];
 
     

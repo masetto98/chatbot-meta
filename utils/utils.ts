@@ -218,7 +218,7 @@ async function descargarYLeerExcel(): Promise<RowData[]> {
     const fichasHoja = fichasDoc.Sheets[fichasDoc.SheetNames[0]];
     const fichasdata = xlsx.utils.sheet_to_json<any>(fichasHoja, { header: 0 });
    
-    const headers = Object.keys(fichasdata[0]); // Obtener los nombres de las columnas
+    /*const headers = Object.keys(fichasdata[0]); // Obtener los nombres de las columnas
     const propiedades: RowData[] = [];
     
       fichasdata.slice(1).forEach((row: any) => {
@@ -227,8 +227,8 @@ async function descargarYLeerExcel(): Promise<RowData[]> {
             propiedad[header] = row[index];
         });
         propiedades.push(propiedad);
-        });
-      return propiedades;
+        });*/
+      return fichasdata;
 }
 
 async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
