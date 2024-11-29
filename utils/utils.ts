@@ -196,6 +196,7 @@ async function descargarYLeerExcel(): Promise<Propiedad[]> {
             enlace: row[4] as string,
             descripcion: row[5] as string,
         });
+        console.log(row)
     });
 
     return propiedades;
