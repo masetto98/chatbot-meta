@@ -134,7 +134,7 @@ async function cargarInstrucciones(): Promise<string> {
 
         // Leer el contenido del archivo descargado
         const fileContent = fs.readFileSync(localFilePath, 'utf-8');
-        console.log('Contenido del archivo:', fileContent); // Mostrar el contenido en consola
+        
 
         // Eliminar el archivo temporal después de usarlo
         fs.unlinkSync(localFilePath);
