@@ -50,14 +50,20 @@ const generatePrompt = async (name: string): Promise<string> => {
     const PROMPT = `BASE_DE_DATOS="{context}"\n
                      NOMBRE_DEL_CLIENTE="{customer_name}"\n`;
     const properties = await descargarYLeerExcel();
-    const propertyName = properties[0][0];
-    const context = properties.map(prop => {
-      // Construimos el string para cada propiedad de forma dinámica
-      const propertyString = Object.entries(prop)
-        .map(([key, value]) => `**${key}:** ${value}`)
-        .join('\n');
-      
-        return `**${propertyName}:**\n${propertyString}`;
+    // Obtener los encabezados de la primera fila
+    const headers = properties[0];
+    // Eliminar la primera fila (encabezados) de los datos
+    const data = properties.slice(1);
+    const context = data.map(prop => {
+        const propertyString = Object.entries(prop)
+            .map(([key, value], index) => {
+                const header = headers[index]; // Obtener el encabezado correspondiente
+                return `**${header}:** ${value}`;
+                
+            })
+            .join('\n');
+
+        return propertyString;
     }).join('\n\n');
   
     return PROMPT.replaceAll('{customer_name}', name).replaceAll('{context}', context);
