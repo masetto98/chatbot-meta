@@ -140,10 +140,10 @@ const afirmativeFlow = addKeyword('Sí')
 
 const negativeFlow = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
-                               return ctxFn.gotoFlow(agendarFlow)
-                                
-    }
-)
+                            await ctxFn.state.update({intention:undefined})
+                            return ctxFn.endFlow('🤗 Gracias por comunicarte. Ante cualquier otra consulta no dudes en escribirme.')
+                        })    
+                            
 
 
 const availableFlow = addKeyword(EVENTS.ACTION)

@@ -94,7 +94,7 @@ export async function createEvent(eventName:string,description:string,date:strin
  * @param {Date} [endDate] - Fecha de fin para buscar slots disponibles. Default es el maximo definido
  * @returns {Array} - Lista de slots disponibles.
  */
-
+/*
 export async function listAvailableSlots(startDate = new Date(), endDate?: Date){
     try{
         const authClient = await auth.getClient() as JWT;
@@ -152,6 +152,82 @@ export async function listAvailableSlots(startDate = new Date(), endDate?: Date)
     }
 
 }
+*/
+export async function listAvailableSlots(startDate = new Date(), endDate?: Date){
+    try{
+         // Cargar parámetros desde el archivo Excel
+        const config = await descargarYLeerConfigExcel();
+        const authClient = await auth.getClient() as JWT;
+        google.options({auth:authClient});
+
+        if(!endDate){
+            endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + dateLimit);
+        }
+        
+        const response = await calendar.events.list({
+            calendarId: calendarID,
+            timeMin: startDate.toISOString(),
+            timeMax: endDate.toISOString(),
+            timeZone: timeZone,
+            singleEvents: true,
+            orderBy: 'startTime'
+        });
+
+        const events = response.data.items;
+        const slots = [];
+
+        const currentDate = new Date(startDate);
+
+        // Generar slots disponibles basados en los parámetros dinámicos
+        while (currentDate < endDate) {
+            const dayOfWeek = currentDate.getDay();
+    
+            const allowedDays = config.availableDays.map(day => {
+            const dayMap: Record<string, number> = {
+                Sunday: 0,
+                Monday: 1,
+                Tuesday: 2,
+                Wednesday: 3,
+                Thursday: 4,
+                Friday: 5,
+                Saturday: 6,
+            };
+            return dayMap[day];
+            });
+    
+            if (allowedDays.includes(dayOfWeek)) {
+            const startHour = parseInt(String(config.availableHoursStart).split(':')[0], 10);
+            const endHour = parseInt(String(config.availableHoursEnd).split(':')[0], 10);
+    
+            for (let hour = startHour; hour < endHour; hour++) {
+                const slotStart = new Date(currentDate);
+                slotStart.setHours(hour, 0, 0, 0);
+    
+                const slotEnd = new Date(slotStart);
+                slotEnd.setHours(hour + 1); // Asume que las citas tienen 1 hora de duración; esto puede ser dinámico si lo configuras.
+    
+                const isBusy = events.some(event => {
+                const eventStart = new Date(event.start.dateTime || event.start.date);
+                const eventEnd = new Date(event.end.dateTime || event.end.date);
+                return slotStart < eventEnd && slotEnd > eventStart;
+                });
+    
+                if (!isBusy) {
+                slots.push({ start: slotStart, end: slotEnd });
+                }
+            }
+            }
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+    
+        return slots;
+    
+        } catch (err) {
+        console.error('Hubo un error al contactar el servicio de Calendar: ' + err);
+        throw err;
+        }
+  }
 
 /**
  * Obtiene el proximo slot disponible a partir de la fecha dada.
