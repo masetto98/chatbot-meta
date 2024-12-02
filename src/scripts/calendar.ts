@@ -1,7 +1,7 @@
 import {google} from 'googleapis'
-
 import { JWT } from 'google-auth-library';
 import { config } from '~/config';
+import { descargarYLeerConfigExcel } from 'utils/utils';
 /*
 // Inicializo la librearia cliente de google y configuro la auth con credenciales de la cuenta de servicio
 const auth = new google.auth.GoogleAuth({
@@ -195,7 +195,7 @@ export async function getNextAvailableSlot(date) {
  * @param {Date} date - Fecha a verificar.
  * @returns {boolean} - Devuelve true si hay slots disponibles dentro del rango permitido, false en caso de que 
  */
-
+/*
 export async function isDateAvailable(date:Date) {
 
     try{
@@ -220,6 +220,91 @@ export async function isDateAvailable(date:Date) {
         if(hour < rangeLimit.startHour ||hour >= rangeLimit.endHour) {
             return false; // la hs no esta dentro del rango permitido
         }
+
+        // obtengo todos los slots disp desde la fecha actual hasta el limite 
+
+        const availableSlots = await listAvailableSlots(currentDate);
+
+        // filtro slots disp basados en la fecha dada
+        const slotsOnGivenDate = availableSlots.filter(slot => new Date(slot.start).toDateString() === date.toDateString() )
+        // verifico si hay slots disp en la fecha dada
+        const isSlotAvailable = slotsOnGivenDate.some( slot => 
+            new Date(slot.start).getTime() === date.getTime() && 
+            new Date(slot.end).getTime() === date.getTime() + standardDuration * 60 * 60 * 1000
+        );
+
+        return isSlotAvailable
+
+    }catch(err){
+        console.error('Hubo un error al verificar disp de la fecha: ' + err)
+        throw err;
+    }
+    
+} */
+
+/**
+ * Verifica si hay slots disponibles para una fecha dada.
+ * @param {Date} date - Fecha a verificar.
+ * @returns {boolean} - Devuelve true si hay slots disponibles dentro del rango permitido, false en caso de que 
+ */
+
+export async function isDateAvailable(date:Date) {
+
+    try{
+        // Obtener la configuración desde el Excel
+        const config = await descargarYLeerConfigExcel();
+        //valido que la fecha este dentro del rango permitido
+        const currentDate = new Date();
+        const maxDate = new Date(currentDate);
+        maxDate.setDate(currentDate.getDate() + dateLimit);
+
+        if(date < currentDate || date > maxDate){
+            return false; // La fecha está fuera del rango permitido
+        }
+
+        // Validar días permitidos
+        const dayOfWeek = date.getDay();
+        const allowedDays = config.availableDays.map(day => {
+        // Convertir días en texto a índices (0 = Domingo, 1 = Lunes, etc.)
+        const dayMap: Record<string, number> = {
+            Sunday: 0,
+            Monday: 1,
+            Tuesday: 2,
+            Wednesday: 3,
+            Thursday: 4,
+            Friday: 5,
+            Saturday: 6,
+        };
+        return dayMap[day];
+        });
+
+        if (!allowedDays.includes(dayOfWeek)) {
+        return false; // El día no está permitido
+        }
+
+        // Validar horas permitidas
+        const hour = date.getHours();
+        const startHour = parseInt(config.availableHoursStart.split(':')[0], 10);
+        const endHour = parseInt(config.availableHoursEnd.split(':')[0], 10);
+
+        if (hour < startHour || hour >= endHour) {
+        return false; // La hora no está dentro del rango permitido
+        }
+        // Validar días especiales
+        const specialDay = config.specialDays[date.toISOString().split('T')[0]];
+        if (specialDay) {
+        if (specialDay === 'cerrado') {
+            return false; // El día está cerrado
+        }
+
+        const specialStartHour = parseInt(specialDay.start.split(':')[0], 10);
+        const specialEndHour = parseInt(specialDay.end.split(':')[0], 10);
+
+        if (hour < specialStartHour || hour >= specialEndHour) {
+            return false; // La hora no está dentro del rango especial
+        }
+        }
+
 
         // obtengo todos los slots disp desde la fecha actual hasta el limite 
 

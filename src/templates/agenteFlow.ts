@@ -15,7 +15,8 @@ const agenteFlow = addKeyword(EVENTS.ACTION)
                             const date = new Date()
                             date.setHours(date.getHours() + 1)
                             const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
-                            ctxFn.flowDynamic(`¡Genial! 🤗 Un agente se contactará a la brevedad. Para volver al menú principal escribe *menu*.`)
+                            await ctxFn.state.update({intention:undefined})
+                            ctxFn.flowDynamic(`¡Genial! 🤗 Un agente se contactará a la brevedad. Ante cualquier otra consulta no dudes en escribirme.`)
                         })
                         
                         

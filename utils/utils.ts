@@ -12,32 +12,7 @@ import { RowDataPacket } from "mysql2/promise";
 
 
 
-/*
-// Función para cargar datos del Excel
-async function cargarDatosExcel(): Promise<Propiedad[]> {
-    const fichasDoc = xlsx.readFile('./fichas.xlsx');
-    const fichasHoja = fichasDoc.Sheets[fichasDoc.SheetNames[0]];
-    
-    // Leer todos los datos de la hoja
-    const fichasdata = xlsx.utils.sheet_to_json<any>(fichasHoja, { header: 1 });
-    
-    const propiedades: Propiedad[] = [];
 
-    // Iterar sobre las filas, ignorando el encabezado
-    fichasdata.slice(1).forEach((row: any) => {
-        propiedades.push({
-            tipo: row[0] as string,
-            categoria: row[1] as string,
-            caracteristica: row[2] as string,
-            precio: row[3] as number,
-            enlace: row[4] as string,
-            descripcion: row[5] as string,
-        });
-    });
-    
-    return propiedades;
-}
-*/
 function actualizarExcel(rutaArchivo: string, nuevoDato: DatosUsuario) {
     let agenda: xlsx.WorkBook;
     let agendasheet: xlsx.WorkSheet;
@@ -171,37 +146,7 @@ async function cargarfaq() {
         throw new Error('No se pudo procesar el archivo de Google Drive.');
     }
 }
-/*
-async function descargarYLeerExcel(): Promise<Propiedad[]> {
-    const url = 'https://drive.google.com/uc?id=1XMRVXMwIanD-S5TR-fBwXbtb1MkMQqEr'; // Sustituye con el enlace de tu archivo
-    const localPath = './fichas2.xlsx';
-    
-    // Descargar el archivo
-    const response = await axios.get(url, { responseType: 'arraybuffer' });
-    fs.writeFileSync(localPath, response.data);
 
-    // Leer el archivo descargado
-    const fichasDoc = xlsx.readFile(localPath);
-    const fichasHoja = fichasDoc.Sheets[fichasDoc.SheetNames[0]];
-    const fichasdata = xlsx.utils.sheet_to_json<any>(fichasHoja, { header: 1 });
-    
-    const propiedades: Propiedad[] = [];
-
-    fichasdata.slice(1).forEach((row: any) => {
-        propiedades.push({
-            tipo: row[0] as string,
-            categoria: row[1] as string,
-            caracteristica: row[2] as string,
-            precio: row[3] as number,
-            enlace: row[4] as string,
-            descripcion: row[5] as string,
-        });
-       
-    });
-
-    return propiedades;
-}
-*/
 interface RowData {
     [key: string]: any; // Permite cualquier tipo de valor para cada propiedad
   }
@@ -245,9 +190,62 @@ async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
   }
 }
 
+interface Config {
+    availableDays: string[];
+    availableHoursStart: string;
+    availableHoursEnd: string;
+    defaultDuration: number;
+    specialDays: Record<string, { start?: string; end?: string } | 'cerrado'>;
+  }
+
+
+async function descargarYLeerConfigExcel(): Promise<Config> {
+    const url = 'https://drive.google.com/uc?id=156ejdhEI3DB8H__QyTBgSslm0JUZ-xaZ'; // Sustituye con el ID correcto de tu archivo
+    const localPath = './config.xlsx';
+   
+  
+    // Descargar el archivo desde Google Drive
+    const response = await axios.get(url, { responseType: 'arraybuffer' });
+    fs.writeFileSync(localPath, response.data);
+  
+    // Leer el archivo descargado
+    const workbook = xlsx.readFile(localPath);
+  
+    // Obtener los datos de las hojas
+    const parametrosHoja = workbook.Sheets['Parametros']; // Nombre de la hoja 1
+    const diasEspecialesHoja = workbook.Sheets['Feriados']; // Nombre de la hoja 2
+  
+    // Procesar hoja de parámetros
+    const parametrosData = xlsx.utils.sheet_to_json<any>(parametrosHoja, { header: 1 });
+    const parametros: Record<string, any> = {};
+    parametrosData.slice(1).forEach((row: any[]) => {
+      parametros[row[0]] = row[1];
+    });
+  
+    // Procesar hoja de días especiales
+    const diasEspecialesData = xlsx.utils.sheet_to_json<any>(diasEspecialesHoja, { header: 1 });
+    const specialDays: Record<string, { start?: string; end?: string } | 'cerrado'> = {};
+    diasEspecialesData.slice(1).forEach((row: any[]) => {
+      const [date, status, start, end] = row;
+      if (status === 'cerrado') {
+        specialDays[date] = 'cerrado';
+      } else {
+        specialDays[date] = { start, end };
+      }
+    });
+  
+    // Formatear la configuración
+    const config: Config = {
+      availableDays: parametros['available_days'].split(','),
+      availableHoursStart: parametros['available_hours_start'],
+      availableHoursEnd: parametros['available_hours_end'],
+      defaultDuration: parseInt(parametros['default_duration'], 10),
+      specialDays,
+    };
+  
+    return config;
+  }
 
 
 
-
-
-export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits}
+export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel}

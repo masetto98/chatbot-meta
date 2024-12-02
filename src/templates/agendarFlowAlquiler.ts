@@ -33,7 +33,7 @@ const afirmative3 = addKeyword('Sí')
                         const sql = `UPDATE visits SET state = 'deleted' WHERE eventID = '${EventID}'`;
                         pool.query(sql);
                         await ctxFn.state.update({intention:undefined})
-                        return ctxFn.endFlow('La visita ha sido cancelada 🤗. Si necesitas ayuda con otra consulta escribe *menu*.')
+                        return ctxFn.endFlow('La visita ha sido cancelada 🤗. Ante cualquier otra consulta no dudes en escribirme.')
 
                     })
 const negative3 = addKeyword('No')
@@ -61,7 +61,7 @@ const negativeChangeEventAlq = addKeyword('Cancelar')
 const salirChangeEvent = addKeyword('Salir')
                             .addAction(async (ctx,ctxFn) => {
                             await ctxFn.state.update({intention:undefined})
-                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
+                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Ante cualquier otra consulta no dudes en escribirme.')
                             })
 
 const changeEventAlquiler =  addKeyword(EVENTS.ACTION)
@@ -84,7 +84,7 @@ const afirmativeFlow2 = addKeyword('Sí')
 const negativeFlow2 = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
                             await ctxFn.state.update({intention:undefined})
-                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
+                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Ante cualquier otra consulta no dudes en escribirme.')
                         })                       
 
 
