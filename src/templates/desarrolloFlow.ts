@@ -10,7 +10,7 @@ const desarrolloFlow = addKeyword(EVENTS.ACTION)
                     .addAnswer('¿Algún horario preferencia para comunicarnos?',{
                         capture:true
                     })
-                    .addAnswer('🙌 ¡Excelente! Un agente se contactará a la brevedad. Escribe *menu* si quieres volver al menú principal.',{
+                    .addAnswer('🙌 ¡Excelente! Un agente se contactará a la brevedad. Ante cualquier otra consulta no dudes en escribirme.',{
                         capture:true
                     })
 

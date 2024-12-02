@@ -284,8 +284,12 @@ export async function isDateAvailable(date:Date) {
 
         // Validar horas permitidas
         const hour = date.getHours();
-        const startHour = parseInt(config.availableHoursStart.split(':')[0], 10);
-        const endHour = parseInt(config.availableHoursEnd.split(':')[0], 10);
+        if (typeof config.availableHoursStart !== 'string' || typeof config.availableHoursEnd !== 'string') {
+            throw new TypeError('availableHoursStart y availableHoursEnd deben ser cadenas en formato HH:mm');
+          }
+        const startHour = parseInt(String(config.availableHoursStart).split(':')[0], 10);
+        const endHour = parseInt(String(config.availableHoursEnd).split(':')[0], 10);
+        
 
         if (hour < startHour || hour >= endHour) {
         return false; // La hora no está dentro del rango permitido

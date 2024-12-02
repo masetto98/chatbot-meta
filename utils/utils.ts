@@ -200,10 +200,10 @@ interface Config {
 
 
 async function descargarYLeerConfigExcel(): Promise<Config> {
-    const url = 'https://drive.google.com/uc?id=156ejdhEI3DB8H__QyTBgSslm0JUZ-xaZ'; // Sustituye con el ID correcto de tu archivo
+    const url = 'https://drive.google.com/uc?id=1o_d6MWfepM5KTRGCrtwTUzxYQX4jlfZA'; // Sustituye con el ID correcto de tu archivo
     const localPath = './config.xlsx';
    
-  
+    //https://docs.google.com/spreadsheets/d/1o_d6MWfepM5KTRGCrtwTUzxYQX4jlfZA/edit?usp=sharing&ouid=111590046753094012259&rtpof=true&sd=true
     // Descargar el archivo desde Google Drive
     const response = await axios.get(url, { responseType: 'arraybuffer' });
     fs.writeFileSync(localPath, response.data);
