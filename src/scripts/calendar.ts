@@ -372,6 +372,7 @@ export async function isDateAvailable(date:Date) {
         }
         // Validar días especiales
         const specialDay = config.specialDays[date.toISOString().split('T')[0]];
+        console.log(`specialDay: ${specialDay}`)
         if (specialDay) {
         if (specialDay === 'cerrado') {
             return false; // El día está cerrado
