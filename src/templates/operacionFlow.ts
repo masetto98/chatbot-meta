@@ -103,6 +103,9 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           
          // Asigna el resultado de replace a resp
           resp = resp.replace(patron, ' ').trimStart();
+          await ctxFn.state.update({history:undefined})
+          await ctxFn.state.update({chattest:undefined})
+          await ctxFn.state.update({modelo:undefined})
           return ctxFn.gotoFlow(agendarFlowAlquiler)/*
           actualizarExcel('./visitas.xlsx',datos);
           console.log(datos);*/
@@ -121,6 +124,9 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({cliente:datos.nombre})
           await ctxFn.state.update({propiedad:datos.enlace})
           await ctxFn.state.update({tel:datos.telefono})
+          await ctxFn.state.update({history:undefined})
+          await ctxFn.state.update({chattest:undefined})
+          await ctxFn.state.update({modelo:undefined})
           return ctxFn.gotoFlow(agenteFlow)
         }
         await ctxFn.flowDynamic(resp);
