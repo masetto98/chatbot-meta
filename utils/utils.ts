@@ -214,6 +214,7 @@ async function descargarYLeerConfigExcel(): Promise<Config> {
     // Obtener los datos de las hojas
     const parametrosHoja = workbook.Sheets['Parametros']; // Nombre de la hoja 1
     const diasEspecialesHoja = workbook.Sheets['Feriados']; // Nombre de la hoja 2
+    console.log(`diasEspecialesHoja: ${diasEspecialesHoja}`)
   
     // Procesar hoja de parámetros
     const parametrosData = xlsx.utils.sheet_to_json<any>(parametrosHoja, { header: 1 });
