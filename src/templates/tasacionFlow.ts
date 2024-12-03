@@ -14,13 +14,15 @@ const afirmativeFlow = addKeyword('Sí')
                             await ctxFn.state.update({tipoPropiedad:ctx.body})
                         })
                         .addAnswer('¿Dónde está ubicada?',{
-                            capture:true
+                            capture:true,
+                            delay:2000,
                         },
                         async (ctx,ctxFn) => {
                             await ctxFn.state.update({ubic:ctx.body})
                         })
                         .addAnswer('Por último, indicame tu nombre y apellido',{
-                            capture:true
+                            capture:true,
+                            delay:2000,
                         },
                         async (ctx,ctxFn) => {
                             await ctxFn.state.update({cliente:ctx.body})

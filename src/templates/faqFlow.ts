@@ -35,7 +35,7 @@ const afirmativeFlow2 = addKeyword('Sí')
 const negativeFlow2 = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
                             await ctxFn.state.update({intention:undefined})
-                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Escribe *menu* para realizar otra consulta.')
+                            return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Ante cualquier otra consulta no dudes en escribirme.')
                         })           
 
 let cache;
