@@ -370,7 +370,7 @@ export async function isDateAvailable(date:Date) {
         if (hour < startHour || hour >= endHour) {
         return false; // La hora no está dentro del rango permitido
         }
-        // Validar días especiales
+        
         const specialDay = config.specialDays[date.toISOString().split('T')[0]];
         console.log(`specialDay: ${specialDay}`)
         if (specialDay) {

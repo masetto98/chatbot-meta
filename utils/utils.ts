@@ -226,9 +226,14 @@ async function descargarYLeerConfigExcel(): Promise<Config> {
     // Procesar hoja de días especiales
     const diasEspecialesData = xlsx.utils.sheet_to_json<any>(diasEspecialesHoja, { header: 1 });
     console.log(`diasEspecialesData: ${diasEspecialesData}`)
+    const excelDateOffset = new Date(1899, 11, 30).getTime(); // Fecha base de Excel
     const specialDays: Record<string, { start?: string; end?: string } | 'cerrado'> = {};
     diasEspecialesData.slice(1).forEach((row: any[]) => {
-      const [date, status, start, end] = row;
+      let [date, status, start, end] = row;
+      // Convertir fecha en número de serie de Excel a formato ISO si es necesario
+      if (typeof date === 'number') {
+        date = new Date(excelDateOffset + date * 86400000).toISOString().split('T')[0];
+      }
       if (status === 'cerrado') {
         specialDays[date] = 'cerrado';
       } else {
