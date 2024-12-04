@@ -4,6 +4,10 @@ import { createEvent, deleteEvent, getEventById, getNextAvailableSlot, isDateAva
 import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
 import { createContext } from "vm"
+import { createMessageQueue,QueueConfig } from "utils/fast-entires"
+
+const queueConfig: QueueConfig = { gapMilliseconds: 5000 };
+const enqueueMessage = createMessageQueue(queueConfig);
 
 
 function formatDateForMySQL(dateString: string): string {
@@ -197,7 +201,9 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
         capture:true
         ,delay:2000
     },async (ctx,ctxFn) => {
-        await ctxFn.state.update({cliente:ctx.body})
+        enqueueMessage(ctx, async (body) =>{
+            await ctxFn.state.update({cliente:body})
+        })
     })
     .addAnswer('¿Ya tenes vista alguna propiedad en particular? Sí es así porfavor indicanos de qué propiedad se trata. Si no tenes vista alguna propiedad comentame brevemente el asunto de la reunión/visita',{
         capture:true,
