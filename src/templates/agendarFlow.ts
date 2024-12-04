@@ -123,19 +123,21 @@ const afirmativeFlow = addKeyword('Sí')
                                 const description = `Nombre: ${name}, tel: ${tel}, propiedad interesada: ${propiedad}`
                                 let date;
                                 let dateFormat;
+                                let presentDate;
                                 const startDate = ctxFn.state.get('startDate')
                                 const nextAvailableslot = ctxFn.state.get('nextAvailableslot')
                                 
                                 if(!nextAvailableslot){
                                     date = startDate.toISOString()
                                     dateFormat = startDate.toLocaleString()
+                                    presentDate = startDate
                                     
                                 }
                                 else{
 
                                     date = nextAvailableslot.start.toISOString()
                                     dateFormat = nextAvailableslot.start.toLocaleString()
-                                   
+                                    presentDate = nextAvailableslot.start
 
                                 }
                                 
@@ -146,7 +148,7 @@ const afirmativeFlow = addKeyword('Sí')
                                 const values = [[ctx.from, name, eventId,dateforMySql,'active']];
                                 const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state) values ?';
                                 pool.query(sql, [values]);      
-                                ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${formatDateInWords(dateFormat)}. Nos vemos pronto.`)
+                                ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${formatDateInWords(presentDate)}. Nos vemos pronto.`)
                             
                                 
                                 
