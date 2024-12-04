@@ -1,8 +1,23 @@
 import { addKeyword,EVENTS } from "@builderbot/bot"
 import { start } from "utils/idle-custom"
+import { createMessageQueue,QueueConfig } from "utils/fast-entires"
+
+
+const queueConfig: QueueConfig = { gapMilliseconds: 10000 };
+const enqueueMessage = createMessageQueue(queueConfig);
 
 const welcomeFlow = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, { gotoFlow }) => start(ctx, gotoFlow, 3600000))
+    .addAction(async (ctx, { flowDynamic }) => {
+        try {
+            enqueueMessage(ctx, async (body) => {
+                console.log('Processed messages:', body, ctx.from);
+                //await flowDynamic(`Received messages: ${body}`);
+            });
+        } catch (error) {
+            console.error('Error processing message:', error);
+        }
+    })
     .addAnswer('👋¡Hola! Soy el asistente virtual de la inmobiliaria Martin + Tettamanzi. Estoy para ayudarte con tus consultas.',
         {
             capture:false
