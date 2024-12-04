@@ -194,6 +194,66 @@ const noavailableFlow = addKeyword(EVENTS.ACTION)
                         null
                         ,[afirmativeFlow,negativeFlow])
    
+/*
+const visitaFlow = addKeyword(EVENTS.ACTION)
+    .addAnswer('Genial! 😁 Vamos a agendar una visita/reunión.. Antes nos gustaría conocer algunos detalles..')
+    .addAnswer('Por favor.. Indicanos tu nombre completo',{
+        capture:true
+        ,delay:2000
+    },async (ctx,ctxFn) => {
+                console.log('Processed messages:', ctx.body, ctx.from);
+                await ctxFn.state.update({cliente:ctx.body});
+           })
+    .addAnswer('¿Ya tenes vista alguna propiedad en particular? Sí es así porfavor indicanos de qué propiedad se trata. Si no tenes vista alguna propiedad comentame brevemente el asunto de la reunión/visita',{
+        capture:true,
+        delay:5000,
+    },async (ctx,ctxFn) => {
+        await ctxFn.state.update({propiedad:ctx.body})
+        await ctxFn.state.update({tel:ctx.from})
+    })
+    .addAnswer('😄 ¡Perfecto! Por favor, indicame que día y horario te parece conveniente para la visita',{
+        capture:true,
+    })
+    .addAction(async (ctx,ctxFn) => {
+        console.log(ctx.body)
+        const solicitedDate = await text2iso(ctx.body)
+        let clearStartDate = undefined;
+        let clearNextAvailableslot = undefined;
+        await ctxFn.state.update({startDate:clearStartDate})
+        await ctxFn.state.update({nextAvailableslot:clearNextAvailableslot})
+        console.log("Fecha solicitada: " + solicitedDate)
+        if(solicitedDate.includes('false')){
+            return ctxFn.endFlow('No se pudo deducir una fecha. Por favor, volve a intentarlo')
+        
+        }
+        const startDate = new Date(solicitedDate)
+        
+        if(startDate > new Date()){
+            console.log("Start Date: " + startDate)
+
+            const dateAvailable = await isDateAvailable(startDate)
+            console.log('Is Date Available: ' + dateAvailable)
+            if(dateAvailable){
+            
+                await ctxFn.state.update({startDate:startDate})
+                return ctxFn.gotoFlow(availableFlow)
+            }
+            else{
+                const nextAvailableslot = await getNextAvailableSlot(startDate)
+                await ctxFn.state.update({nextAvailableslot:nextAvailableslot})
+               
+                await ctxFn.flowDynamic(`😅 ¡No tengo disponibilidad para la fecha solicitada! Te parece si lo agendamos para el día: ${formatDateInWords(nextAvailableslot.start)}`)
+                //await ctxFn.flowDynamic(`😅 ¡No tengo disponibilidad para la fecha solicitada! Te parece si lo agendamos para el día: ${nextAvailableslot.start.toLocaleString()}`)
+                return await ctxFn.gotoFlow(noavailableFlow)
+            }
+
+        }
+        else{
+            return ctxFn.fallBack('La fecha solicitada no está disponible. Porfavor, intentalo nuevamente.')
+        }
+        
+},null,[availableFlow,noavailableFlow])
+ */   
 
 const visitaFlow = addKeyword(EVENTS.ACTION)
     .addAnswer('Genial! 😁 Vamos a agendar una visita/reunión.. Antes nos gustaría conocer algunos detalles..')
@@ -234,12 +294,7 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
             const dateAvailable = await isDateAvailable(startDate)
             console.log('Is Date Available: ' + dateAvailable)
             if(dateAvailable){
-            /* const name = ctx?.pushName ?? ''
-                const eventName = "Visita"
-                const description = `Nombre: ${name}, tel: ${ctx.from}` 
-                const date = startDate.toISOString()
-                const eventId = await createEvent(eventName,description,date)
-                ctxFn.flowDynamic('La fecha solicitada se encuentra disponible y la cita ha sido agendada')*/
+            
                 await ctxFn.state.update({startDate:startDate})
                 return ctxFn.gotoFlow(availableFlow)
             }
@@ -258,10 +313,10 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
         }
         
 },null,[availableFlow,noavailableFlow])
-    
+
 const agendarFlow = addKeyword(EVENTS.ACTION)
                     .addAction(async (ctx,ctxFn) => {
-                        
+                        console.log(ctx.body)
                         const events = await getUserVisits(ctx.from);
                         console.log("Contenido de events:", events);
                         console.log("Longitud de events:", events?.length || 0);

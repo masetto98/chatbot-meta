@@ -7,7 +7,10 @@ import { ventasFlow } from "./ventasFlow";
 import { desarrolloFlow } from "./desarrolloFlow";
 import { tasacionFlow } from "./tasacionFlow";
 import { reset } from "utils/idle-custom";
+import { createMessageQueue,QueueConfig } from "utils/fast-entires"
 
+const queueConfig: QueueConfig = { gapMilliseconds: 10000 };
+const enqueueMessage = createMessageQueue(queueConfig);
 
 const mainFlow = addKeyword(EVENTS.WELCOME)
     .addAction(
@@ -52,7 +55,15 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
                     return gotoFlow(tasacionFlow)
                 case 'vis':
                     reset(ctx, gotoFlow, 3600000);
-                    return gotoFlow(agendarFlow)
+                    try {
+                        enqueueMessage(ctx, async (body) => {
+                            console.log('Processed messages:', body, ctx.from);
+                            return await gotoFlow(agendarFlow);
+                        });
+                    } catch (error) {
+                        console.error('Error processing message:', error);
+                    }
+                    //return gotoFlow(agendarFlow)
                 case 'faq':
                     reset(ctx, gotoFlow, 3600000);
                     return gotoFlow(faqFlow)
