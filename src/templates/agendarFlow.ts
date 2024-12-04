@@ -5,6 +5,7 @@ import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
 import { createContext } from "vm"
 
+
 function formatDateForMySQL(dateString: string): string {
     // Convertir la fecha de formato MM/DD/YYYY, HH:MM:SS AM/PM a un objeto Date
     const date = new Date(dateString); 
