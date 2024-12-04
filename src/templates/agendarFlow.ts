@@ -4,7 +4,7 @@ import { createEvent, deleteEvent, getEventById, getNextAvailableSlot, isDateAva
 import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
 import { createContext } from "vm"
-import { createMessageQueue,QueueConfig } from "utils/fast-entires"
+
 
 
 
@@ -255,16 +255,12 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
 
 const visitaFlow = addKeyword(EVENTS.ACTION)
     .addAnswer('Genial! 😁 Vamos a agendar una visita/reunión.. Antes nos gustaría conocer algunos detalles..')
-    .addAnswer('Por favor.. Indicanos tu nombre completo',{
+    .addAnswer('Por favor.. Indicanos tu nombre completo en un solo mensaje',{
         capture:true
         ,delay:2000
     },async (ctx,ctxFn) => {
-                const queueConfig: QueueConfig = { gapMilliseconds: 10000 };
-                const enqueueMessage = createMessageQueue(queueConfig);
-                enqueueMessage(ctx, async (body) => {
-                    console.log('Processed messages:', body, ctx.from);
-                    await ctxFn.state.update({cliente:ctx.body});
-                });               
+                
+                    await ctxFn.state.update({cliente:ctx.body});       
            })
     .addAnswer('¿Ya tenes vista alguna propiedad en particular? Sí es así porfavor indicanos de qué propiedad se trata. Si no tenes vista alguna propiedad comentame brevemente el asunto de la reunión/visita',{
         capture:true,

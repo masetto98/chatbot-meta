@@ -14,7 +14,7 @@ import aiServices from '~/services/aiServices';
 import { agendarFlow } from './agendarFlow';
 import { agenteFlow } from './agenteFlow';
 import { agendarFlowAlquiler } from './agendarFlowAlquiler';
-
+import { createMessageQueue,QueueConfig } from "utils/fast-entires"
 
 
 
@@ -25,6 +25,7 @@ let cache;
 
 const operacionFlow = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, ctxFn) => {
+        
         const name = ctx?.pushName ?? ''
         const newHistory = (ctxFn.state.getMyState()?.history ?? [])
         const expireTime = (ctxFn.state.getMyState()?.expireTime ?? String)
@@ -81,78 +82,80 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             await ctxFn.state.update({modelo:modelo})     
            // await ctxFn.state.update({cache:cache})   
         }
-      
-         
+        const queueConfig: QueueConfig = { gapMilliseconds: 6000 };
+        const enqueueMessage = createMessageQueue(queueConfig);
+        enqueueMessage(ctx, async (body) => {
+          const response = await chattest.sendMessage(body.trimEnd());
+          let resp = response.response.text().trimEnd();
+          //const patron = /{{nombre: (.*)}},{{horario: (.*)}}, {{enlace: (.*)}}/;
+          const patron = /{{cliente: (.*)}},{{enlace: (.*)}},{{VISITA}}/;
+          const coincidencia = patron.exec(resp);
+          if(coincidencia){
+            const datos: DatosUsuario = {
+              nombre: coincidencia[1],
+              //horario: coincidencia[2],
+              enlace: coincidencia[2],
+              telefono: ctx.from,
+              fecha: new Date()
+            };
+            await ctxFn.state.update({cliente:datos.nombre})
+            await ctxFn.state.update({propiedad:datos.enlace})
+            await ctxFn.state.update({tel:datos.telefono})
+            
+          // Asigna el resultado de replace a resp
+            resp = resp.replace(patron, ' ').trimStart();
+            await ctxFn.state.update({history:undefined})
+            await ctxFn.state.update({chattest:undefined})
+            await ctxFn.state.update({modelo:undefined})
+            return ctxFn.gotoFlow(agendarFlowAlquiler)/*
+            actualizarExcel('./visitas.xlsx',datos);
+            console.log(datos);*/
+          }
           
-        const response = await chattest.sendMessage(ctx.body.trimEnd());
-        let resp = response.response.text().trimEnd();
-        //const patron = /{{nombre: (.*)}},{{horario: (.*)}}, {{enlace: (.*)}}/;
-        const patron = /{{cliente: (.*)}},{{enlace: (.*)}},{{VISITA}}/;
-        const coincidencia = patron.exec(resp);
-        if(coincidencia){
-          const datos: DatosUsuario = {
-            nombre: coincidencia[1],
-            //horario: coincidencia[2],
-            enlace: coincidencia[2],
-            telefono: ctx.from,
-            fecha: new Date()
-          };
-          await ctxFn.state.update({cliente:datos.nombre})
-          await ctxFn.state.update({propiedad:datos.enlace})
-          await ctxFn.state.update({tel:datos.telefono})
+          const patron2 = /{{cliente: (.*)}},{{enlace: (.*)}},{{AGENTE}}/;
+          const coincidencia2 = patron2.exec(resp);
+          if(coincidencia2){
+            const datos: DatosUsuario = {
+              nombre: coincidencia2[1],
+              //horario: coincidencia[2],
+              enlace: coincidencia2[2],
+              telefono: ctx.from,
+              fecha: new Date()
+            };
+            await ctxFn.state.update({cliente:datos.nombre})
+            await ctxFn.state.update({propiedad:datos.enlace})
+            await ctxFn.state.update({tel:datos.telefono})
+            await ctxFn.state.update({history:undefined})
+            await ctxFn.state.update({chattest:undefined})
+            await ctxFn.state.update({modelo:undefined})
+            return ctxFn.gotoFlow(agenteFlow)
+          }
+          await ctxFn.flowDynamic(resp);
+          newHistory.push({
+            role:'user',
+            parts: [{ text: ctx.body}]
+          })
+          const updatedHistory = [...newHistory];
+          updatedHistory.push({
+              role: 'model',
+              parts: [{ text: response.response.text() }],
+          });
           
-         // Asigna el resultado de replace a resp
-          resp = resp.replace(patron, ' ').trimStart();
-          await ctxFn.state.update({history:undefined})
-          await ctxFn.state.update({chattest:undefined})
-          await ctxFn.state.update({modelo:undefined})
-          return ctxFn.gotoFlow(agendarFlowAlquiler)/*
-          actualizarExcel('./visitas.xlsx',datos);
-          console.log(datos);*/
-        }
-        
-        const patron2 = /{{cliente: (.*)}},{{enlace: (.*)}},{{AGENTE}}/;
-        const coincidencia2 = patron2.exec(resp);
-        if(coincidencia2){
-          const datos: DatosUsuario = {
-            nombre: coincidencia2[1],
-            //horario: coincidencia[2],
-            enlace: coincidencia2[2],
-            telefono: ctx.from,
-            fecha: new Date()
-          };
-          await ctxFn.state.update({cliente:datos.nombre})
-          await ctxFn.state.update({propiedad:datos.enlace})
-          await ctxFn.state.update({tel:datos.telefono})
-          await ctxFn.state.update({history:undefined})
-          await ctxFn.state.update({chattest:undefined})
-          await ctxFn.state.update({modelo:undefined})
-          return ctxFn.gotoFlow(agenteFlow)
-        }
-        await ctxFn.flowDynamic(resp);
-        newHistory.push({
-          role:'user',
-          parts: [{ text: ctx.body}]
-        })
-        const updatedHistory = [...newHistory];
-        updatedHistory.push({
-            role: 'model',
-            parts: [{ text: response.response.text() }],
-        });
-        
-        //Limito el historial a los ultimos 10 mensajes(ultimas 5 interacciones completas user-model)
-        
-        const limitedHistory = updatedHistory.slice(-10);
+          //Limito el historial a los ultimos 10 mensajes(ultimas 5 interacciones completas user-model)
+          
+          const limitedHistory = updatedHistory.slice(-10);
 
-      
-        chattest.history = limitedHistory;
+        
+          chattest.history = limitedHistory;
 
-        await ctxFn.state.update({history:limitedHistory})
-        await ctxFn.state.update({chattest:chattest})
-        await ctxFn.state.update({modelo:modelo})
-        console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
-        console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
-        console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
+          await ctxFn.state.update({history:limitedHistory})
+          await ctxFn.state.update({chattest:chattest})
+          await ctxFn.state.update({modelo:modelo})
+          console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
+          console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
+          console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
+          });
+        
         
     }
   )
