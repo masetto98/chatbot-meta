@@ -3,7 +3,7 @@ import { start } from "utils/idle-custom"
 
 
 const welcomeFlow = addKeyword(EVENTS.ACTION)
-    .addAction(async (ctx, { gotoFlow }) => start(ctx, gotoFlow, 3600000))
+    //.addAction(async (ctx, { gotoFlow }) => start(ctx, gotoFlow, 3600000))
     .addAnswer('👋¡Hola! Soy el asistente virtual de la inmobiliaria Martin + Tettamanzi. Estoy para ayudarte con tus consultas.',
         {
             capture:false
