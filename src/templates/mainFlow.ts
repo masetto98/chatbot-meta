@@ -9,7 +9,7 @@ import { tasacionFlow } from "./tasacionFlow";
 import { reset } from "utils/idle-custom";
 import { createMessageQueue,QueueConfig } from "utils/fast-entires"
 
-const queueConfig: QueueConfig = { gapMilliseconds: 3000 };
+const queueConfig: QueueConfig = { gapMilliseconds: 5000 };
 const enqueueMessage = createMessageQueue(queueConfig);
 
 
@@ -100,22 +100,22 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
                     console.log(intentionUpdate)
                     switch(intentionUpdate){
                         case 'alq':
-                            reset(ctx, gotoFlow, 3600000);
+                            //reset(ctx, gotoFlow, 3600000);
                             return gotoFlow(operacionFlow)
                         case 'vta':
-                            reset(ctx, gotoFlow, 3600000);
+                            //reset(ctx, gotoFlow, 3600000);
                             return gotoFlow(ventasFlow)
                         case 'des':
-                            reset(ctx, gotoFlow, 3600000);
+                            //reset(ctx, gotoFlow, 3600000);
                             return gotoFlow(desarrolloFlow)
                         case 'tas':
-                            reset(ctx, gotoFlow, 3600000);
+                            //reset(ctx, gotoFlow, 3600000);
                             return gotoFlow(tasacionFlow)
                         case 'vis':
-                            reset(ctx, gotoFlow, 3600000);
+                            //reset(ctx, gotoFlow, 3600000);
                             return gotoFlow(agendarFlow)
                         case 'faq':
-                            reset(ctx, gotoFlow, 3600000);
+                           // reset(ctx, gotoFlow, 3600000);
                             return gotoFlow(faqFlow)
                         default:
                             return gotoFlow(welcomeFlow)
