@@ -6,8 +6,6 @@ import { pool } from "~/db"
 import { createContext } from "vm"
 import { createMessageQueue,QueueConfig } from "utils/fast-entires"
 
-const queueConfig: QueueConfig = { gapMilliseconds: 10000 };
-const enqueueMessage = createMessageQueue(queueConfig);
 
 
 function formatDateForMySQL(dateString: string): string {
@@ -334,7 +332,13 @@ const agendarFlow = addKeyword(EVENTS.ACTION)
 
                         }
                         else {
-                            return await ctxFn.gotoFlow(visitaFlow)
+                            const queueConfig: QueueConfig = { gapMilliseconds: 10000 };
+                            const enqueueMessage = createMessageQueue(queueConfig);
+                            enqueueMessage(ctx, async (body) => {
+                                console.log('Processed messages:', body, ctx.from);
+                                return await ctxFn.gotoFlow(visitaFlow)
+                            })
+                            //return await ctxFn.gotoFlow(visitaFlow)
                         }
 
                         },null,[changeEvent,visitaFlow])
