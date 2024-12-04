@@ -205,7 +205,7 @@ export async function listAvailableSlots(startDate = new Date(), endDate?: Date)
                 slotStart.setHours(hour, 0, 0, 0);
     
                 const slotEnd = new Date(slotStart);
-                slotEnd.setHours(hour + 1); // Asume que las citas tienen 1 hora de duración; esto puede ser dinámico si lo configuras.
+                slotEnd.setHours(hour + 1); // Asume que las citas tienen 1 hora de duración; esto puede ser dinámico.
     
                 const isBusy = events.some(event => {
                 const eventStart = new Date(event.start.dateTime || event.start.date);
