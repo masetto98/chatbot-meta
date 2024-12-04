@@ -24,6 +24,25 @@ function formatDateForMySQL(dateString: string): string {
   
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
   }
+// Función para formatear la fecha en palabras
+function formatDateInWords(date) {
+    const days = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+    const months = [
+        'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+    
+    const dayName = days[date.getDay()];
+    const dayNumber = date.getDate();
+    const monthName = months[date.getMonth()];
+    const year = date.getFullYear();
+    const hours = date.getHours();
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    const formattedTime = `${hours % 12 || 12}:${minutes} ${ampm}`;
+    return `${dayName} ${dayNumber} de ${monthName} ${year} a las ${formattedTime}`;
+}
 
 const afirmative3 = addKeyword('Sí')
                     .addAction(async (ctx,ctxFn) => {
@@ -122,7 +141,7 @@ const afirmativeFlow = addKeyword('Sí')
                                 const values = [[ctx.from, name, eventId,dateforMySql,'active']];
                                 const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state) values ?';
                                 pool.query(sql, [values]);      
-                                ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${dateFormat}. Nos vemos pronto.`)
+                                ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${formatDateInWords(dateFormat)}. Nos vemos pronto.`)
                             
                                 
                                 
@@ -205,7 +224,7 @@ const visitaFlowAlquiler = addKeyword(EVENTS.ACTION)
             else{
                 const nextAvailableslot = await getNextAvailableSlot(startDate)
                 await ctxFn.state.update({nextAvailableslot:nextAvailableslot})
-                await ctxFn.flowDynamic(`😅 ¡No tengo disponibilidad para la fecha solicitada! Te parece si lo agendamos para el día: ${nextAvailableslot.start.toLocaleString()}`)
+                await ctxFn.flowDynamic(`😅 ¡No tengo disponibilidad para la fecha solicitada! Te parece si lo agendamos para el día: ${formatDateInWords(nextAvailableslot.start)}`)
                 return await ctxFn.gotoFlow(noavailableFlow)
             }
 

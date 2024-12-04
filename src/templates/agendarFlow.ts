@@ -146,7 +146,7 @@ const afirmativeFlow = addKeyword('Sí')
                                 const values = [[ctx.from, name, eventId,dateforMySql,'active']];
                                 const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state) values ?';
                                 pool.query(sql, [values]);      
-                                ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${dateFormat}. Nos vemos pronto.`)
+                                ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${formatDateInWords(dateFormat)}. Nos vemos pronto.`)
                             
                                 
                                 
@@ -264,7 +264,7 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
            })
     .addAnswer('¿Ya tenes vista alguna propiedad en particular? Sí es así porfavor indicanos de qué propiedad se trata. Si no tenes vista alguna propiedad comentame brevemente el asunto de la reunión/visita',{
         capture:true,
-        delay:5000,
+        delay:2000,
     },async (ctx,ctxFn) => {
         await ctxFn.state.update({propiedad:ctx.body})
         await ctxFn.state.update({tel:ctx.from})
