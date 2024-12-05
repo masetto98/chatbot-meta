@@ -3,8 +3,7 @@ import { getUserVisits, text2iso } from "utils/utils"
 import { createEvent, deleteEvent, getEventById, getNextAvailableSlot, isDateAvailable } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
-import { createContext } from "vm"
-
+import { stop } from "utils/idle-custom";
 
 
 
@@ -57,6 +56,8 @@ const afirmative3 = addKeyword('Sí')
                         const sql = `UPDATE visits SET state = 'deleted' WHERE eventID = '${EventID}'`;
                         pool.query(sql);
                         await ctxFn.state.update({intention:undefined})
+                        stop(ctx);
+                        await ctxFn.state.update({timer:undefined})  
                         return ctxFn.endFlow('La visita ha sido cancelada 🤗. Ante cualquier otra consulta no dudes en escribirme.')
 
                     })
@@ -147,7 +148,9 @@ const afirmativeFlow = addKeyword('Sí')
                                 const eventId = await createEvent(eventName,description,date)
                                 const values = [[ctx.from, name, eventId,dateforMySql,'active']];
                                 const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state) values ?';
-                                pool.query(sql, [values]);      
+                                pool.query(sql, [values]);    
+                                stop(ctx);
+                                await ctxFn.state.update({timer:undefined})  
                                 ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${formatDateInWords(presentDate)}. Nos vemos pronto.`)
                             
                                 
@@ -167,6 +170,8 @@ const afirmativeFlow = addKeyword('Sí')
 const negativeFlow = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
                             await ctxFn.state.update({intention:undefined})
+                            stop(ctx);
+                            await ctxFn.state.update({timer:undefined})
                             return ctxFn.endFlow('🤗 Gracias por comunicarte. Ante cualquier otra consulta no dudes en escribirme.')
                         })    
                             

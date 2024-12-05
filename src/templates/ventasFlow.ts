@@ -1,5 +1,5 @@
 import { addKeyword,EVENTS } from "@builderbot/bot"
-
+import { stop } from "utils/idle-custom";
 import { createEvent } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow";
 
@@ -45,6 +45,8 @@ const afirmativeFlow = addKeyword('Sí')
                             date.setHours(date.getHours() + 1)
                             const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
                             await ctxFn.state.update({intention:undefined})
+                            stop(ctx);
+                            await ctxFn.state.update({timer:undefined})
                             ctxFn.flowDynamic(`¡Genial! 🤗 Un agente se contactará a la brevedad. Para volver al menú principal escribe *menu*.`)
                         })
                         

@@ -4,7 +4,7 @@ import { createEvent, deleteEvent, getEventById, getNextAvailableSlot, isDateAva
 import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
 import { createContext } from "vm"
-
+import { stop } from "utils/idle-custom";
 function formatDateForMySQL(dateString: string): string {
     // Convertir la fecha de formato MM/DD/YYYY, HH:MM:SS AM/PM a un objeto Date
     const date = new Date(dateString); 
@@ -52,11 +52,16 @@ const afirmative3 = addKeyword('Sí')
                         const sql = `UPDATE visits SET state = 'deleted' WHERE eventID = '${EventID}'`;
                         pool.query(sql);
                         await ctxFn.state.update({intention:undefined})
+                        stop(ctx);
+                        await ctxFn.state.update({timer:undefined})
                         return ctxFn.endFlow('La visita ha sido cancelada 🤗. Ante cualquier otra consulta no dudes en escribirme.')
 
                     })
 const negative3 = addKeyword('No')
-                    .addAction(async (ctx,ctxFn) => {return ctxFn.gotoFlow(welcomeFlow)})
+                    .addAction(async (ctx,ctxFn) => {
+                        stop(ctx);
+                        await ctxFn.state.update({timer:undefined})
+                        return ctxFn.gotoFlow(welcomeFlow)})
 
 const afirmativeChangeEvent = addKeyword('Reagendar')
                                 .addAction(async (ctx,ctxFn) => {
@@ -80,6 +85,8 @@ const negativeChangeEventAlq = addKeyword('Cancelar')
 const salirChangeEvent = addKeyword('Salir')
                             .addAction(async (ctx,ctxFn) => {
                             await ctxFn.state.update({intention:undefined})
+                            stop(ctx);
+                            await ctxFn.state.update({timer:undefined})
                             return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Ante cualquier otra consulta no dudes en escribirme.')
                             })
 
@@ -141,7 +148,9 @@ const afirmativeFlow = addKeyword('Sí')
                                 const eventId = await createEvent(eventName,description,date)
                                 const values = [[ctx.from, name, eventId,dateforMySql,'active']];
                                 const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state) values ?';
-                                pool.query(sql, [values]);      
+                                pool.query(sql, [values]);     
+                                stop(ctx);
+                                await ctxFn.state.update({timer:undefined}) 
                                 ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${formatDateInWords(presentDate)}. Nos vemos pronto.`)
                             
                                 
@@ -175,8 +184,7 @@ const availableFlow = addKeyword(EVENTS.ACTION)
                         ]
                         },null,[afirmativeFlow,negativeFlow])
 
-const noavailableFlow = addKeyword(EVENTS.ACTION)
-                        
+const noavailableFlow = addKeyword(EVENTS.ACTION)                        
                         .addAnswer('¿Querés confirmar la visita?'
                         ,{
                             capture:true,

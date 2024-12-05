@@ -1,17 +1,11 @@
-import { createBot, createProvider, createFlow, addKeyword, utils, EVENTS} from '@builderbot/bot'
+import {  addKeyword, EVENTS} from '@builderbot/bot'
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { GoogleAICacheManager } from '@google/generative-ai/server';
-import { actualizarExcel, cargarInstrucciones, descargarYLeerExcel } from 'utils/utils';
+import { cargarInstrucciones } from 'utils/utils';
 import { DatosUsuario } from 'utils/visitas';
 import { generatePrompt } from '~/scripts/prompt';
-import {  createEvent,isDateAvailable,getNextAvailableSlot } from '~/scripts/calendar'
-import {iso2text,text2iso} from 'utils/utils'
-import aiServicesWithCache from '~/services/aiServices'; 
-
 import 'dotenv/config'
 import { config } from '~/config';
-import aiServices from '~/services/aiServices';
-import { agendarFlow } from './agendarFlow';
 import { agenteFlow } from './agenteFlow';
 import { agendarFlowAlquiler } from './agendarFlowAlquiler';
 

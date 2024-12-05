@@ -4,6 +4,7 @@ import { GoogleAICacheManager,GoogleAIFileManager,FileState } from '@google/gene
 import 'dotenv/config'
 import { cargarfaq } from 'utils/utils';
 import { config } from '~/config';
+import { stop } from "utils/idle-custom";
 
 
 const genAI = new GoogleGenerativeAI(config.ApiKey);
@@ -30,11 +31,15 @@ async function uploadToGemini(path, mimeType) {
 
 const afirmativeFlow2 = addKeyword('Sí')
                         .addAction(async (ctx,ctxFn) => {
+                            stop(ctx);
+                            await ctxFn.state.update({timer:undefined})  
                             return ctxFn.gotoFlow(faqFlow)
                         })
 const negativeFlow2 = addKeyword('No')
                         .addAction(async (ctx,ctxFn) => {
                             await ctxFn.state.update({intention:undefined})
+                            stop(ctx);
+                                await ctxFn.state.update({timer:undefined})  
                             return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Ante cualquier otra consulta no dudes en escribirme.')
                         })           
 
