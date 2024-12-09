@@ -123,6 +123,15 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({modelo:undefined})
           return ctxFn.gotoFlow(agenteFlow)
         }
+        const patron3 = /{{tipoPropiedad: (.*)}},{{caracteristica: (.*)}},{{presupuesto: (.*)}},{{INTENCION}}/;
+        const coincidencia3 = patron3.exec(resp);
+        if(coincidencia3){
+          await ctxFn.state.update({tipoPropiedad:coincidencia3[1]})
+          await ctxFn.state.update({caracteristica:coincidencia3[2]})
+          await ctxFn.state.update({presup:coincidencia3[3]})
+          resp = resp.replace(patron3, ' ').trimStart();
+          console.log(`tipoProp: ${coincidencia3[1]},caracte: ${coincidencia3[2]},${coincidencia3[3]}`)
+        }
         await ctxFn.flowDynamic(resp);
         newHistory.push({
           role:'user',
