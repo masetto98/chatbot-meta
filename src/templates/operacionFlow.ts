@@ -54,7 +54,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           
             chattest = modelo.startChat({
             generationConfig: {
-                maxOutputTokens: 300,  // Adjust based on desired response length
+                maxOutputTokens: 330,  // Adjust based on desired response length
                 temperature:0,
                 /*topP:0.8,
                 topK:20*/
