@@ -124,7 +124,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({modelo:undefined})
           return ctxFn.gotoFlow(agenteFlow)
         }
-        const patron3 = /{{tipoPropiedad: (.*)}},{{caracteristica: (.*)}},{{presupuesto: (.*)}},{{INTENCION}}/;
+        /*const patron3 = /{{tipoPropiedad: (.*)}},{{caracteristica: (.*)}},{{presupuesto: (.*)}},{{INTENCION}}/;
         const coincidencia3 = patron3.exec(resp);
         if(coincidencia3){
           await ctxFn.state.update({tipoPropiedad:coincidencia3[1]})
@@ -135,7 +135,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney) values ?';
           pool.query(sql, [values]);  
           console.log(`tipoProp: ${coincidencia3[1]},caracte: ${coincidencia3[2]},presup:${coincidencia3[3]}`)
-        }
+        }*/
         await ctxFn.flowDynamic(resp);
         newHistory.push({
           role:'user',
