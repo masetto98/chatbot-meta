@@ -76,12 +76,13 @@ const faqFlow = addKeyword(EVENTS.ACTION)
             - Tu función principal es resolver las consultas, dudas o inquietudes del usuario teniendo en cuenta solamente el contexto dado.\n
             - Al comenzar comentale que tu función es asistirlo en lo que necesite y que te diga en que podes ayudarlo.\n
             - Responde de manera breve, directa y natural, adecuada para WhatsApp.\n
-            - Al final de las respuestas a las consultas que le presentes al usuario escribe si necesita más detalle o resolver alguna otra consulta y agrega que si el usuario quiere volver al menú principal que escriba la palabra *menu*.\n
+            - Al final de las respuestas que le presentes al usuario escribe si resolver alguna otra consulta y agrega que si el usuario quiere volver al menú principal que escriba la palabra *menu*.\n
             - Manten un tono profesional y siempre responde en primera persona.\n
             - Utiliza solamente el contexto proporcionado para responder.\n
             - Antes de responder revisa si la respuesta esta dentro del contexto dado. Si la respuesta no se encuentra dentro del contexto dado, comunicale esta situación al usuario.\n
             - Mantené una conversación agradable y profesional. No inventes respuestas que no se encuentran en el contexto dado.\n
             - Si la repuesta contiene mucha información, resumila y presentasela al usuario. Luego consultale si quiere saber más detalle.\n
+            - Decí Hola solo al comienzo de la conversación.\n
             `
             const ttlSeconds = 180 // Asignacion de la cantidad de segundos que esta disponible el cache
             cache = await cacheManager.create({
