@@ -8,6 +8,7 @@ import 'dotenv/config'
 import { config } from '~/config';
 import { agenteFlow } from './agenteFlow';
 import { agendarFlowAlquiler } from './agendarFlowAlquiler';
+import { pool } from "~/db"
 
 
 
@@ -130,7 +131,10 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({caracteristica:coincidencia3[2]})
           await ctxFn.state.update({presup:coincidencia3[3]})
           resp = resp.replace(patron3, ' ').trimStart();
-          console.log(`tipoProp: ${coincidencia3[1]},caracte: ${coincidencia3[2]},${coincidencia3[3]}`)
+          const values = [[ctx.from, coincidencia3[1], coincidencia3[2],coincidencia3[3]]];
+          const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney) values ?';
+          pool.query(sql, [values]);  
+          console.log(`tipoProp: ${coincidencia3[1]},caracte: ${coincidencia3[2]},presup:${coincidencia3[3]}`)
         }
         await ctxFn.flowDynamic(resp);
         newHistory.push({
