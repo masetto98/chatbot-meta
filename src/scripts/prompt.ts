@@ -56,9 +56,10 @@ interface RowData {
     let idCounter = 1;
     // Generar el contexto con los datos
     const context = properties.map((prop) => {
-        prop.id = idCounter++; // Agregar el ID a la propiedad
+        // Asignar el ID al inicio de cada iteración
+        prop.id = idCounter++;
         const propertyString = Object.entries(prop)
-            .map(([key, value]) => `**${key}:** ${value || "N/A"}`)
+            .map(([key, value]) => `**id:** ${prop.id} **${key}:** ${value || "N/A"}`)
             .join('\n');
 
         return propertyString;
@@ -67,5 +68,7 @@ interface RowData {
     // Reemplazar las variables en el prompt
     return PROMPT.replaceAll('{customer_name}', name).replaceAll('{context}', context);
 };
+
+
 
 export { generatePrompt }
