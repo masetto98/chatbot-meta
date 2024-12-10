@@ -52,9 +52,11 @@ interface RowData {
     
     // Obtener las propiedades del Excel
     const properties = await descargarYLeerExcel();
-
+    // Inicializar un contador para los IDs
+    let idCounter = 1;
     // Generar el contexto con los datos
     const context = properties.map((prop) => {
+        prop.id = idCounter++; // Agregar el ID a la propiedad
         const propertyString = Object.entries(prop)
             .map(([key, value]) => `**${key}:** ${value || "N/A"}`)
             .join('\n');
