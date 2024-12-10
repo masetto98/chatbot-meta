@@ -35,7 +35,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             const model = 'models/gemini-1.5-flash-8b'
             
             const contexto = await generatePrompt(name)
-            console.log(contexto)
+            console.log(JSON.stringify(contexto))
             //const systemInstruction = `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`
             const systemInstruction = await cargarInstrucciones()
             const ttlSeconds = 600 // Asignacion de la cantidad de segundos que esta disponible el cache
@@ -46,7 +46,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
                         contents: [
                             {
                             role: 'user',
-                            parts: [{text: contexto}],
+                            parts: [{text: JSON.stringify(contexto)}],
                             },
                         ],
                         ttlSeconds,
@@ -55,9 +55,9 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           
             chattest = modelo.startChat({
             generationConfig: {
-                maxOutputTokens: 330,  // Adjust based on desired response length
-                temperature:0,
-                /*topP:0.8,
+                maxOutputTokens: 310,  // Adjust based on desired response length
+                /*temperature:0,
+                topP:0.8,
                 topK:20*/
             },
             history: [{
