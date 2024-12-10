@@ -58,7 +58,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
                 maxOutputTokens: 310,  // Adjust based on desired response length
                 temperature:0.2,
                 topP:0.3,
-                topK:0.3
+                topK:1
             },
             history: [{
                   role: "user",
