@@ -149,7 +149,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         
         //Limito el historial a los ultimos 10 mensajes(ultimas 5 interacciones completas user-model)
         
-        const limitedHistory = updatedHistory.slice(-10);
+        const limitedHistory = updatedHistory.slice(-30);
 
       
         chattest.history = limitedHistory;
