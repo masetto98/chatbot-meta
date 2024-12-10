@@ -56,10 +56,9 @@ interface RowData {
     let idCounter = 1;
     // Generar el contexto con los datos
     const context = properties.map((prop) => {
-        // Asignar el ID al inicio de cada iteración
-        prop.id = idCounter++;
-        const propertyString = Object.entries(prop)
-            .map(([key, value]) => `**id:** ${prop.id} **${key}:** ${value || "N/A"}`)
+        
+        const propertyString = `**id:** ${idCounter++}\n` + Object.entries(prop)
+            .map(([key, value]) => `**${key}:** ${value || "N/A"}`)
             .join('\n');
 
         return propertyString;
