@@ -1,5 +1,5 @@
 import { config } from './config';
-import { createPool } from 'mysql2/promise'; // Usar la versión promisificada
+import { createPool } from 'mysql2/promise'; 
 
 export const pool = createPool({
   host: config.host,
@@ -10,4 +10,5 @@ export const pool = createPool({
   waitForConnections: true, // Esperar conexiones cuando el pool esté lleno
   connectionLimit: 10, // Número máximo de conexiones en el pool
   queueLimit: 0, // Sin límite para solicitudes en espera
+  connectTimeout: 10000,
 });

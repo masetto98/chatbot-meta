@@ -50,6 +50,28 @@ function formatDateInWords(date) {
 
 const afirmative3 = addKeyword('Sí')
                     .addAction(async (ctx,ctxFn) => {
+                        try {
+                            // Obtén el EventID del estado
+                            const EventID = ctxFn.state.get('EventID');
+                            console.log(EventID);
+                        
+                            // Borra el evento (función deleteEvent)
+                            await deleteEvent(EventID);
+                        
+                            // Actualiza la base de datos usando parámetros para evitar inyección SQL
+                            const sql = `UPDATE visits SET state = ? WHERE eventID = ?`;
+                            await pool.query(sql, ['deleted', EventID]);
+                        
+                            // Limpia los estados y finaliza el flujo
+                            await ctxFn.state.update({ intention: undefined });
+                            stop(ctx);
+                            await ctxFn.state.update({ timer: undefined });
+                            return ctxFn.endFlow('La visita ha sido cancelada 🤗. Ante cualquier otra consulta no dudes en escribirme.');
+                        } catch (err) {
+                            console.error('Error al procesar la solicitud:', err);
+                            return ctxFn.endFlow('Lo siento, ocurrió un problema al cancelar la visita. Por favor, intenta de nuevo más tarde.');
+                        }
+                        /*
                         const EventID = ctxFn.state.get('EventID')
                         console.log(EventID)
                         await deleteEvent(EventID)
@@ -59,19 +81,26 @@ const afirmative3 = addKeyword('Sí')
                         stop(ctx);
                         await ctxFn.state.update({timer:undefined})  
                         return ctxFn.endFlow('La visita ha sido cancelada 🤗. Ante cualquier otra consulta no dudes en escribirme.')
-
+                                                        */
                     })
 const negative3 = addKeyword('No')
                     .addAction(async (ctx,ctxFn) => {return ctxFn.gotoFlow(welcomeFlow)})
 
 const afirmativeChangeEvent = addKeyword('Reagendar')
                                 .addAction(async (ctx,ctxFn) => {
-                                    const EventID = ctxFn.state.get('EventID')
-                                    console.log(EventID)
-                                    await deleteEvent(EventID)
-                                    const sql = `UPDATE visits SET state = 'modified' WHERE eventID = '${EventID}'`;
-                                    pool.query(sql);
-                                    return await ctxFn.gotoFlow(visitaFlow)
+                                    try{
+                                        const EventID = ctxFn.state.get('EventID')
+                                        console.log(EventID)
+                                        await deleteEvent(EventID)
+                                        // Actualiza la base de datos usando parámetros para evitar inyección SQL
+                                        const sql = `UPDATE visits SET state = ? WHERE eventID = ?`;
+                                        await pool.query(sql, ['modified', EventID]);
+                                        return await ctxFn.gotoFlow(visitaFlow)
+                                    } catch (err) {
+                                        console.error('Error al procesar la solicitud:', err);
+                                        return ctxFn.endFlow('Lo siento, ocurrió un problema al reagendar la visita. Por favor, intenta de nuevo más tarde.');
+                                    }
+                                    
                         })
 
 const negativeChangeEvent = addKeyword('Cancelar')
@@ -145,13 +174,20 @@ const afirmativeFlow = addKeyword('Sí')
                             
                                 const dateforMySql = formatDateForMySQL(dateFormat)
                                 console.log(dateforMySql)
-                                const eventId = await createEvent(eventName,description,date)
-                                const values = [[ctx.from, name, eventId,dateforMySql,'active']];
-                                const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state) values ?';
-                                pool.query(sql, [values]);    
-                                stop(ctx);
-                                await ctxFn.state.update({timer:undefined})  
-                                ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${formatDateInWords(presentDate)}. Nos vemos pronto.`)
+                                try{
+                                    const eventId = await createEvent(eventName,description,date)
+                                    const values = [[ctx.from, name, eventId,dateforMySql,'active']];
+                                    const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state) values ?';
+                                    await pool.query(sql, [values]);    
+                                    stop(ctx);
+                                    await ctxFn.state.update({timer:undefined})  
+                                    ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${formatDateInWords(presentDate)}. Nos vemos pronto.`)
+                                }
+                                catch(err){
+                                    console.error('Error al procesar la solicitud:', err);
+                                    return ctxFn.endFlow('Lo siento, ocurrió un problema al agendar la visita. Por favor, intenta de nuevo más tarde.');
+                                }
+                                
                             
                                 
                                 
@@ -199,67 +235,6 @@ const noavailableFlow = addKeyword(EVENTS.ACTION)
                         null
                         ,[afirmativeFlow,negativeFlow])
    
-/*
-const visitaFlow = addKeyword(EVENTS.ACTION)
-    .addAnswer('Genial! 😁 Vamos a agendar una visita/reunión.. Antes nos gustaría conocer algunos detalles..')
-    .addAnswer('Por favor.. Indicanos tu nombre completo',{
-        capture:true
-        ,delay:2000
-    },async (ctx,ctxFn) => {
-                console.log('Processed messages:', ctx.body, ctx.from);
-                await ctxFn.state.update({cliente:ctx.body});
-           })
-    .addAnswer('¿Ya tenes vista alguna propiedad en particular? Sí es así porfavor indicanos de qué propiedad se trata. Si no tenes vista alguna propiedad comentame brevemente el asunto de la reunión/visita',{
-        capture:true,
-        delay:5000,
-    },async (ctx,ctxFn) => {
-        await ctxFn.state.update({propiedad:ctx.body})
-        await ctxFn.state.update({tel:ctx.from})
-    })
-    .addAnswer('😄 ¡Perfecto! Por favor, indicame que día y horario te parece conveniente para la visita',{
-        capture:true,
-    })
-    .addAction(async (ctx,ctxFn) => {
-        console.log(ctx.body)
-        const solicitedDate = await text2iso(ctx.body)
-        let clearStartDate = undefined;
-        let clearNextAvailableslot = undefined;
-        await ctxFn.state.update({startDate:clearStartDate})
-        await ctxFn.state.update({nextAvailableslot:clearNextAvailableslot})
-        console.log("Fecha solicitada: " + solicitedDate)
-        if(solicitedDate.includes('false')){
-            return ctxFn.endFlow('No se pudo deducir una fecha. Por favor, volve a intentarlo')
-        
-        }
-        const startDate = new Date(solicitedDate)
-        
-        if(startDate > new Date()){
-            console.log("Start Date: " + startDate)
-
-            const dateAvailable = await isDateAvailable(startDate)
-            console.log('Is Date Available: ' + dateAvailable)
-            if(dateAvailable){
-            
-                await ctxFn.state.update({startDate:startDate})
-                return ctxFn.gotoFlow(availableFlow)
-            }
-            else{
-                const nextAvailableslot = await getNextAvailableSlot(startDate)
-                await ctxFn.state.update({nextAvailableslot:nextAvailableslot})
-               
-                await ctxFn.flowDynamic(`😅 ¡No tengo disponibilidad para la fecha solicitada! Te parece si lo agendamos para el día: ${formatDateInWords(nextAvailableslot.start)}`)
-                //await ctxFn.flowDynamic(`😅 ¡No tengo disponibilidad para la fecha solicitada! Te parece si lo agendamos para el día: ${nextAvailableslot.start.toLocaleString()}`)
-                return await ctxFn.gotoFlow(noavailableFlow)
-            }
-
-        }
-        else{
-            return ctxFn.fallBack('La fecha solicitada no está disponible. Porfavor, intentalo nuevamente.')
-        }
-        
-},null,[availableFlow,noavailableFlow])
- */   
-
 const visitaFlow = addKeyword(EVENTS.ACTION)
     .addAnswer('Genial! 😁 Vamos a agendar una visita/reunión.. Antes nos gustaría conocer algunos detalles..')
     .addAnswer('Por favor.. Indicanos tu nombre completo en un solo mensaje',{
