@@ -253,6 +253,16 @@ async function descargarYLeerConfigExcel(): Promise<Config> {
     return config;
   }
 
+async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,tel:string){
+        try{
+          const values = [[tel, tipoProp, caracte,presup]];
+          const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney) values ?';
+          await pool.query(sql, [values]);  
+        }
+        catch(err){
+          console.error('Error al cargar intencion del usuario:', err);
+        }
+}
 
 
-export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel}
+export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel,cargarIntencionUser}
