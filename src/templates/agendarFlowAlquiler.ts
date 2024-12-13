@@ -3,7 +3,6 @@ import { getUserVisits, text2iso } from "utils/utils"
 import { createEvent, deleteEvent, getEventById, getNextAvailableSlot, isDateAvailable } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow"
 import { pool } from "~/db"
-import { createContext } from "vm"
 import { stop } from "utils/idle-custom";
 function formatDateForMySQL(dateString: string): string {
     // Convertir la fecha de formato MM/DD/YYYY, HH:MM:SS AM/PM a un objeto Date
@@ -46,6 +45,7 @@ function formatDateInWords(date) {
 
 const afirmative3 = addKeyword('Sí')
                     .addAction(async (ctx,ctxFn) => {
+                        let connection = await pool.getConnection();
                         try {
                             // Obtén el EventID del estado
                             const EventID = ctxFn.state.get('EventID');
@@ -67,6 +67,9 @@ const afirmative3 = addKeyword('Sí')
                             console.error('Error al procesar la solicitud:', err);
                             return ctxFn.endFlow('Lo siento, ocurrió un problema al cancelar la visita. Por favor, intenta de nuevo más tarde.');
                         }
+                        finally {
+                            connection.release();
+                        }
                         /*
                         const EventID = ctxFn.state.get('EventID')
                         console.log(EventID)
@@ -87,6 +90,7 @@ const negative3 = addKeyword('No')
 
 const afirmativeChangeEvent = addKeyword('Reagendar')
                                 .addAction(async (ctx,ctxFn) => {
+                                    let connection = await pool.getConnection();
                                     try{
                                         const EventID = ctxFn.state.get('EventID')
                                         console.log(EventID)
@@ -98,6 +102,9 @@ const afirmativeChangeEvent = addKeyword('Reagendar')
                                     } catch (err) {
                                         console.error('Error al procesar la solicitud:', err);
                                         return ctxFn.endFlow('Lo siento, ocurrió un problema al reagendar la visita. Por favor, intenta de nuevo más tarde.');
+                                    }
+                                    finally {
+                                        connection.release();
                                     }
                                     /*
                                     const EventID = ctxFn.state.get('EventID')
@@ -180,6 +187,7 @@ const afirmativeFlow = addKeyword('Sí')
                             
                                 const dateforMySql = formatDateForMySQL(dateFormat)
                                 console.log(dateforMySql)
+                                let connection = await pool.getConnection();
                                 try{
                                     const eventId = await createEvent(eventName,description,date)
                                     const values = [[ctx.from, name, eventId,dateforMySql,'active']];
@@ -192,6 +200,9 @@ const afirmativeFlow = addKeyword('Sí')
                                 catch(err){
                                     console.error('Error al procesar la solicitud:', err);
                                     return ctxFn.endFlow('Lo siento, ocurrió un problema al agendar la visita. Por favor, intenta de nuevo más tarde.');
+                                }
+                                finally {
+                                    connection.release();
                                 }
                                 /*
                                 const eventId = await createEvent(eventName,description,date)
