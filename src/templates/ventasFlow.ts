@@ -3,6 +3,7 @@ import { stop } from "utils/idle-custom";
 import { createEvent } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow";
 import { cargarIntencionUser } from "utils/utils";
+import { delay } from "@builderbot/bot/dist/utils";
 
 
 const afirmativeFlow = addKeyword('Sí')
@@ -43,6 +44,27 @@ const afirmativeFlow = addKeyword('Sí')
                         async (ctx,ctxFn) => {
                             await ctxFn.state.update({cliente:ctx.body})
                         })
+                        .addAnswer(`¡Genial! 🤗 Un agente se contactará a la brevedad para brindarte una asesoría personalizada. Para volver al menú principal escribe *menu*.`,
+                            {delay:2000},
+                            async (ctx,ctxFn) => {
+                                const eventName = "Potencial Venta"
+                                const name = await ctxFn.state.get('cliente')
+                                const localidad = await ctxFn.state.get('localidad')
+                                const tipoProp = await ctxFn.state.get('tipoPropiedad')
+                                const presp = await ctxFn.state.get('presupuesto')
+                                const zona = await ctxFn.state.get('zona')
+                                const tel = await ctx.from
+                                const description = `Nombre: ${name}, tel: ${tel} || Asunto: le interesa ${tipoProp} en ${localidad}, zona: ${zona} y tiene un presupuesto de ${presp}` 
+                                const date = new Date()
+                                date.setHours(date.getHours() + 1)
+                                const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
+                                await cargarIntencionUser(tel,tipoProp,'null',presp,localidad + ' ' + zona,'Venta')
+                                await ctxFn.state.update({intention:undefined})
+                                stop(ctx);
+                                await ctxFn.state.update({timer:undefined})}
+                            
+                        )
+                        /*
                         .addAction(async (ctx,ctxFn) => {
                             const eventName = "Potencial Venta"
                             const name = await ctxFn.state.get('cliente')
@@ -60,7 +82,7 @@ const afirmativeFlow = addKeyword('Sí')
                             stop(ctx);
                             await ctxFn.state.update({timer:undefined})
                             ctxFn.flowDynamic(`¡Genial! 🤗 Un agente se contactará a la brevedad para brindarte una asesoría personalizada. Para volver al menú principal escribe *menu*.`)
-                        })
+                        })*/
                         
                         
 
