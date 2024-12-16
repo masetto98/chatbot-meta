@@ -253,10 +253,10 @@ async function descargarYLeerConfigExcel(): Promise<Config> {
     return config;
   }
 
-async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,tel:string){
+async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,zona:string,tel:string){
         try{
-          const values = [[tel, tipoProp, caracte,presup]];
-          const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney) values ?';
+          const values = [[tel, tipoProp, caracte,presup,zona,'Alquiler']];
+          const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType) values ?';
           await pool.query(sql, [values]);  
         }
         catch(err){

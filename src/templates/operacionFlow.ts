@@ -124,15 +124,16 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({modelo:undefined})
           return ctxFn.gotoFlow(agenteFlow)
         }
-        const patron3 = /{{tipoPropiedad: (.*)}},{{caracteristica: (.*)}},{{presupuesto: (.*)}},{{INTENCION}}/;
+        const patron3 = /{{tipoPropiedad: (.*)}},{{caracteristica: (.*)}},{{presupuesto: (.*)}},{{zona: (.*)}},{{INTENCION}}/;
         const coincidencia3 = patron3.exec(resp);
         if(coincidencia3){
           
           const tipoProp = coincidencia3[1]
           const caracteristica = coincidencia3[2]
           const presupuesto = coincidencia3[3]
+          const zona = coincidencia3[4]
           const tel = ctx.from
-          cargarIntencionUser(tipoProp,caracteristica,presupuesto,tel)
+          cargarIntencionUser(tipoProp,caracteristica,presupuesto,zona,tel)
 
           resp = resp.replace(patron3, '').trimStart();
           /*
