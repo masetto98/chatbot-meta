@@ -133,7 +133,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           const presupuesto = coincidencia3[3]
           const zona = coincidencia3[4]
           const tel = ctx.from
-          cargarIntencionUser(tipoProp,caracteristica,presupuesto,zona,tel)
+          cargarIntencionUser(tipoProp,caracteristica,presupuesto,zona,'Alquiler',tel)
 
           resp = resp.replace(patron3, '').trimStart();
           /*

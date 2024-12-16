@@ -2,32 +2,41 @@ import { addKeyword,EVENTS } from "@builderbot/bot"
 import { stop } from "utils/idle-custom";
 import { createEvent } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow";
+import { cargarIntencionUser } from "utils/utils";
 
 
 const afirmativeFlow = addKeyword('Sí')
-                        .addAnswer('🙌 Antes de agendar la reunión, queremos conocer algunos detalles...')
-                        .addAnswer('¿En qué localidad estas interesado comprar?',{
-                            capture:true,
-                            delay:2000,
-                        },
-                        async (ctx,ctxFn) => {
-                            await ctxFn.state.update({localidad:ctx.body})
-                        })
-                        .addAnswer('¿Qué tipo de propiedad estás buscando?',{
+                        .addAnswer('🙌 Antes de agendar la reunión, nos gustaría conocer algunos detalles...')
+                        .addAnswer('Por favor, la respuesta ante cada pregunta en *un mismo mensaje*.')
+                        .addAnswer('🏡¿Qué tipo de propiedad estás buscando?',{
                             capture:true,
                             delay:2000,
                         },
                         async (ctx,ctxFn) => {
                             await ctxFn.state.update({tipoPropiedad:ctx.body})
                         })
-                        .addAnswer('¿Tenés algun presupuesto en mente?',{
+                        .addAnswer('📍¿En qué localidad estas interesado comprar?',{
+                            capture:true,
+                            delay:2000,
+                        },
+                        async (ctx,ctxFn) => {
+                            await ctxFn.state.update({localidad:ctx.body})
+                        })
+                        .addAnswer('😄 Perfecto ¿Te interesa alguna zona o barrio en particular?',{
+                            capture:true,
+                            delay:2000,
+                        },
+                        async (ctx,ctxFn) => {
+                            await ctxFn.state.update({zona:ctx.body})
+                        })
+                        .addAnswer('💰¿Tenés algun presupuesto en mente?',{
                             capture:true,
                             delay:2000,
                         },
                         async (ctx,ctxFn) => {
                             await ctxFn.state.update({presupuesto:ctx.body})
                         })
-                        .addAnswer('Por último, indicame tu nombre y apellido',{
+                        .addAnswer('Por último, indicame en un solo mensaje tu nombre y apellido..',{
                             capture:true,
                             delay:2000,
                         },
@@ -40,14 +49,16 @@ const afirmativeFlow = addKeyword('Sí')
                             const localidad = await ctxFn.state.get('localidad')
                             const tipoProp = await ctxFn.state.get('tipoPropiedad')
                             const presp = await ctxFn.state.get('presupuesto')
-                            const description = `Nombre: ${name}, tel: ${ctx.from}, asunto: le interesa ${tipoProp} en ${localidad} y tiene un presupuesto de ${presp}` 
+                            const zona = await ctxFn.state.get('zona')
+                            const description = `Nombre: ${name}, tel: ${ctx.from} || Asunto: le interesa ${tipoProp} en ${localidad}, zona: ${zona} y tiene un presupuesto de ${presp}` 
                             const date = new Date()
                             date.setHours(date.getHours() + 1)
                             const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
+                            cargarIntencionUser(ctx.from,tipoProp,null,presp,localidad + ' ' + zona,'Venta')
                             await ctxFn.state.update({intention:undefined})
                             stop(ctx);
                             await ctxFn.state.update({timer:undefined})
-                            ctxFn.flowDynamic(`¡Genial! 🤗 Un agente se contactará a la brevedad. Para volver al menú principal escribe *menu*.`)
+                            ctxFn.flowDynamic(`¡Genial! 🤗 Un agente se contactará a la brevedad para brindarte una asesoría personalizada. Para volver al menú principal escribe *menu*.`)
                         })
                         
                         
