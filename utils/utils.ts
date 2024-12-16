@@ -255,6 +255,7 @@ async function descargarYLeerConfigExcel(): Promise<Config> {
 
 async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,zona:string,tipoOp:string,tel:string){
         try{
+          
           const values = [[tel, tipoProp, caracte,presup,zona,tipoOp]];
           const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType) values ?';
           await pool.query(sql, [values]);  

@@ -58,7 +58,7 @@ const afirmativeFlow = addKeyword('Sí')
                                 const date = new Date()
                                 date.setHours(date.getHours() + 1)
                                 const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
-                                await cargarIntencionUser(tel,tipoProp,'null',presp,localidad + ' ' + zona,'Venta')
+                                await cargarIntencionUser(tipoProp,'null',presp,localidad + ' ' + zona,'Venta',tel)
                                 await ctxFn.state.update({intention:undefined})
                                 stop(ctx);
                                 await ctxFn.state.update({timer:undefined})}
