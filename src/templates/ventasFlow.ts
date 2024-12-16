@@ -50,11 +50,12 @@ const afirmativeFlow = addKeyword('Sí')
                             const tipoProp = await ctxFn.state.get('tipoPropiedad')
                             const presp = await ctxFn.state.get('presupuesto')
                             const zona = await ctxFn.state.get('zona')
-                            const description = `Nombre: ${name}, tel: ${ctx.from} || Asunto: le interesa ${tipoProp} en ${localidad}, zona: ${zona} y tiene un presupuesto de ${presp}` 
+                            const tel = await ctx.from
+                            const description = `Nombre: ${name}, tel: ${tel} || Asunto: le interesa ${tipoProp} en ${localidad}, zona: ${zona} y tiene un presupuesto de ${presp}` 
                             const date = new Date()
                             date.setHours(date.getHours() + 1)
                             const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
-                            cargarIntencionUser(ctx.from,tipoProp,null,presp,localidad + ' ' + zona,'Venta')
+                            await cargarIntencionUser(tel,tipoProp,'null',presp,localidad + ' ' + zona,'Venta')
                             await ctxFn.state.update({intention:undefined})
                             stop(ctx);
                             await ctxFn.state.update({timer:undefined})
