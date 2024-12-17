@@ -4,7 +4,7 @@ import { createEvent } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow";
 import { cargarIntencionUser } from "utils/utils";
 
-const quintoFlow = addKeyword(['-30000','-30000+80000','+80000','0'])
+const quintoFlow = addKeyword(['-30000 USD','-30000 +80000 USD','+80000 USD','0 USD'])
                     .addAction(async (ctx,ctxFn) => {
                         await ctxFn.state.update({presupuesto:ctx.body})
 
@@ -40,59 +40,17 @@ const quintoFlow = addKeyword(['-30000','-30000+80000','+80000','0'])
 
 const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3 Dormitorios','4 Dormitorios'])
                     .addAnswer('💰¿Tenés algun presupuesto en mente?',{
-                        capture:false,
                         delay:1000,
+                        capture:true,
+                        buttons: [
+                            {body:'-30000 USD'},
+                            {body:'-30000 +80000 USD'},
+                            {body:'+80000 USD'},
+                            {body:'0 USD'},
+                        ],
                     },
                     async (ctx,ctxFn) => {
-                        const list = {
-                            "header": {
-                                "type": "text",
-                                "text": ""
-                            },
-                            "body": {
-                                "text":"Elegí una de las opciones del menú."
-                            },
-                            "footer": {
-                                "text": ""
-                            },
-                            "action":{
-                                "button":"Presupuesto",
-                                "sections": [
-                                    {
-                                        "title": "Presupuesto estimado",
-                                        "rows": [
-                                            {
-                                                "id":"-30000",
-                                                "title":"-30.000 USD",
-                                                "description": ""
-                                            },
-                                            {
-                                                "id":"-30000+80000",
-                                                "title":"+30.000 USD a -80.000 USD",
-                                                "description": ""
-                                            }
-                                            ,
-                                            {
-                                                "id":"+80000",
-                                                "title":"+80.000 USD",
-                                                "description": ""
-                                            }
-                                            ,
-                                            {
-                                                "id":"0",
-                                                "title":"0 USD",
-                                                "description": "Sin presupuesto"
-                                            }
-                                        
-                                            
-                                        ]
-                                    }
-                                    
-                                        
-                                ]
-                            }
-                        }
-                        await ctxFn.provider.sendList(ctx.from,list)
+                        
                         await ctxFn.state.update({caracteristica:ctx.body})
                     },[quintoFlow])
                     
