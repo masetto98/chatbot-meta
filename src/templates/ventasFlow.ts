@@ -80,6 +80,12 @@ const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3
                                                 "title":"+80.000 USD",
                                                 "description": ""
                                             }
+                                            ,
+                                            {
+                                                "id":"0",
+                                                "title":"0 USD",
+                                                "description": "Sin presupuesto"
+                                            }
                                         
                                             
                                         ]
