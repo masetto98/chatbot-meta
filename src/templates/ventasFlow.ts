@@ -62,7 +62,7 @@ const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3
 
 
 const tercerFlow = addKeyword(['Rosario','Roldan','Alvear','General Lagos','Ibarlucea','Villa Amelia','Pueblo Esther','Arroyo Seco','San Lorenzo'])
-                    .addAnswer('Por favor, elegí la cantidad de dormitorios. Si no corresponde elegí la opcioón *0*',{
+                    .addAnswer('🧮¿Cuantos dormitorios te interesan? Si no corresponde elegí la opción *0*',{
                         capture:false,
                         delay:2000,
                     },
