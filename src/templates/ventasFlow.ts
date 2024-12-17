@@ -126,7 +126,7 @@ const tercerFlow = addKeyword(['Rosario','Roldan','Alvear','General Lagos','Ibar
                         await ctxFn.provider.sendList(ctx.from,list)
                         await ctxFn.state.update({localidad:ctx.body})
                         //await ctxFn.state.update({caracteristica:ctx.body})
-                    })
+                    },[cuartoFlow])
 const segundoFlow = addKeyword(['Departamento','Casa','Pasillo','Local','Oficina','Terreno','Cochera'])
                     .addAnswer('📍¿En qué localidad estas interesado comprar?',{
                         capture:false,
@@ -213,8 +213,8 @@ const segundoFlow = addKeyword(['Departamento','Casa','Pasillo','Local','Oficina
                         await ctxFn.provider.sendList(ctx.from,list)
                         await ctxFn.state.update({tipoPropiedad:ctx.body})
                         //await ctxFn.state.update({localidad:ctx.body})
-                    })
-const afirmativeFlow = addKeyword('Sí')
+                    },[tercerFlow])
+const afirmativeVtaFlow = addKeyword('Sí')
                         .addAnswer('🙌 Antes de agendar la reunión, nos gustaría conocer algunos detalles...')
                         .addAnswer('🏡¿Qué tipo de propiedad estás buscando?',{
                             capture:false,
@@ -288,14 +288,14 @@ const afirmativeFlow = addKeyword('Sí')
                             }
                             await ctxFn.provider.sendList(ctx.from,list)
                             //await ctxFn.state.update({tipoPropiedad:ctx.body})
-                        })
+                        },[segundoFlow])
                         
                         
                         
                         
 
 
-const negativeFlow = addKeyword('No').addAction(async(ctx,ctxFn) => {
+const negativeVtaFlow = addKeyword('No').addAction(async(ctx,ctxFn) => {
     return ctxFn.gotoFlow(welcomeFlow)
 })
 
@@ -310,10 +310,10 @@ const ventasFlow = addKeyword(EVENTS.ACTION)
             {body:'No'},
         ],
         delay:2000,
-    },null,[afirmativeFlow,negativeFlow])
+    },null,[afirmativeVtaFlow,negativeVtaFlow])
     
 
-export {ventasFlow,segundoFlow,tercerFlow,cuartoFlow}
+export {ventasFlow,afirmativeVtaFlow}
 
 
 

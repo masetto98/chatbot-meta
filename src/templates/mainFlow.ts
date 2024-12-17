@@ -16,9 +16,7 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
                 start(ctx, gotoFlow, 3600000)
                 await state.update({timer:'active'})
             }
-            console.log(ctx.ref)
-            console.log(ctx.keyword)
-            console.log(ctx.refSerialize)
+            
             const intention = (state.getMyState()?.intention ?? String)
             console.log(intention)
             switch(ctx.body){
