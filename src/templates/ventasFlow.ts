@@ -6,6 +6,9 @@ import { cargarIntencionUser } from "utils/utils";
 
 
 const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3 Dormitorios','4 Dormitorios'])
+                    .addAction(async (ctx,ctxFn) => {
+                        await ctxFn.state.update({caracteristica:ctx.body})
+                    })
                     .addAnswer('💰¿Tenés algun presupuesto en mente?',{
                         capture:true,
                         delay:2000,
@@ -23,7 +26,6 @@ const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3
                     .addAnswer(`¡Genial! 🤗 Un agente se contactará a la brevedad para brindarte una asesoría personalizada. Para volver al menú principal escribe *menu*.`,
                         {delay:2000},
                         async (ctx,ctxFn) => {
-                            await ctxFn.state.update({caracteristica:ctx.body})
                             const eventName = "Potencial Venta"
                             const name = await ctxFn.state.get('cliente')
                             const localidad = await ctxFn.state.get('localidad')
