@@ -213,7 +213,7 @@ const segundoFlow = addKeyword(['Departamento','Casa','Pasillo','Local','Oficina
                         await ctxFn.provider.sendList(ctx.from,list)
                         await ctxFn.state.update({tipoPropiedad:ctx.body})
                         //await ctxFn.state.update({localidad:ctx.body})
-                    },[tercerFlow])
+                    },[cuartoFlow,tercerFlow])
 const afirmativeVtaFlow = addKeyword('Sí')
                         .addAnswer('🙌 Antes de agendar la reunión, nos gustaría conocer algunos detalles...')
                         .addAnswer('🏡¿Qué tipo de propiedad estás buscando?',{
@@ -288,7 +288,7 @@ const afirmativeVtaFlow = addKeyword('Sí')
                             }
                             await ctxFn.provider.sendList(ctx.from,list)
                             //await ctxFn.state.update({tipoPropiedad:ctx.body})
-                        },[segundoFlow])
+                        },[segundoFlow,cuartoFlow,tercerFlow,segundoFlow])
                         
                         
                         
@@ -310,10 +310,10 @@ const ventasFlow = addKeyword(EVENTS.ACTION)
             {body:'No'},
         ],
         delay:2000,
-    },null,[afirmativeVtaFlow,negativeVtaFlow])
+    },null,[afirmativeVtaFlow,negativeVtaFlow,cuartoFlow,tercerFlow,segundoFlow])
     
 
-export {ventasFlow,afirmativeVtaFlow,cuartoFlow}
+export {ventasFlow,afirmativeVtaFlow}
 
 
 

@@ -4,7 +4,7 @@ import { operacionFlow } from "./operacionFlow";
 import { faqFlow, finFlow } from "./faqFlow";
 import { welcomeFlow } from "./welcomeFlow";
 import { agendarFlow, visitaFlow,changeEvent,negativeChangeEvent } from "./agendarFlow";
-import { afirmativeVtaFlow, cuartoFlow, ventasFlow } from "./ventasFlow";
+import { ventasFlow } from "./ventasFlow";
 import { backtoMenuFlow } from "./backtoMenuFlow";
 import { desarrolloFlow } from "./desarrolloFlow";
 import { tasacionFlow } from "./tasacionFlow";
@@ -32,6 +32,6 @@ import { idleFlow } from "utils/idle-custom";
       changeEventAlquiler,
       negativeChangeEventAlq,
       idleFlow,
-      afirmativeVtaFlow,
-      cuartoFlow,
+      
+      
  ]);
