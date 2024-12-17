@@ -16,7 +16,7 @@ const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3
                     async (ctx,ctxFn) => {
                         await ctxFn.state.update({presupuesto:ctx.body})
                     })
-                    .addAnswer('Por último, indicame en un solo mensaje tu nombre y apellido..',{
+                    .addAnswer('Por último, indicame en *un solo mensaje* tu nombre y apellido..',{
                         capture:true,
                         delay:2000,
                     },
