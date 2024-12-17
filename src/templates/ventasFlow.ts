@@ -9,7 +9,7 @@ const afirmativeFlow = addKeyword('Sí')
                         .addAnswer('🙌 Antes de agendar la reunión, nos gustaría conocer algunos detalles...')
                         .addAnswer('Por favor, la respuesta ante cada pregunta en *un mismo mensaje*.')
                         .addAnswer('🏡¿Qué tipo de propiedad estás buscando?',{
-                            capture:true,
+                            capture:false,
                             delay:2000,
                         },
                         async (ctx,ctxFn) => {
@@ -82,7 +82,7 @@ const afirmativeFlow = addKeyword('Sí')
                             await ctxFn.state.update({tipoPropiedad:ctx.body})
                         })
                         .addAnswer('📍¿En qué localidad estas interesado comprar?',{
-                            capture:true,
+                            capture:false,
                             delay:2000,
                         },
                         async (ctx,ctxFn) => {
@@ -167,7 +167,7 @@ const afirmativeFlow = addKeyword('Sí')
                             await ctxFn.state.update({localidad:ctx.body})
                         })
                         .addAnswer('Por favor, elegí la cantidad de dormitorios. Si no corresponde elegí la opcioón *0*',{
-                            capture:true,
+                            capture:false,
                             delay:2000,
                         },
                         async (ctx,ctxFn) => {
