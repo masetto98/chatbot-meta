@@ -166,7 +166,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
         console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
         console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
-        
+        const values = [[ctx.ref, ctx.keyword, ctx.answer, ctx.refSerialize, ctx.from]];
+        console.log(values)
     }
   )
 
