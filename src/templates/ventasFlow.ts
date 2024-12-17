@@ -39,9 +39,6 @@ const quintoFlow = addKeyword('')
                     )
 
 const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3 Dormitorios','4 Dormitorios'])
-                    .addAction(async (ctx,ctxFn) => {
-                        await ctxFn.state.update({caracteristica:ctx.body})
-                    })
                     .addAnswer('💰¿Tenés algun presupuesto en mente?',{
                         capture:false,
                         delay:2000,
