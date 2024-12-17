@@ -33,11 +33,12 @@ const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3
                             const presp = await ctxFn.state.get('presupuesto')
                             const caracteristica = await ctxFn.state.get('caracteristica')
                             const tel = await ctx.from
+                            const sessionID = await ctxFn.state.get('sessionId');
                             const description = `Nombre: ${name}, tel: ${tel} || Asunto: le interesa ${tipoProp} de ${caracteristica} en ${localidad} y tiene un presupuesto de ${presp}` 
                             const date = new Date()
                             date.setHours(date.getHours() + 1)
                             const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
-                            await cargarIntencionUser(tipoProp,caracteristica,presp,localidad,'Venta',tel)
+                            await cargarIntencionUser(tipoProp,caracteristica,presp,localidad,'Venta',tel,sessionID)
                             await ctxFn.state.update({intention:undefined})
                             stop(ctx);
                             await ctxFn.state.update({timer:undefined})}

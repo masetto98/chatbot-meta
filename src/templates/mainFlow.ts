@@ -7,10 +7,18 @@ import { ventasFlow } from "./ventasFlow";
 import { desarrolloFlow } from "./desarrolloFlow";
 import { tasacionFlow } from "./tasacionFlow";
 import { reset,start } from "utils/idle-custom";
+import { iniciarSesion } from "utils/utils";
+
 
 const mainFlow = addKeyword(EVENTS.WELCOME)
     .addAction(
         async (ctx,{gotoFlow,state}) => {
+            
+            let sessionIdNew = await state.get('sessionId');
+            if(!sessionIdNew){
+                sessionIdNew = await iniciarSesion();
+                await state.update({sessionId:sessionIdNew})
+            }
             let timer = await state.get('timer');
             if(!timer){
                 start(ctx, gotoFlow, 3600000)

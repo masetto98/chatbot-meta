@@ -9,7 +9,7 @@ import { join } from 'path'; // Útil para manejar rutas de archivos
 import axios from "axios";
 import { pool } from "~/db"
 import { RowDataPacket } from "mysql2/promise";
-
+import { v4 as uuidv4 } from 'uuid'; // Para generar IDs únicos
 
 
 
@@ -253,17 +253,36 @@ async function descargarYLeerConfigExcel(): Promise<Config> {
     return config;
   }
 
-async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,zona:string,tipoOp:string,tel:string){
+async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,zona:string,tipoOp:string,tel:string,sessionID:string){
         try{
           
-          const values = [[tel, tipoProp, caracte,presup,zona,tipoOp]];
-          const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType) values ?';
+          const values = [[tel, tipoProp, caracte,presup,zona,tipoOp,sessionID]];
+          const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType,sessionId) values ?';
           await pool.query(sql, [values]);  
         }
         catch(err){
           console.error('Error al cargar intencion del usuario:', err);
         }
 }
-
-
-export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel,cargarIntencionUser}
+// inicializar un nuevo sesiónID
+async function iniciarSesion(): Promise<string> {
+  let sessionId = uuidv4();
+  while (await sessionIdExiste(sessionId)) {
+    sessionId = uuidv4(); // Generar uno nuevo si ya existe
+  }
+  return sessionId;
+  /*
+  const sessionId = uuidv4(); // Genera un ID único para la sesión
+  console.log(`Sesión iniciada con ID: ${sessionId}`);
+  return sessionId;*/
+}
+// veerifico si el sessionID ya existe
+async function sessionIdExiste(sessionId: string): Promise<boolean> {
+  const [rows] = await pool.query(
+    'SELECT COUNT(*) AS count FROM interations WHERE sessionId = ?',
+    [sessionId]
+  );
+  const result = rows as Array<{ count: number }>;
+  return result[0].count > 0;
+}
+export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel,cargarIntencionUser,iniciarSesion,sessionIdExiste}

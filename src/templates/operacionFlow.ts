@@ -133,7 +133,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           const presupuesto = coincidencia3[3]
           const zona = coincidencia3[4]
           const tel = ctx.from
-          cargarIntencionUser(tipoProp,caracteristica,presupuesto,zona,'Alquiler',tel)
+          const sessionID = await ctxFn.state.get('sessionId');
+          cargarIntencionUser(tipoProp,caracteristica,presupuesto,zona,'Alquiler',tel,sessionID)
 
           resp = resp.replace(patron3, '').trimStart();
           /*
@@ -166,8 +167,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
         console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
         console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
-        const values = [[ctx.ref, ctx.keyword, ctx.answer, ctx.refSerialize, ctx.from]];
-        console.log(values)
+        
     }
   )
 
