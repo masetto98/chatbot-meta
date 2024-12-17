@@ -4,17 +4,10 @@ import { createEvent } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow";
 import { cargarIntencionUser } from "utils/utils";
 
-
-const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3 Dormitorios','4 Dormitorios'])
+const quintoFlow = addKeyword('')
                     .addAction(async (ctx,ctxFn) => {
-                        await ctxFn.state.update({caracteristica:ctx.body})
-                    })
-                    .addAnswer('💰¿Tenés algun presupuesto en mente?',{
-                        capture:true,
-                        delay:2000,
-                    },
-                    async (ctx,ctxFn) => {
                         await ctxFn.state.update({presupuesto:ctx.body})
+
                     })
                     .addAnswer('Por último, indicame en *un solo mensaje* tu nombre y apellido..',{
                         capture:true,
@@ -44,25 +37,62 @@ const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3
                             await ctxFn.state.update({timer:undefined})}
                         
                     )
-                    /*
+
+const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3 Dormitorios','4 Dormitorios'])
                     .addAction(async (ctx,ctxFn) => {
-                        const eventName = "Potencial Venta"
-                        const name = await ctxFn.state.get('cliente')
-                        const localidad = await ctxFn.state.get('localidad')
-                        const tipoProp = await ctxFn.state.get('tipoPropiedad')
-                        const presp = await ctxFn.state.get('presupuesto')
-                        const zona = await ctxFn.state.get('zona')
-                        const tel = await ctx.from
-                        const description = `Nombre: ${name}, tel: ${tel} || Asunto: le interesa ${tipoProp} en ${localidad}, zona: ${zona} y tiene un presupuesto de ${presp}` 
-                        const date = new Date()
-                        date.setHours(date.getHours() + 1)
-                        const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
-                        await cargarIntencionUser(tel,tipoProp,'null',presp,localidad + ' ' + zona,'Venta')
-                        await ctxFn.state.update({intention:undefined})
-                        stop(ctx);
-                        await ctxFn.state.update({timer:undefined})
-                        ctxFn.flowDynamic(`¡Genial! 🤗 Un agente se contactará a la brevedad para brindarte una asesoría personalizada. Para volver al menú principal escribe *menu*.`)
-                    })*/
+                        await ctxFn.state.update({caracteristica:ctx.body})
+                    })
+                    .addAnswer('💰¿Tenés algun presupuesto en mente?',{
+                        capture:false,
+                        delay:2000,
+                    },
+                    async (ctx,ctxFn) => {
+                        const list = {
+                            "header": {
+                                "type": "text",
+                                "text": ""
+                            },
+                            "body": {
+                                "text":"Elegí una de las opciones del menú."
+                            },
+                            "footer": {
+                                "text": ""
+                            },
+                            "action":{
+                                "button":"Presupuesto",
+                                "sections": [
+                                    {
+                                        "title": "Presupuesto estimado",
+                                        "rows": [
+                                            {
+                                                "id":"-30000",
+                                                "title":"-30.000 USD",
+                                                "description": ""
+                                            },
+                                            {
+                                                "id":"-30000+80000",
+                                                "title":"+30.000 USD a -80.000 USD",
+                                                "description": ""
+                                            }
+                                            ,
+                                            {
+                                                "id":"+80000",
+                                                "title":"+80.000 USD",
+                                                "description": ""
+                                            }
+                                        
+                                            
+                                        ]
+                                    }
+                                    
+                                        
+                                ]
+                            }
+                        }
+                        await ctxFn.provider.sendList(ctx.from,list)
+                        await ctxFn.state.update({caracteristica:ctx.body})
+                    },[quintoFlow])
+                    
 
 
 const tercerFlow = addKeyword(['Rosario','Roldan','Alvear','General Lagos','Ibarlucea','Villa Amelia','Pueblo Esther','Arroyo Seco','San Lorenzo'])
@@ -127,7 +157,7 @@ const tercerFlow = addKeyword(['Rosario','Roldan','Alvear','General Lagos','Ibar
                         await ctxFn.provider.sendList(ctx.from,list)
                         await ctxFn.state.update({localidad:ctx.body})
                         //await ctxFn.state.update({caracteristica:ctx.body})
-                    },[cuartoFlow])
+                    },[cuartoFlow,quintoFlow])
 const segundoFlow = addKeyword(['Departamento','Casa','Pasillo','Local','Oficina','Terreno','Cochera'])
                     .addAnswer('📍¿En qué localidad estas interesado comprar?',{
                         capture:false,
@@ -214,7 +244,7 @@ const segundoFlow = addKeyword(['Departamento','Casa','Pasillo','Local','Oficina
                         await ctxFn.provider.sendList(ctx.from,list)
                         await ctxFn.state.update({tipoPropiedad:ctx.body})
                         //await ctxFn.state.update({localidad:ctx.body})
-                    },[cuartoFlow,tercerFlow])
+                    },[cuartoFlow,tercerFlow,quintoFlow])
 const afirmativeVtaFlow = addKeyword('Sí')
                         .addAnswer('🙌 Antes de agendar la reunión, nos gustaría conocer algunos detalles...')
                         .addAnswer('🏡¿Qué tipo de propiedad estás buscando?',{
@@ -289,7 +319,7 @@ const afirmativeVtaFlow = addKeyword('Sí')
                             }
                             await ctxFn.provider.sendList(ctx.from,list)
                             //await ctxFn.state.update({tipoPropiedad:ctx.body})
-                        },[segundoFlow,cuartoFlow,tercerFlow,segundoFlow])
+                        },[segundoFlow,cuartoFlow,tercerFlow,segundoFlow,quintoFlow])
                         
                         
                         
@@ -311,7 +341,7 @@ const ventasFlow = addKeyword(EVENTS.ACTION)
             {body:'No'},
         ],
         delay:2000,
-    },null,[afirmativeVtaFlow,negativeVtaFlow,cuartoFlow,tercerFlow,segundoFlow])
+    },null,[afirmativeVtaFlow,negativeVtaFlow,cuartoFlow,tercerFlow,segundoFlow,quintoFlow])
     
 
 export {ventasFlow}
