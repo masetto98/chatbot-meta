@@ -23,6 +23,7 @@ const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3
                     .addAnswer(`¡Genial! 🤗 Un agente se contactará a la brevedad para brindarte una asesoría personalizada. Para volver al menú principal escribe *menu*.`,
                         {delay:2000},
                         async (ctx,ctxFn) => {
+                            await ctxFn.state.update({caracteristica:ctx.body})
                             const eventName = "Potencial Venta"
                             const name = await ctxFn.state.get('cliente')
                             const localidad = await ctxFn.state.get('localidad')
@@ -121,7 +122,8 @@ const tercerFlow = addKeyword(['Rosario','Roldan','Alvear','General Lagos','Ibar
                             }
                         }
                         await ctxFn.provider.sendList(ctx.from,list)
-                        await ctxFn.state.update({caracteristica:ctx.body})
+                        await ctxFn.state.update({localidad:ctx.body})
+                        //await ctxFn.state.update({caracteristica:ctx.body})
                     })
 const segundoFlow = addKeyword(['Departamento','Casa','Pasillo','Local','Oficina','Terreno','Cochera'])
                     .addAnswer('📍¿En qué localidad estas interesado comprar?',{
@@ -207,7 +209,8 @@ const segundoFlow = addKeyword(['Departamento','Casa','Pasillo','Local','Oficina
                             }
                         }
                         await ctxFn.provider.sendList(ctx.from,list)
-                        await ctxFn.state.update({localidad:ctx.body})
+                        await ctxFn.state.update({tipoPropiedad:ctx.body})
+                        //await ctxFn.state.update({localidad:ctx.body})
                     })
 const afirmativeFlow = addKeyword('Sí')
                         .addAnswer('🙌 Antes de agendar la reunión, nos gustaría conocer algunos detalles...')
@@ -282,7 +285,7 @@ const afirmativeFlow = addKeyword('Sí')
                                 }
                             }
                             await ctxFn.provider.sendList(ctx.from,list)
-                            await ctxFn.state.update({tipoPropiedad:ctx.body})
+                            //await ctxFn.state.update({tipoPropiedad:ctx.body})
                         })
                         
                         
