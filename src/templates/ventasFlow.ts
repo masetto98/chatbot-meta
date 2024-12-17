@@ -313,7 +313,7 @@ const ventasFlow = addKeyword(EVENTS.ACTION)
     },null,[afirmativeVtaFlow,negativeVtaFlow,cuartoFlow,tercerFlow,segundoFlow])
     
 
-export {ventasFlow,afirmativeVtaFlow}
+export {ventasFlow}
 
 
 
