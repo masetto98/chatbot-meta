@@ -4,7 +4,7 @@ import { createEvent } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow";
 import { cargarIntencionUser } from "utils/utils";
 
-const quintoFlow = addKeyword('')
+const quintoFlow = addKeyword(['-30000','-30000+80000','+80000','0'])
                     .addAction(async (ctx,ctxFn) => {
                         await ctxFn.state.update({presupuesto:ctx.body})
 
@@ -41,7 +41,7 @@ const quintoFlow = addKeyword('')
 const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3 Dormitorios','4 Dormitorios'])
                     .addAnswer('💰¿Tenés algun presupuesto en mente?',{
                         capture:false,
-                        delay:2000,
+                        delay:1000,
                     },
                     async (ctx,ctxFn) => {
                         const list = {
