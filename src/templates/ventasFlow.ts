@@ -7,7 +7,6 @@ import { cargarIntencionUser } from "utils/utils";
 
 const afirmativeFlow = addKeyword('Sí')
                         .addAnswer('🙌 Antes de agendar la reunión, nos gustaría conocer algunos detalles...')
-                        .addAnswer('Por favor, la respuesta ante cada pregunta en *un mismo mensaje*.')
                         .addAnswer('🏡¿Qué tipo de propiedad estás buscando?',{
                             capture:false,
                             delay:2000,
