@@ -4,7 +4,7 @@ import { createEvent } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow";
 import { cargarIntencionUser } from "utils/utils";
 
-const quintoFlow = addKeyword(['-30000 USD','-30000 +80000 USD','+80000 USD','0 USD'])
+const quintoFlow = addKeyword(['Hasta 30000','Entre 30000 y 80000','Mas de 80000','0'])
                     .addAction(async (ctx,ctxFn) => {
                         await ctxFn.state.update({presupuesto:ctx.body})
 
@@ -40,17 +40,59 @@ const quintoFlow = addKeyword(['-30000 USD','-30000 +80000 USD','+80000 USD','0 
 
 const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3 Dormitorios','4 Dormitorios'])
                     .addAnswer('💰¿Tenés algun presupuesto en mente?',{
-                        delay:1000,
-                        capture:true,
-                        buttons: [
-                            {body:'-30000 USD'},
-                            {body:'-30000 +80000 USD'},
-                            {body:'+80000 USD'},
-                            {body:'0 USD'},
-                        ],
+                        delay:3000,
+                        capture:false,
+                        
                     },
                     async (ctx,ctxFn) => {
-                        
+                        const list = {
+                            "header": {
+                                "type": "text",
+                                "text": ""
+                            },
+                            "body": {
+                                "text":"Elegí una de las opciones del menú."
+                            },
+                            "footer": {
+                                "text": ""
+                            },
+                            "action":{
+                                "button":"Presupuesto",
+                                "sections": [
+                                    {
+                                        "title": "Presupuesto",
+                                        "rows": [
+                                            {
+                                                "id":"Hasta 30000",
+                                                "title":"Hasta 30000",
+                                                "description": ""
+                                            },
+                                            {
+                                                "id":"Entre 30000 y 80000",
+                                                "title":"Entre 30000 y 80000",
+                                                "description": ""
+                                            }
+                                            ,
+                                            {
+                                                "id":"Mas de 80000",
+                                                "title":"Mas de 80000",
+                                                "description": ""
+                                            }
+                                            ,
+                                            {
+                                                "id":"0",
+                                                "title":"Sin presupuesto",
+                                                "description": ""
+                                            }
+   
+                                        ]
+                                    }
+                                    
+                                        
+                                ]
+                            }
+                        }
+                        await ctxFn.provider.sendList(ctx.from,list)
                         await ctxFn.state.update({caracteristica:ctx.body})
                     },[quintoFlow])
                     
