@@ -10,6 +10,12 @@ const backtoMenuFlow = addKeyword(['menu','principal','volver','menu principal',
                             await ctxFn.state.update({modelo:undefined})
                             stop(ctx);
                             await ctxFn.state.update({timer:undefined})
+                            const sessionID = await ctxFn.state.get('sessionId')
+                            console.log(sessionID)
+                            ctxFn.state.clear()
+                            const sessionID2 = await ctxFn.state.get('sessionId')
+                            console.log(sessionID2)
+                            
                             return ctxFn.gotoFlow(welcomeFlow)
                         })
 
