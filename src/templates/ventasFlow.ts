@@ -34,7 +34,11 @@ const quintoFlow = addKeyword(['Hasta 30000','Entre 30000 y 80000','Mas de 80000
                             await cargarIntencionUser(tipoProp,caracteristica,presp,localidad,'Venta',tel,sessionID)
                             await ctxFn.state.update({intention:undefined})
                             stop(ctx);
-                            await ctxFn.state.update({timer:undefined})}
+                            await ctxFn.state.update({timer:undefined})
+                            //finalizo session actual
+                            await ctxFn.state.update({sessionId:undefined})
+                        }
+                            
                         
                     )
 
@@ -336,7 +340,7 @@ const negativeVtaFlow = addKeyword('No').addAction(async(ctx,ctxFn) => {
     
                 
 const ventasFlow = addKeyword(EVENTS.ACTION)
-    .addAnswer('😄 ¡Genial! Estamos para ayudarte a encontrar la propiedad de tus sueños. 🤗 ¿Coordinamos una reunión para conocer más en detalle tus necesidades?'
+    .addAnswer('😄 ¡Genial! Estamos para ayudarte a encontrar la propiedad de tus sueños. ¿Coordinamos una reunión para conocer más en detalle tus necesidades? 🤗'
         ,{
         capture:true,
         buttons: [

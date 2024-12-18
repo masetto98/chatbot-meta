@@ -8,6 +8,7 @@ const timers = {};
 const idleFlow = addKeyword(EVENTS.ACTION).addAction(
     async (_, { endFlow,state }) => {
         await state.update({intention:undefined})
+        state.clear()   
         return endFlow("Pasó el tiempo y voy a tener que cerrar nuestra conversación para seguir ayudando a más personas. De todos modos, cuando me necesites, volvé a escribirme. 🤗");
     }
 );

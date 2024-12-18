@@ -204,6 +204,8 @@ const afirmativeFlow = addKeyword('Sí')
                                 finally {
                                     connection.release();
                                 }
+                                //finalizo session
+                                await ctxFn.state.update({sessionId:undefined})
                                 /*
                                 const eventId = await createEvent(eventName,description,date)
                                 const values = [[ctx.from, name, eventId,dateforMySql,'active']];

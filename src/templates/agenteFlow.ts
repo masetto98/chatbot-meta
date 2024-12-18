@@ -15,6 +15,7 @@ const agenteFlow = addKeyword(EVENTS.ACTION)
                             await ctxFn.state.update({intention:undefined})
                             stop(ctx);
                             await ctxFn.state.update({timer:undefined})
+                            await ctxFn.state.update({sessionId:undefined})
                             ctxFn.flowDynamic(`¡Genial! 🤗 Un agente se contactará a la brevedad. Ante cualquier otra consulta no dudes en escribirme.`)
                         })
                         
