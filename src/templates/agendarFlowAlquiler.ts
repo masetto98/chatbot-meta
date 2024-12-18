@@ -45,7 +45,7 @@ function formatDateInWords(date) {
 
 const afirmative3 = addKeyword('Sí')
                     .addAction(async (ctx,ctxFn) => {
-                        let connection = await pool.getConnection();
+                        
                         try {
                             // Obtén el EventID del estado
                             const EventID = ctxFn.state.get('EventID');
@@ -67,9 +67,7 @@ const afirmative3 = addKeyword('Sí')
                             console.error('Error al procesar la solicitud:', err);
                             return ctxFn.endFlow('Lo siento, ocurrió un problema al cancelar la visita. Por favor, intenta de nuevo más tarde.');
                         }
-                        finally {
-                            connection.release();
-                        }
+                        
                         /*
                         const EventID = ctxFn.state.get('EventID')
                         console.log(EventID)
@@ -90,7 +88,7 @@ const negative3 = addKeyword('No')
 
 const afirmativeChangeEvent = addKeyword('Reagendar')
                                 .addAction(async (ctx,ctxFn) => {
-                                    let connection = await pool.getConnection();
+                                    
                                     try{
                                         const EventID = ctxFn.state.get('EventID')
                                         console.log(EventID)
@@ -103,9 +101,7 @@ const afirmativeChangeEvent = addKeyword('Reagendar')
                                         console.error('Error al procesar la solicitud:', err);
                                         return ctxFn.endFlow('Lo siento, ocurrió un problema al reagendar la visita. Por favor, intenta de nuevo más tarde.');
                                     }
-                                    finally {
-                                        connection.release();
-                                    }
+                                    
                                     /*
                                     const EventID = ctxFn.state.get('EventID')
                                     console.log(EventID)
@@ -158,7 +154,7 @@ const negativeFlow2 = addKeyword('No')
 
 const afirmativeFlow = addKeyword('Sí')
                         .addAction(async (ctx,ctxFn) => {
-                                console.log(ctx.body)
+                                
                                 const name = await ctxFn.state.get('cliente')
                                 const propiedad = await ctxFn.state.get('propiedad')
                                 const tel = await ctxFn.state.get('tel')
@@ -187,11 +183,11 @@ const afirmativeFlow = addKeyword('Sí')
                             
                                 const dateforMySql = formatDateForMySQL(dateFormat)
                                 console.log(dateforMySql)
-                                let connection = await pool.getConnection();
+                                
                                 try{
                                     const eventId = await createEvent(eventName,description,date)
-                                    const values = [[ctx.from, name, eventId,dateforMySql,'active']];
-                                    const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state) values ?';
+                                    const values = [[ctx.from, name, eventId,dateforMySql,'active',propiedad]];
+                                    const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state,linkProperty) values ?';
                                     await pool.query(sql, [values]);    
                                     stop(ctx);
                                     await ctxFn.state.update({timer:undefined})  
@@ -201,9 +197,7 @@ const afirmativeFlow = addKeyword('Sí')
                                     console.error('Error al procesar la solicitud:', err);
                                     return ctxFn.endFlow('Lo siento, ocurrió un problema al agendar la visita. Por favor, intenta de nuevo más tarde.');
                                 }
-                                finally {
-                                    connection.release();
-                                }
+                                
                                 //finalizo session
                                 await ctxFn.state.update({sessionId:undefined})
                                 /*
