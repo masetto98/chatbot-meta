@@ -68,18 +68,18 @@ const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3
                                         "rows": [
                                             {
                                                 "id":"Hasta 30000",
-                                                "title":"Hasta USD 30.000",
+                                                "title":"Hasta USD 30 mil",
                                                 "description": ""
                                             },
                                             {
                                                 "id":"Entre 30000 y 80000",
-                                                "title":"Entre USD 30.000 y 80.000",
+                                                "title":"Entre USD 30 mil y 80 mil",
                                                 "description": ""
                                             }
                                             ,
                                             {
                                                 "id":"Más de 80000",
-                                                "title":"Mas de USD 80.000",
+                                                "title":"Mas de USD 80 mil",
                                                 "description": ""
                                             }
                                             ,
