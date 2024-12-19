@@ -4,7 +4,7 @@ import { createEvent } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow";
 import { cargarIntencionUser } from "utils/utils";
 
-const quintoFlow = addKeyword(['Hasta 30000','Entre 30000 y 80000','Mas de 80000','0'])
+const quintoFlow = addKeyword(['Hasta 30000','Entre 30000 y 80000','Mas 80000','0'])
                     .addAction(async (ctx,ctxFn) => {
                         await ctxFn.state.update({presupuesto:ctx.body})
 
@@ -73,13 +73,13 @@ const cuartoFlow = addKeyword(['0 Dormitorios','1 Dormitorio','2 Dormitorios','3
                                             },
                                             {
                                                 "id":"Entre 30000 y 80000",
-                                                "title":"Entre USD 30 mil y 80 mil",
+                                                "title":"Entre USD 30 y 80 mil",
                                                 "description": ""
                                             }
                                             ,
                                             {
-                                                "id":"Más de 80000",
-                                                "title":"Mas de USD 80 mil",
+                                                "id":"Mas 80000",
+                                                "title":"Mas USD 80 mil",
                                                 "description": ""
                                             }
                                             ,
