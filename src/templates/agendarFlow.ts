@@ -221,7 +221,7 @@ const negativeFlow = addKeyword('No')
 
 
 const availableFlow = addKeyword(EVENTS.ACTION)
-                        .addAnswer(`😄 ¡Tengo disponibilidad para la fecha solicitada! ¿Querés confirmar la visita?`,{
+                        .addAnswer(`😄 ¡Tengo disponibilidad para la fecha/hora solicitada! ¿Querés confirmar la visita?`,{
                         capture:true,
                         buttons: [
                             {body:'Sí'},
@@ -289,7 +289,7 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
                 const nextAvailableslot = await getNextAvailableSlot(startDate)
                 await ctxFn.state.update({nextAvailableslot:nextAvailableslot})
                
-                await ctxFn.flowDynamic(`😅 ¡No tengo disponibilidad para la fecha solicitada! Te parece si lo agendamos para el día: ${formatDateInWords(nextAvailableslot.start)}`)
+                await ctxFn.flowDynamic(`😅 ¡No tengo disponibilidad para la fecha/hora solicitada! Te parece si lo agendamos para el día: ${formatDateInWords(nextAvailableslot.start)}`)
                 //await ctxFn.flowDynamic(`😅 ¡No tengo disponibilidad para la fecha solicitada! Te parece si lo agendamos para el día: ${nextAvailableslot.start.toLocaleString()}`)
                 return await ctxFn.gotoFlow(noavailableFlow)
             }
