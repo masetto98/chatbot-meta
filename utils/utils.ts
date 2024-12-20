@@ -194,10 +194,10 @@ async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
 async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
   try {
     // Establecer la zona horaria
-    await adapterDB.db.query('SET time_zone = "America/Buenos_Aires"');
+    await adapterDB.db.promise().query('SET time_zone = "America/Buenos_Aires"');
 
     // Ejecutar la consulta y convertir el tipo de retorno
-    const result = await adapterDB.db.query('SELECT * FROM visits WHERE phoneNumber = ? AND dateStartEvent >= NOW() AND state = "active"', [phoneNumber]);
+    const result = await adapterDB.db.promise().query('SELECT * FROM visits WHERE phoneNumber = ? AND dateStartEvent >= NOW() AND state = "active"', [phoneNumber]);
 
     // Convertir el resultado a 'unknown' y luego a '[RowDataPacket[], any]'
     const [rows] = result as unknown as [RowDataPacket[], any];
