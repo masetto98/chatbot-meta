@@ -188,7 +188,7 @@ const afirmativeFlow = addKeyword('Sí')
                                     const eventId = await createEvent(eventName,description,date)
                                     const values = [[ctx.from, name, eventId,dateforMySql,'active',propiedad]];
                                     const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state,linkProperty) values ?';
-                                    await adapterDB.db.query(sql, [values]);    
+                                    await adapterDB.db.promise().query(sql, [values]);    
                                     stop(ctx);
                                     await ctxFn.state.update({timer:undefined})  
                                     ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${formatDateInWords(presentDate)}. Nos vemos pronto.`)
@@ -302,7 +302,6 @@ const visitaFlowAlquiler = addKeyword(EVENTS.ACTION)
     
 const agendarFlowAlquiler = addKeyword(EVENTS.ACTION)
                     .addAction(async (ctx,ctxFn) => {
-                        
                         const events = await getUserVisits(ctx.from);
                         console.log("Contenido de events:", events);
                         console.log("Longitud de events:", events?.length || 0);
