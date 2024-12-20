@@ -8,7 +8,7 @@ import 'dotenv/config'
 import { config } from '~/config';
 import { agenteFlow } from './agenteFlow';
 import { agendarFlowAlquiler } from './agendarFlowAlquiler';
-import { pool } from "~/db"
+
 
 
 
