@@ -276,7 +276,7 @@ async function cargarIntencionUser(tipoProp: string,caracte: string,presup:strin
           
           const values = [[tel, tipoProp, caracte,presup,zona,tipoOp,sessionID]];
           const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType,sessionId) values ?';
-          await adapterDB.db.query(sql, [values]);  
+          await adapterDB.db.promise().query(sql, [values]);  
         }
         catch(err){
           console.error('Error al cargar intencion del usuario:', err);
@@ -307,7 +307,7 @@ async function sessionIdExiste(sessionId: string): Promise<boolean> {
 async function sessionIdExiste(sessionId: string): Promise<boolean> {
   try {
     // Ejecutar la consulta
-    const result = await adapterDB.db.query(
+    const result = await adapterDB.db.promise().query(
       'SELECT COUNT(*) AS count FROM interations WHERE sessionId = ?',
       [sessionId]
     );
