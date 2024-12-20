@@ -8,9 +8,9 @@ import { readFileSync } from 'fs'; // Importa el módulo fs para manejar archivo
 import { join } from 'path'; // Útil para manejar rutas de archivos
 import axios from "axios";
 import { adapterDB } from "~/db"
-import { RowDataPacket } from "mysql2/promise";
+//import { RowDataPacket } from "mysql2/promise";
 import { v4 as uuidv4 } from 'uuid'; // Para generar IDs únicos
-//import type { RowDataPacket } from 'mysql2';
+import type { RowDataPacket } from 'mysql2';
 
 
 
@@ -197,7 +197,7 @@ async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
     await adapterDB.db.query('SET time_zone = "America/Buenos_Aires"');
 
     // Ejecutar la consulta y convertir el tipo de retorno
-    const result = await adapterDB.db.query('SELECT * FROM visits WHERE phoneNumber = ? AND dateStartEvent >= NOW() AND state = "active"', [phoneNumber]);
+    const result = await adapterDB.db.promise().query('SELECT * FROM visits WHERE phoneNumber = ? AND dateStartEvent >= NOW() AND state = "active"', [phoneNumber]);
 
     // Convertir el resultado a 'unknown' y luego a '[RowDataPacket[], any]'
     const [rows] = result as unknown as [RowDataPacket[], any];
@@ -307,7 +307,7 @@ async function sessionIdExiste(sessionId: string): Promise<boolean> {
 async function sessionIdExiste(sessionId: string): Promise<boolean> {
   try {
     // Ejecutar la consulta
-    const result = await adapterDB.db.query(
+    const result = await adapterDB.db.promise().query(
       'SELECT COUNT(*) AS count FROM interations WHERE sessionId = ?',
       [sessionId]
     );
