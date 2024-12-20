@@ -312,6 +312,7 @@ const agendarFlowAlquiler = addKeyword(EVENTS.ACTION)
                         console.log("Longitud de events:", events?.length || 0);
                         let index = 0;
                         if(events.length > 0){
+                           await ctxFn.flowDynamic(`Encontré las siguientes *visitas pendientes:*`)
                            for(let event of events) {
                                 index++;
                                 const eventId = event.eventID;
@@ -320,7 +321,7 @@ const agendarFlowAlquiler = addKeyword(EVENTS.ACTION)
                                 await ctxFn.state.update({EventID:eventId})
                                 await ctxFn.state.update({dateStartEvent:dateStartEvent})
                                 console.log(Event)
-                                ctxFn.flowDynamic(`Encontré las siguiente visitas pendientes: ${index}. ${dateStartEvent.toLocaleString()}`)
+                                await ctxFn.flowDynamic(`${index}. ${dateStartEvent.toLocaleString()}`)
                             }
                             return ctxFn.gotoFlow(changeEventAlquiler)
 
