@@ -7,9 +7,11 @@ import { chat } from "~/scripts/gemini";
 import { readFileSync } from 'fs'; // Importa el módulo fs para manejar archivos
 import { join } from 'path'; // Útil para manejar rutas de archivos
 import axios from "axios";
-import { pool } from "~/db"
+import { adapterDB } from "~/db"
 import { RowDataPacket } from "mysql2/promise";
 import { v4 as uuidv4 } from 'uuid'; // Para generar IDs únicos
+//import type { RowDataPacket } from 'mysql2';
+
 
 
 
@@ -175,10 +177,10 @@ async function descargarYLeerExcel(): Promise<RowData[]> {
         });*/
       return fichasdata;
 }
-
+/*
 async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
   try {
-    await pool.execute('SET time_zone = "America/Buenos_Aires"');
+    await adapterDB.db.execute('SET time_zone = "America/Buenos_Aires"');
     const [rows]: [RowDataPacket[], any] = await pool.execute<RowDataPacket[]>(
         'SELECT * FROM visits WHERE phoneNumber = ? AND dateStartEvent >= NOW() AND state = "active"',
         [phoneNumber]
@@ -188,8 +190,24 @@ async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
   } catch (error) {
     console.error('Error retrieving user visits:', error);
   }
-}
+}*/
+async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
+  try {
+    // Establecer la zona horaria
+    await adapterDB.db.query('SET time_zone = "America/Buenos_Aires"');
 
+    // Ejecutar la consulta y convertir el tipo de retorno
+    const result = await adapterDB.db.query('SELECT * FROM visits WHERE phoneNumber = ? AND dateStartEvent >= NOW() AND state = "active"', [phoneNumber]);
+
+    // Convertir el resultado a 'unknown' y luego a '[RowDataPacket[], any]'
+    const [rows] = result as unknown as [RowDataPacket[], any];
+
+    return rows;
+  } catch (error) {
+    console.error('Error retrieving user visits:', error);
+    return []; // Retorna un array vacío en caso de error
+  }
+}
 interface Config {
     availableDays: string[];
     availableHoursStart: string;
@@ -258,7 +276,7 @@ async function cargarIntencionUser(tipoProp: string,caracte: string,presup:strin
           
           const values = [[tel, tipoProp, caracte,presup,zona,tipoOp,sessionID]];
           const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType,sessionId) values ?';
-          await pool.query(sql, [values]);  
+          await adapterDB.db.query(sql, [values]);  
         }
         catch(err){
           console.error('Error al cargar intencion del usuario:', err);
@@ -276,13 +294,32 @@ async function iniciarSesion(): Promise<string> {
   console.log(`Sesión iniciada con ID: ${sessionId}`);
   return sessionId;*/
 }
+/*
 // veerifico si el sessionID ya existe
 async function sessionIdExiste(sessionId: string): Promise<boolean> {
-  const [rows] = await pool.query(
+  const [rows] = await adapterDB.db.query(
     'SELECT COUNT(*) AS count FROM interations WHERE sessionId = ?',
     [sessionId]
   );
   const result = rows as Array<{ count: number }>;
   return result[0].count > 0;
+}*/
+async function sessionIdExiste(sessionId: string): Promise<boolean> {
+  try {
+    // Ejecutar la consulta
+    const result = await adapterDB.db.query(
+      'SELECT COUNT(*) AS count FROM interations WHERE sessionId = ?',
+      [sessionId]
+    );
+
+    // Convertir el resultado a 'unknown' y luego al tipo esperado
+    const [rows] = result as unknown as [{ count: number }[], any]; 
+
+    // Verificar si el conteo es mayor que 0
+    return rows[0].count > 0;
+  } catch (error) {
+    console.error('Error checking sessionId:', error);
+    return false; // Retornar false en caso de error
+  }
 }
 export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel,cargarIntencionUser,iniciarSesion,sessionIdExiste}
