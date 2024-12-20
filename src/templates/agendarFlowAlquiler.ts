@@ -127,16 +127,21 @@ const salirChangeEvent = addKeyword('Salir')
                             await ctxFn.state.update({timer:undefined})
                             return ctxFn.endFlow('Espero haberte ayudado 🤗, gracias por comunicarte. Ante cualquier otra consulta no dudes en escribirme.')
                             })
+const newChangeEvent = addKeyword('Nueva visita')
+                            .addAction(async (ctx,ctxFn) => {
+                            return ctxFn.gotoFlow(visitaFlowAlquiler)
+                            })
 
 const changeEventAlquiler =  addKeyword(EVENTS.ACTION)
-                     .addAnswer('¿Queres cancelar o reagendar la visita?🤗',{
+                     .addAnswer('Elegí una de las opciones para continuar..🤗',{
                         capture:true,
                         buttons: [
-                            {body:'Reagendar'},
-                            {body:'Cancelar'},
+                            {body:'Nueva visita'},
+                           // {body:'Reagendar'},
+                           // {body:'Cancelar'},
                             {body:'Salir'},
                         ]
-                        },null,[afirmativeChangeEvent,negativeChangeEventAlq,salirChangeEvent])
+                        },null,[afirmativeChangeEvent,negativeChangeEventAlq,salirChangeEvent,newChangeEvent])
 
 const afirmativeFlow2 = addKeyword('Sí')
                         .addAction(async (ctx,ctxFn) => {
@@ -305,15 +310,17 @@ const agendarFlowAlquiler = addKeyword(EVENTS.ACTION)
                         const events = await getUserVisits(ctx.from);
                         console.log("Contenido de events:", events);
                         console.log("Longitud de events:", events?.length || 0);
+                        let index = 0;
                         if(events.length > 0){
                            for(let event of events) {
+                                index++;
                                 const eventId = event.eventID;
-                                const dateStartEvent = event.dateStartEvent // Asegúrate de que la columna de tu base de datos se llame 'eventID'
+                                const dateStartEvent = event.dateStartEvent
                                 let Event = await getEventById(eventId);
                                 await ctxFn.state.update({EventID:eventId})
                                 await ctxFn.state.update({dateStartEvent:dateStartEvent})
                                 console.log(Event)
-                                ctxFn.flowDynamic(`Tenes una visita pendiente el ${dateStartEvent.toLocaleString()}`)
+                                ctxFn.flowDynamic(`Encontré las siguiente visitas pendientes: ${index}. ${dateStartEvent.toLocaleString()}`)
                             }
                             return ctxFn.gotoFlow(changeEventAlquiler)
 
