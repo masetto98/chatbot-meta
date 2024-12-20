@@ -63,7 +63,7 @@ const afirmative3 = addKeyword('Sí')
                             // Actualiza la base de datos usando parámetros para evitar inyección SQL
                             const sql = `UPDATE visits SET state = ? WHERE eventID = ?`;
 
-                            await adapterDB.db.promise().query(sql, ['deleted', EventID]);
+                            await adapterDB.db.query(sql, ['deleted', EventID]);
                         
                             // Limpia los estados y finaliza el flujo
                             await ctxFn.state.update({ intention: undefined });
@@ -99,7 +99,7 @@ const afirmativeChangeEvent = addKeyword('Reagendar')
                                         await deleteEvent(EventID)
                                         // Actualiza la base de datos usando parámetros para evitar inyección SQL
                                         const sql = `UPDATE visits SET state = ? WHERE eventID = ?`;
-                                        await adapterDB.db.promise().query(sql, ['modified', EventID]);
+                                        await adapterDB.db.query(sql, ['modified', EventID]);
                                         return await ctxFn.gotoFlow(visitaFlow)
                                     } catch (err) {
                                         console.error('Error al procesar la solicitud:', err);
@@ -185,7 +185,7 @@ const afirmativeFlow = addKeyword('Sí')
                                     const eventId = await createEvent(eventName,description,date)
                                     const values = [[ctx.from, name, eventId,dateforMySql,'active',propiedad]];
                                     const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state,linkProperty) values ?';
-                                    await adapterDB.db.promise().query(sql, [values]);    
+                                    await adapterDB.db.query(sql, [values]);    
                                     stop(ctx);
                                     await ctxFn.state.update({timer:undefined})  
                                     ctxFn.flowDynamic(`¡Genial! 🤗 la cita ha sido agendada para el ${formatDateInWords(presentDate)}. Nos vemos pronto.`)

@@ -19,6 +19,7 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
                 sessionIdNew = await iniciarSesion();
                 await state.update({sessionId:sessionIdNew})
             }
+            console.log(sessionIdNew)
             let timer = await state.get('timer');
             if(!timer){
                 start(ctx, gotoFlow, 3600000)
