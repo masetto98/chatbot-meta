@@ -43,7 +43,7 @@ function formatDateInWords(date) {
     return `${dayName} ${dayNumber} de ${monthName} ${year} a las ${formattedTime}`;
 }
 
-const afirmative3 = addKeyword('Sí')
+const afirmative3 = addKeyword(EVENTS.ACTION)
                     .addAction(async (ctx,ctxFn) => {
                         
                         try {
@@ -112,13 +112,27 @@ const afirmativeChangeEvent = addKeyword('Reagendar')
                         })
 
 const negativeChangeEventAlq = addKeyword('Cancelar')
-                            .addAnswer('¿Estás seguro que queres cancelar la visita pendiente?',{
+                            .addAnswer('Por favor, de las visitas pendientes que te mencioné antes ☝️ indicame el número de la que deseas cancelar..',{
                                 capture:true,
                                 buttons: [
                                 {body:'Sí'},
                                 {body:'No'},
                                 ]
-                                },null,[afirmative3,negative3])
+                                },
+                                async (ctx, { gotoFlow, fallBack,state }) => {
+                                    const events = await state.get('eventos')
+                                    const options = events.map((_, index) => (index + 1).toString());
+                                    if (!options.includes(ctx.body.toUpperCase())){
+                                           return fallBack("Respuesta no válida,☝️ por favor elegí una de las opciones que te mencioné arriba.");
+                                        }
+                                    const selectedIndex = parseInt(ctx.body) - 1;
+                                    const selectedEvent = events[selectedIndex];
+                                    const eventIDselected = selectedEvent.eventID;
+                                    await state.update({EventID:eventIDselected})
+                                    return gotoFlow(afirmative3)
+                                    },
+                                    
+                                [afirmative3,negative3])
                             
 const salirChangeEvent = addKeyword('Salir')
                             .addAction(async (ctx,ctxFn) => {
@@ -138,7 +152,7 @@ const changeEventAlquiler =  addKeyword(EVENTS.ACTION)
                         buttons: [
                             {body:'Nueva visita'},
                            // {body:'Reagendar'},
-                           // {body:'Cancelar'},
+                            {body:'Cancelar'},
                             {body:'Salir'},
                         ]
                         },null,[afirmativeChangeEvent,negativeChangeEventAlq,salirChangeEvent,newChangeEvent])
@@ -323,6 +337,7 @@ const agendarFlowAlquiler = addKeyword(EVENTS.ACTION)
                                 await ctxFn.state.update({dateStartEvent:dateStartEvent})
                                 await ctxFn.flowDynamic(`*${index}.* Fecha: ${dateStartEvent.toLocaleString()} Propiedad: ${linkProperty}`)
                             }
+                            await ctxFn.state.update({eventos:events})
                             return ctxFn.gotoFlow(changeEventAlquiler)
 
                         }
