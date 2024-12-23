@@ -114,10 +114,6 @@ const afirmativeChangeEvent = addKeyword('Reagendar')
 const negativeChangeEventAlq = addKeyword('Cancelar')
                             .addAnswer('Por favor, de las visitas pendientes que te mencioné antes ☝️ indicame el número de la que deseas cancelar..',{
                                 capture:true,
-                                buttons: [
-                                {body:'Sí'},
-                                {body:'No'},
-                                ]
                                 },
                                 async (ctx, { gotoFlow, fallBack,state }) => {
                                     const events = await state.get('eventos')
