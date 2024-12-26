@@ -17,6 +17,7 @@ export const config = {
     user: process.env.MYSQL_DB_USER,
     database: process.env.MYSQL_DB_NAME,
     password: process.env.MYSQL_DB_PASSWORD,
-    port: process.env.MYSQL_DB_PORT
+    port: process.env.MYSQL_DB_PORT,
+    calendarID: process.env.calendarID
 
 }

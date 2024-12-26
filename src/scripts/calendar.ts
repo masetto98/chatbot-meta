@@ -16,7 +16,8 @@ const auth = new google.auth.GoogleAuth({
 
 const calendar = google.calendar({version: "v3"});
 
-const calendarID = 'fe54b32f48982404ffd079ef35374adf6ebf126697e458e4416d68cad51d0c66@group.calendar.google.com';
+//const calendarID = 'fe54b32f48982404ffd079ef35374adf6ebf126697e458e4416d68cad51d0c66@group.calendar.google.com';
+const calendarID = config.calendarID;
 const timeZone = 'America/Argentina/Buenos_Aires';
 
 const rangeLimit = {
