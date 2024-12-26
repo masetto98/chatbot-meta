@@ -31,8 +31,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         if(!cache || expireTime < new Date().toISOString() || !modelo){
             
             const displayName = 'propiedades'
-            //const model = 'models/gemini-1.5-flash-001'
-            const model = 'models/gemini-1.5-flash-8b'
+            const model = 'models/gemini-1.5-flash-001'
+           // const model = 'models/gemini-1.5-flash-8b'
             
             const contexto = await generatePrompt(name)
             //const systemInstruction = `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`
@@ -54,9 +54,9 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             chattest = modelo.startChat({
             generationConfig: {
                 maxOutputTokens: 310,  // Adjust based on desired response length
-                temperature:0.3,
+               /* temperature:0.1,
                 topP:0.1,
-                topK:2
+                topK:2*/
             },
             history: [{
                   role: "user",
