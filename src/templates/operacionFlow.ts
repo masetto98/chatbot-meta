@@ -54,14 +54,14 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             modelo = genAI.getGenerativeModelFromCachedContent(cache)
             chattest = modelo.startChat({
             generationConfig: {
-                maxOutputTokens: 310,  // Adjust based on desired response length
+                maxOutputTokens: 320,  // Adjust based on desired response length
                 temperature:0.1,
                 topP:0.1,
                 topK:2,
             },
             history: [{
                   role: "user",
-                  parts: [{ text: `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`}],
+                  parts: [{ text: `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Siempre utiliza las instrucciones proporcionadas para responder.`}],
                 },
                 {
                   role: "model",
