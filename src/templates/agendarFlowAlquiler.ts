@@ -200,9 +200,10 @@ const afirmativeFlow = addKeyword('Sí')
                                 console.log(dateforMySql)
                                 
                                 try{
+                                    const sessionID = await ctxFn.state.get('sessionId');
                                     const eventId = await createEvent(eventName,description,date)
-                                    const values = [[ctx.from, name, eventId,dateforMySql,'active',propiedad]];
-                                    const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state,linkProperty) values ?';
+                                    const values = [[ctx.from, name, eventId,dateforMySql,'active',propiedad,sessionID]];
+                                    const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state,linkProperty,sessionId) values ?';
                                     await adapterDB.db.promise().query(sql, [values]);    
                                     stop(ctx);
                                     await ctxFn.state.update({timer:undefined})  
