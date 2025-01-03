@@ -3,6 +3,27 @@ import { stop } from "utils/idle-custom";
 import { createEvent } from "~/scripts/calendar"
 import { welcomeFlow } from "./welcomeFlow";
 import { cargarIntencionUser } from "utils/utils";
+import { adapterDB } from "~/db"
+
+function formatDateForMySQL(dateString: string): string {
+    // Convertir la fecha de formato MM/DD/YYYY, HH:MM:SS AM/PM a un objeto Date
+    const date = new Date(dateString); 
+  
+    // Verificar si la fecha fue parseada correctamente
+    if (isNaN(date.getTime())) {
+      throw new Error("Fecha inválida");
+    }
+  
+    // Formatear la fecha en el formato YYYY-MM-DD HH:MM:SS
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses empiezan en 0
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
 
 const quintoFlow = addKeyword(['Hasta 30000','Entre 30000 y 80000','Mas 80000','0'])
                     .addAction(async (ctx,ctxFn) => {
@@ -27,12 +48,19 @@ const quintoFlow = addKeyword(['Hasta 30000','Entre 30000 y 80000','Mas 80000','
                             const caracteristica = await ctxFn.state.get('caracteristica')
                             const tel = await ctx.from
                             const sessionID = await ctxFn.state.get('sessionId');
-                            const description = `Nombre: ${name}, tel: ${tel} || Asunto: le interesa ${tipoProp} de ${caracteristica} en ${localidad} y tiene un presupuesto de ${presp}` 
+                            const description = `Nombre: ${name}, tel: ${tel} || Asunto: le interesa ${tipoProp} de ${caracteristica} en ${localidad} y tiene un presupuesto de ${presp}`
+                            // creo un evento default el mismo dia y con una hora especifica para que se cargue en calendar y pueda notificar
                             const date = new Date()
                             date.setHours(date.getHours() + 1)
                             const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
+                            //carga intencion potencial venta
                             await cargarIntencionUser(tipoProp,caracteristica,presp,localidad,'Venta',tel,sessionID)
                             await ctxFn.state.update({intention:undefined})
+                            //cargo visita default de ventas
+                            const dateforMySql = formatDateForMySQL(date.toLocaleString())
+                            const values = [[ctx.from, name, eventId,dateforMySql,'active','Sin especificar',sessionID,'Venta']];
+                            const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state,linkProperty,sessionId,operationType) values ?';
+                            await adapterDB.db.promise().query(sql, [values]);
                             stop(ctx);
                             await ctxFn.state.update({timer:undefined})
                             //finalizo session actual
