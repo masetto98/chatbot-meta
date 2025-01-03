@@ -11,6 +11,7 @@ import { adapterDB } from "~/db"
 //import { RowDataPacket } from "mysql2/promise";
 import { v4 as uuidv4 } from 'uuid'; // Para generar IDs únicos
 import type { RowDataPacket } from 'mysql2';
+import { isModuleNamespaceObject } from "util/types";
 
 
 
@@ -271,11 +272,11 @@ async function descargarYLeerConfigExcel(): Promise<Config> {
     return config;
   }
 
-async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,zona:string,tipoOp:string,tel:string,sessionID:string){
+async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,zona:string,tipoOp:string,tel:string,sessionID:string,name:string){
         try{
           
-          const values = [[tel, tipoProp, caracte,presup,zona,tipoOp,sessionID]];
-          const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType,sessionId) values ?';
+          const values = [[tel, tipoProp, caracte,presup,zona,tipoOp,sessionID,name]];
+          const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType,sessionId,name) values ?';
           await adapterDB.db.promise().query(sql, [values]);  
         }
         catch(err){

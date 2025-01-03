@@ -54,13 +54,14 @@ const quintoFlow = addKeyword(['Hasta 30000','Entre 30000 y 80000','Mas 80000','
                             date.setHours(date.getHours() + 1)
                             const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
                             //carga intencion potencial venta
-                            await cargarIntencionUser(tipoProp,caracteristica,presp,localidad,'Venta',tel,sessionID)
+                            await cargarIntencionUser(tipoProp,caracteristica,presp,localidad,'Venta',tel,sessionID,name)
                             await ctxFn.state.update({intention:undefined})
+                            /*
                             //cargo visita default de ventas
                             const dateforMySql = formatDateForMySQL(date.toLocaleString())
                             const values = [[ctx.from, name, eventId,dateforMySql,'active','Sin especificar',sessionID,'Venta']];
                             const sql = 'INSERT INTO visits (phoneNumber, name, eventID,dateStartEvent,state,linkProperty,sessionId,operationType) values ?';
-                            await adapterDB.db.promise().query(sql, [values]);
+                            await adapterDB.db.promise().query(sql, [values]);*/
                             stop(ctx);
                             await ctxFn.state.update({timer:undefined})
                             //finalizo session actual
