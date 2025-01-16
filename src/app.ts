@@ -4,7 +4,7 @@ import { provider } from './provider'
 import { config } from './config'
 import templates from './templates'
 import { MysqlAdapter as Database } from '@builderbot/database-mysql'
-import { adapterDB } from './db'
+import { adapterDB,initDB  } from './db'
 
 const PORT = config.PORT
 
@@ -20,6 +20,7 @@ const main = async () => {
         port:3306,
     })
 */
+    await initDB();
     const { handleCtx, httpServer } = await createBot({
         flow: templates,
         provider: provider,

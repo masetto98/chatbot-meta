@@ -1,4 +1,32 @@
-import { MysqlAdapter as Database } from '@builderbot/database-mysql';
+import { MysqlAdapter } from './mysqlAdapter'; // Importa la clase extendida
+import { config } from './config';
+
+// Crear una instancia del adaptador
+const adapterDB = new MysqlAdapter({
+    host: config.host,
+    user: config.user,
+    database: config.database,
+    password: config.password,
+    port: 3306,
+});
+
+// Función para inicializar la base de datos
+const initDB = async () => {
+    try {
+        await adapterDB.init();
+        console.log('Base de datos inicializada');
+    } catch (error) {
+        console.error('Error al inicializar la base de datos:', error);
+        setTimeout(initDB, 5000); // Reintenta después de 5 segundos
+    }
+};
+
+export { adapterDB, initDB };
+
+
+
+
+/*import { MysqlAdapter as Database } from '@builderbot/database-mysql';
 import { config } from './config';
 
 const adapterDB = new Database({
@@ -16,21 +44,5 @@ const initDB = async () => {
 };
 
 export { adapterDB, initDB };
+*/
 
-
-/*import { config } from './config';
-import { createPool } from 'mysql2/promise'; 
-
-export const pool = createPool({
-  host: config.host,
-  user: config.user,
-  database: config.database,
-  password: config.password,
-  port: 3306, // Puerto por defecto de MySQL
-  waitForConnections: true, // Esperar conexiones cuando el pool esté lleno
-  connectionLimit: 10, // Número máximo de conexiones en el pool
-  queueLimit: 0, // Sin límite para solicitudes en espera
-  connectTimeout: 10000,
-  keepAliveInitialDelay: 10000, // 0 by default.
-  enableKeepAlive: true, // false by default.
-});*/
