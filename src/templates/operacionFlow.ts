@@ -16,7 +16,7 @@ import { agendarFlowAlquiler } from './agendarFlowAlquiler';
 const genAI = new GoogleGenerativeAI(config.ApiKey);
 const cacheManager = new GoogleAICacheManager(config.ApiKey)
 
-let cache;
+//let cache;
 
 const operacionFlow = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, ctxFn) => {
@@ -26,7 +26,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         const expireTime = (ctxFn.state.getMyState()?.expireTime ?? String)
         let modelo = await ctxFn.state.get('modelo');
         let chattest= await ctxFn.state.get('chattest')
-        //let cache = await ctxFn.state.get('cache')
+        //let cache;
+        let cache = await ctxFn.state.get('cache')
        // Si el cache no está creado o si esta creado pero ya expiró inicializó todo nuevamente
         if(!cache || expireTime < new Date().toISOString() || !modelo){
             
@@ -74,7 +75,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             await ctxFn.state.update({expireTime:lastExpireTime})
             await ctxFn.state.update({chattest:chattest})
             await ctxFn.state.update({modelo:modelo})     
-           // await ctxFn.state.update({cache:cache})   
+            await ctxFn.state.update({cache:cache})   
         }
       
         
@@ -100,6 +101,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({history:undefined})
           await ctxFn.state.update({chattest:undefined})
           await ctxFn.state.update({modelo:undefined})
+          await ctxFn.state.update({cache:undefined})
           return ctxFn.gotoFlow(agendarFlowAlquiler)/*
           actualizarExcel('./visitas.xlsx',datos);
           console.log(datos);*/
@@ -121,6 +123,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({history:undefined})
           await ctxFn.state.update({chattest:undefined})
           await ctxFn.state.update({modelo:undefined})
+          await ctxFn.state.update({cache:undefined})
           return ctxFn.gotoFlow(agenteFlow)
         }
         const patron3 = /{{tipoPropiedad: (.*)}},{{caracteristica: (.*)}},{{presupuesto: (.*)}},{{zona: (.*)}},{{INTENCION}}/;
@@ -162,6 +165,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         await ctxFn.state.update({history:limitedHistory})
         await ctxFn.state.update({chattest:chattest})
         await ctxFn.state.update({modelo:modelo})
+        await ctxFn.state.update({cache:cache})
         console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
         console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
         console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
