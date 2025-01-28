@@ -24,6 +24,11 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         const name = ctx?.pushName ?? ''
         const newHistory = (ctxFn.state.getMyState()?.history ?? [])
         const expireTime = (ctxFn.state.getMyState()?.expireTime ?? String)
+        console.log('Historial actual:' + newHistory)
+        if (!ctx.body.trimEnd()) {
+          console.warn('Intento de respuesta sin consulta previa.');
+          return; // No hacer nada si no hay mensaje del usuario
+        }
         let modelo = await ctxFn.state.get('modelo');
         let chattest= await ctxFn.state.get('chattest')
         //let cache;
@@ -78,7 +83,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             await ctxFn.state.update({cache:cache})   
         }
       
-        
+       
         const response = await chattest.sendMessage(ctx.body.trimEnd());
         let resp = response.response.text().trimEnd();
         //const patron = /{{nombre: (.*)}},{{horario: (.*)}}, {{enlace: (.*)}}/;
