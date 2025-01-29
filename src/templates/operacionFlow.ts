@@ -24,10 +24,15 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         const name = ctx?.pushName ?? ''
         const newHistory = (ctxFn.state.getMyState()?.history ?? [])
         const expireTime = (ctxFn.state.getMyState()?.expireTime ?? String)
-        console.log('Historial actual:' + newHistory)
-        if (!ctx.body.trimEnd()) {
-          console.warn('Intento de respuesta sin consulta previa.');
-          return; // No hacer nada si no hay mensaje del usuario
+        const lastInteraction = ctxFn.state.get('lastInteraction'); // Guardar timestamp del último mensaje del usuario
+        console.log('Estado actual:', ctxFn.state.getMyState());
+        console.log('Historial antes de enviar mensaje:', newHistory);
+        console.log('Última interacción del usuario:', lastInteraction);
+        console.log('Mensaje entrante:', ctx.body);
+        // Validar si hay interacción del usuario
+        if (!ctx.body || !ctx.body.trimEnd()) {
+          console.warn('No hay mensaje del usuario.');
+          return; // Salir del flujo si no hay mensaje
         }
         let modelo = await ctxFn.state.get('modelo');
         let chattest= await ctxFn.state.get('chattest')
@@ -35,7 +40,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         let cache = await ctxFn.state.get('cache')
        // Si el cache no está creado o si esta creado pero ya expiró inicializó todo nuevamente
         if(!cache || expireTime < new Date().toISOString() || !modelo){
-            
+            console.log('Creando un nuevo caché...');
             const displayName = 'propiedades'
             const model = 'models/gemini-1.5-flash-001'
             //const model = 'models/gemini-1.5-flash-8b'
@@ -83,7 +88,16 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             await ctxFn.state.update({cache:cache})   
         }
       
+        // Validar si el último mensaje del usuario está dentro de las 24 horas
        
+        if (lastInteraction) {
+          const lastInteractionDate = new Date(lastInteraction);
+      
+          if (!isNaN(lastInteractionDate.getTime()) && (new Date().getTime() - lastInteractionDate.getTime() > 24 * 60 * 60 * 1000)) {
+              console.warn('El usuario no interactuó en las últimas 24 horas. No se puede enviar mensaje.');
+              return; // No enviar mensaje
+          }
+        }
         const response = await chattest.sendMessage(ctx.body.trimEnd());
         let resp = response.response.text().trimEnd();
         //const patron = /{{nombre: (.*)}},{{horario: (.*)}}, {{enlace: (.*)}}/;
@@ -103,7 +117,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           
          // Asigna el resultado de replace a resp
           resp = resp.replace(patron, ' ').trimStart();
-          await ctxFn.state.update({history:undefined})
+          await ctxFn.state.update({ history: [] }); // Limpia el historial después de responder
           await ctxFn.state.update({chattest:undefined})
           await ctxFn.state.update({modelo:undefined})
           await ctxFn.state.update({cache:undefined})
@@ -125,7 +139,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({cliente:datos.nombre})
           await ctxFn.state.update({propiedad:datos.enlace})
           await ctxFn.state.update({tel:datos.telefono})
-          await ctxFn.state.update({history:undefined})
+          await ctxFn.state.update({ history: [] });
           await ctxFn.state.update({chattest:undefined})
           await ctxFn.state.update({modelo:undefined})
           await ctxFn.state.update({cache:undefined})
@@ -163,10 +177,13 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         //Limito el historial a los ultimos 10 mensajes(ultimas 5 interacciones completas user-model)
         
         const limitedHistory = updatedHistory.slice(-20);
-
-      
         chattest.history = limitedHistory;
 
+
+      
+
+        // Actualizar el timestamp de interacción
+        await ctxFn.state.update({lastInteraction: new Date().toISOString() });
         await ctxFn.state.update({history:limitedHistory})
         await ctxFn.state.update({chattest:chattest})
         await ctxFn.state.update({modelo:modelo})
