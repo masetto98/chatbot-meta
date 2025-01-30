@@ -83,7 +83,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             modelo = genAI.getGenerativeModelFromCachedContent(cache)
             chattest = modelo.startChat({
             generationConfig: {
-                maxOutputTokens: 370,  // Adjust based on desired response length
+                maxOutputTokens: 400,  // Adjust based on desired response length
                 /*temperature:0.3,
                 topP:0.2,
                 topK:2,*/
