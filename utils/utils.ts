@@ -209,6 +209,25 @@ async function getUserVisits(phoneNumber: string): Promise<RowDataPacket[]> {
     return []; // Retorna un array vacío en caso de error
   }
 }
+
+async function getLastInteraction(phoneNumber: string): Promise<string | null> {
+  try {
+    // Ejecutar la consulta
+    const [rows] = await adapterDB.db.promise().query<RowDataPacket[]>(
+      'SELECT MAX(created_at) AS lastInteraction FROM history WHERE phoneNumber = ?', 
+      [phoneNumber]
+    );
+
+    // Extraer la fecha de la última interacción
+    const lastInteraction = rows[0]?.lastInteraction || null;
+
+    return lastInteraction;
+  } catch (error) {
+    console.error('❌ Error retrieving last interaction:', error);
+    return null; // Retorna null en caso de error
+  }
+}
+
 interface Config {
     availableDays: string[];
     availableHoursStart: string;
@@ -323,4 +342,4 @@ async function sessionIdExiste(sessionId: string): Promise<boolean> {
     return false; // Retornar false en caso de error
   }
 }
-export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel,cargarIntencionUser,iniciarSesion,sessionIdExiste}
+export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel,cargarIntencionUser,iniciarSesion,sessionIdExiste,getLastInteraction}

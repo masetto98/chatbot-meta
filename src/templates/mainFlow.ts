@@ -9,6 +9,9 @@ import { tasacionFlow } from "./tasacionFlow";
 import { reset,start } from "utils/idle-custom";
 import { iniciarSesion } from "utils/utils";
 
+const trackUserInteraction = async (ctx, state) => {
+    await state.update({ lastInteraction: new Date().toISOString() });
+};
 
 const mainFlow = addKeyword(EVENTS.WELCOME)
     .addAction(
@@ -19,14 +22,14 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
                 sessionIdNew = await iniciarSesion();
                 await state.update({sessionId:sessionIdNew})
             }
-            console.log(sessionIdNew)
+            
             let timer = await state.get('timer');
             if(!timer){
                 start(ctx, gotoFlow, 3600000)
                 await state.update({timer:'active'})
             }
             const intention = (state.getMyState()?.intention ?? String)
-            console.log(intention)
+            trackUserInteraction(ctx, state);
             switch(ctx.body){
                 case 'alq':
                 await state.update({intention:'alq'})

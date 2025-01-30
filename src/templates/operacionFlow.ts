@@ -20,17 +20,16 @@ const cacheManager = new GoogleAICacheManager(config.ApiKey)
 
 const operacionFlow = addKeyword(EVENTS.ACTION)
     .addAction(async (ctx, ctxFn) => {
-        const MAX_MESSAGE_AGE = 30 * 1000; // 30 segundos (ajústalo si es necesario)
-
+        
         const receivedTime = new Date().getTime(); // Timestamp actual en milisegundos
         const messageTimestamp = ctx.timestamp ? new Date(ctx.timestamp * 1000).getTime() : new Date().getTime(); // Convertimos a timestamp
 
 
         console.log("📩 Mensaje recibido:");
-        console.log("   Texto:", ctx.body);
-        console.log("   Hora del mensaje:", messageTimestamp);
-        console.log("   Hora actual:", receivedTime);
-        console.log("   Diferencia de tiempo (ms):", receivedTime - messageTimestamp);
+        console.log("Texto:", ctx.body);
+        console.log("Hora del mensaje:", messageTimestamp);
+        console.log("Hora actual:", receivedTime);
+        console.log("Diferencia de tiempo (ms):", receivedTime - messageTimestamp);
 
         if (receivedTime - messageTimestamp > 30 * 1000) { 
             console.warn("⚠️ Mensaje retrasado detectado. Ignorando...");

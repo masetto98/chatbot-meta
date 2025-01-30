@@ -1,14 +1,32 @@
 import { EVENTS, addKeyword } from '@builderbot/bot'
 import { BotContext, TFlow } from '@builderbot/bot/dist/types';
+import { getLastInteraction } from './utils';
+import { createContext } from 'vm';
 
 // Object to store timers for each user
 const timers = {};
 
 // Flow for handling inactivity
 const idleFlow = addKeyword(EVENTS.ACTION).addAction(
-    async (_, { endFlow,state }) => {
+    async (ctx, { endFlow,state }) => {
+        /*
         await state.update({intention:undefined})
         state.clear()   
+        return endFlow("Pasó el tiempo y voy a tener que cerrar nuestra conversación para seguir ayudando a más personas. De todos modos, cuando me necesites, volvé a escribirme. 🤗");*/
+
+        const lastInteraction = await getLastInteraction(ctx.from);
+        const currentTime = new Date().getTime();
+        const interactionTime = lastInteraction ? new Date(lastInteraction).getTime() : 0;
+
+        // Si han pasado más de 24 horas desde la última interacción, no enviar el mensaje
+        if (interactionTime && (currentTime - interactionTime > 24 * 60 * 60 * 1000)) {
+            console.warn("⚠️ No se enviará mensaje de inactividad porque han pasado más de 24 horas.");
+            return endFlow(); // Termina el flujo sin enviar mensaje
+        }
+
+        // Guardar el estado correctamente antes de cerrar la conversación
+        await state.update({ intention: undefined });
+        state.clear();
         return endFlow("Pasó el tiempo y voy a tener que cerrar nuestra conversación para seguir ayudando a más personas. De todos modos, cuando me necesites, volvé a escribirme. 🤗");
     }
 );
