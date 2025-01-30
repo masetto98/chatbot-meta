@@ -59,8 +59,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             const displayName = 'propiedades'
             
            
-            const model = 'models/gemini-1.5-pro-001'
-            //const model = 'models/gemini-1.5-flash-001'
+      
+            const model = 'models/gemini-1.5-flash-001'
             //const model = 'models/gemini-1.5-flash-8b'
             //const model = 'models/gemini-1.5-flash-8b-001'
             
