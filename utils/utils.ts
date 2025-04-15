@@ -214,7 +214,7 @@ async function getLastInteraction(phoneNumber: string): Promise<string | null> {
   try {
     // Ejecutar la consulta
     const [rows] = await adapterDB.db.promise().query<RowDataPacket[]>(
-      'SELECT MAX(created_at) AS lastInteraction FROM history WHERE phoneNumber = ?', 
+      'SELECT MAX(created_at) AS lastInteraction FROM history WHERE phone = ?', 
       [phoneNumber]
     );
 
