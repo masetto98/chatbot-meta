@@ -37,7 +37,9 @@ const agenteFlow = addKeyword(EVENTS.ACTION)
                             await ctxFn.state.update({intention:undefined})
                             try{
                                 const dateforMySql = formatDateForMySQL(date.toLocaleString())
-                                const values = [[ctx.from, name, eventId,dateforMySql,dateforMySql,'active',prop,sessionID,'Alquiler']];
+                                const dateCreated = new Date()
+                                const dateCreatedforMySql = formatDateForMySQL(dateCreated.toLocaleString())
+                                const values = [[ctx.from, name, eventId,dateCreatedforMySql,dateforMySql,'active',prop,sessionID,'Alquiler']];
                                 const sql = 'INSERT INTO visits (phoneNumber, name, eventID,date,dateStartEvent,state,linkProperty,sessionId,operationType) values ?';
                                 await adapterDB.db.promise().query(sql, [values]);    
                                 await ctxFn.state.update({intention:undefined})
