@@ -53,7 +53,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         if(!cache || expireTime < new Date().toISOString() || !modelo){
             console.log('Creando un nuevo caché...');
             const displayName = 'propiedades'
-            const model = 'models/gemini-2.0-flash-001'
+            const model = 'models/gemini-1.5-flash-001'
             //const model = 'models/gemini-1.5-flash-001'
             //const model = 'models/gemini-1.5-flash-8b'
             //const model = 'models/gemini-1.5-flash-8b-001'
