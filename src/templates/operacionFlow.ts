@@ -7,7 +7,7 @@ import { generatePrompt } from '~/scripts/prompt';
 import 'dotenv/config'
 import { config } from '~/config';
 import { agenteFlow } from './agenteFlow';
-import { agendarFlowAlquiler } from './agendarFlowAlquiler';
+//import { agendarFlowAlquiler } from './agendarFlowAlquiler';
 
 
 
@@ -57,9 +57,6 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         if(!cache || expireTime < new Date().toISOString() || !modelo){
             console.log('Creando un nuevo caché...');
             const displayName = 'propiedades'
-            
-           
-      
             const model = 'models/gemini-1.5-flash-001'
             //const model = 'models/gemini-1.5-flash-8b'
             //const model = 'models/gemini-1.5-flash-8b-001'
@@ -118,6 +115,10 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         }
         const response = await chattest.sendMessage(ctx.body.trimEnd());
         let resp = response.response.text().trimEnd();
+
+        // FRAGMENTO PARA AGENDAR VISITAS EN CALENDAR
+
+        /*
         //const patron = /{{nombre: (.*)}},{{horario: (.*)}}, {{enlace: (.*)}}/;
         const patron = /{{cliente: (.*)}},{{enlace: (.*)}},{{VISITA}}/;
         const coincidencia = patron.exec(resp);
@@ -139,11 +140,10 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({chattest:undefined})
           await ctxFn.state.update({modelo:undefined})
           await ctxFn.state.update({cache:undefined})
-          return ctxFn.gotoFlow(agendarFlowAlquiler)/*
-          actualizarExcel('./visitas.xlsx',datos);
-          console.log(datos);*/
+          return ctxFn.gotoFlow(agendarFlowAlquiler)
+          console.log(datos);
         }
-        
+        */
         const patron2 = /{{cliente: (.*)}},{{enlace: (.*)}},{{AGENTE}}/;
         const coincidencia2 = patron2.exec(resp);
         if(coincidencia2){
