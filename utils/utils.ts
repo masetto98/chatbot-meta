@@ -291,11 +291,32 @@ async function descargarYLeerConfigExcel(): Promise<Config> {
     return config;
   }
 
+function formatDateForMySQL(dateString: string): string {
+    // Convertir la fecha de formato MM/DD/YYYY, HH:MM:SS AM/PM a un objeto Date
+    const date = new Date(dateString); 
+  
+    // Verificar si la fecha fue parseada correctamente
+    if (isNaN(date.getTime())) {
+      throw new Error("Fecha inválida");
+    }
+  
+    // Formatear la fecha en el formato YYYY-MM-DD HH:MM:SS
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Meses empiezan en 0
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+  
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,zona:string,tipoOp:string,tel:string,sessionID:string,name:string){
         try{
-          
-          const values = [[tel, tipoProp, caracte,presup,zona,tipoOp,sessionID,name]];
-          const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType,sessionId,name) values ?';
+          const date = new Date()
+          const dateforMySql = formatDateForMySQL(date.toLocaleString())
+          const values = [[tel, tipoProp, caracte,presup,zona,tipoOp,sessionID,name,dateforMySql]];
+          const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType,sessionId,name,date) values ?';
           await adapterDB.db.promise().query(sql, [values]);  
         }
         catch(err){

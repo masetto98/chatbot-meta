@@ -36,10 +36,10 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         const newHistory = (ctxFn.state.getMyState()?.history ?? [])
         const expireTime = (ctxFn.state.getMyState()?.expireTime ?? String)
         const lastInteraction = ctxFn.state.get('lastInteraction'); // Guardar timestamp del último mensaje del usuario
-        console.log('Estado actual:', ctxFn.state.getMyState());
+        /*console.log('Estado actual:', ctxFn.state.getMyState());
         console.log('Historial antes de enviar mensaje:', newHistory);
         console.log('Última interacción del usuario:', lastInteraction);
-        console.log('Mensaje entrante:', ctx.body);
+        console.log('Mensaje entrante:', ctx.body);*/
         // Validar si hay interacción del usuario
         if (!ctx.body || !ctx.body.trimEnd()) {
           console.warn('No hay mensaje del usuario.');
