@@ -244,7 +244,7 @@ const noavailableFlow = addKeyword(EVENTS.ACTION)
                         ,[afirmativeFlow,negativeFlow])
    
 const visitaFlow = addKeyword(EVENTS.ACTION)
-    .addAnswer('Genial! 😁 Vamos a agendar una visita/reunión.. Antes nos gustaría conocer algunos detalles..')
+    .addAnswer('Genial! 😁 Vamos a agendar una reunión.. Antes nos gustaría conocer algunos detalles..')
     .addAnswer('Por favor.. Indicanos tu nombre completo en un solo mensaje',{
         capture:true
         ,delay:2000
@@ -259,10 +259,11 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
         await ctxFn.state.update({propiedad:ctx.body})
         await ctxFn.state.update({tel:ctx.from})
     })
-    .addAnswer('😄 ¡Perfecto! Por favor, indicame que día y horario te parece conveniente para la visita',{
+    .addAnswer('😄 ¡Perfecto! Por último, indicame en un solo mensaje el rango horario más conveniente para poder comunicarnos',{
         capture:true,
     })
     .addAction(async (ctx,ctxFn) => {
+        /*
         console.log(ctx.body)
         const solicitedDate = await text2iso(ctx.body)
         let clearStartDate = undefined;
@@ -298,7 +299,38 @@ const visitaFlow = addKeyword(EVENTS.ACTION)
         }
         else{
             return ctxFn.fallBack('La fecha solicitada no está disponible. Porfavor, intentalo nuevamente.')
-        }
+        }*/
+            await ctxFn.state.update({rangoHs:ctx.body})
+            const name = await ctxFn.state.get('cliente')
+            const propiedad = await ctxFn.state.get('propiedad')
+            const tel = await ctxFn.state.get('tel')
+            const rangoHs = await ctxFn.state.get('rangoHs')
+            const sessionID = await ctxFn.state.get('sessionId');
+           // const name = ctx?.pushName ?? ''
+            const eventName = "Contactar Cliente"
+            const description = `Nombre: ${name}, Tel: ${tel}, Propiedad/Asunto de interes: ${propiedad}, Rango Horario: ${rangoHs}`
+            const date = new Date()
+            date.setHours(date.getHours() + 1)          
+            let dateFormat;
+            dateFormat = date.toLocaleString()          
+            const dateforMySql = formatDateForMySQL(dateFormat)
+            console.log(dateforMySql)
+            
+            try{
+                const eventId = await createEvent(eventName,description,date.toISOString(),0.1)
+                
+                const values = [[ctx.from, name, eventId,dateforMySql,'active',propiedad,sessionID,'Contacto']];
+                const sql = 'INSERT INTO visits (phoneNumber, name, eventID,date,dateStartEvent,state,linkProperty,sessionId,operationType) values ?';
+                await adapterDB.db.promise().query(sql, [values]);
+                stop(ctx);
+                await ctxFn.state.update({timer:undefined})  
+                ctxFn.flowDynamic(`¡Genial! 🤗 Un agente ya fue notificado y se contactará a la brevedad en el rango horario especificado. Ante cualquier otra consulta no dudes en escribirme.`)
+            }
+            catch(err){
+                console.error('Error al procesar la solicitud:', err);
+                return ctxFn.endFlow('Lo siento, ocurrió un problema al agendar la reunion. Por favor, intenta de nuevo más tarde.');
+            }
+
         
 },null,[availableFlow,noavailableFlow])
 

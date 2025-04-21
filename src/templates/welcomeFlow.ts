@@ -62,8 +62,8 @@ const welcomeFlow = addKeyword(EVENTS.ACTION)
                                 },
                                 {
                                     "id":"vis",
-                                    "title":"Agendar visita/reunión",
-                                    "description": "Coordina una visita o reunión con nuestros agentes"//"Agenda una visita o reunión con un agente ahora mismo."
+                                    "title":"Agendar reunión",
+                                    "description": "Coordina una reunión con uno de nuestros agentes"//"Agenda una visita o reunión con un agente ahora mismo."
                                 }
                             ]
                         }
