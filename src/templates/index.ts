@@ -11,7 +11,8 @@ import { tasacionFlow } from "./tasacionFlow";
 import { agenteFlow } from "./agenteFlow";
 import { agendarFlowAlquiler, changeEventAlquiler, negativeChangeEventAlq, visitaFlowAlquiler } from "./agendarFlowAlquiler";
 import { idleFlow } from "utils/idle-custom";
-import { webFlow } from "./fromwebsite";
+import { fromwebsite } from "./fromwebsite";
+
 
  export default createFlow([
       mainFlow,
@@ -33,7 +34,7 @@ import { webFlow } from "./fromwebsite";
       changeEventAlquiler,
       negativeChangeEventAlq,
       idleFlow,
-      webFlow,
+      fromwebsite,
       
       
  ]);

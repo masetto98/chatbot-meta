@@ -8,6 +8,7 @@ import { desarrolloFlow } from "./desarrolloFlow";
 import { tasacionFlow } from "./tasacionFlow";
 import { reset,start } from "utils/idle-custom";
 import { iniciarSesion } from "utils/utils";
+import { fromwebsite } from "./fromwebsite";
 
 const trackUserInteraction = async (ctx, state) => {
     await state.update({ lastInteraction: new Date().toISOString() });
@@ -30,6 +31,9 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
             }
             const intention = (state.getMyState()?.intention ?? String)
             trackUserInteraction(ctx, state);
+            /*if(ctx.body.toLowerCase().includes('zonaprop') || ctx.body.toLowerCase().includes('argenprop')){
+                await state.update({intention:'web'})
+            }*/
             switch(ctx.body){
                 case 'alq':
                 await state.update({intention:'alq'})
@@ -49,6 +53,7 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
                 case 'faq':
                 await state.update({intention:'faq'})
                 break
+                
             }
             const intentionUpdate = state.get('intention')
             console.log(intentionUpdate)
@@ -72,6 +77,9 @@ const mainFlow = addKeyword(EVENTS.WELCOME)
                 case 'faq':
                     reset(ctx, gotoFlow, 3600000);
                     return gotoFlow(faqFlow)
+                /*case 'web':
+                    reset(ctx, gotoFlow, 3600000);
+                    return gotoFlow(fromwebsite)*/
                 default:
                     return gotoFlow(welcomeFlow)
             }
