@@ -55,10 +55,11 @@ async function extraerPalabraConGemini(html: string | null): Promise<string | nu
 
 const fromwebsite = addKeyword(['zonaprop','argenprop',])
                         .addAction(async (ctx,ctxFn) => {
-                            console.log('flujo webflow')
+                            console.log('flujo webflow: '+ ctx.body)
                             const urlExtraida = extraerUrl(ctx.body);
                             await ctxFn.state.update({url:urlExtraida})
-                            if(ctx.body.includes('zonaprop')){
+                            console.log(ctx.body.includes('zonaprop'))
+                            if(ctx.body.toLowerCase().includes('zonaprop')){
                                 await ctxFn.state.update({fromwebsite:"zonaprop"})
                                 let asd= await ctxFn.state.get('fromwebsite')
                                 console.log(asd)
