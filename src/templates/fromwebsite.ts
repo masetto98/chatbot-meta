@@ -60,6 +60,8 @@ const fromwebsite = addKeyword(['zonaprop','argenprop',])
                             await ctxFn.state.update({url:urlExtraida})
                             if(ctx.body.includes('zonaprop')){
                                 await ctxFn.state.update({fromwebsite:"zonaprop"})
+                                let asd= await ctxFn.state.get('fromwebsite')
+                                console.log(asd)
                             }
                             else if(ctx.body.includes('argenprop')){
                                 await ctxFn.state.update({fromwebsite:"argenprop"})
