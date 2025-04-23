@@ -12,9 +12,23 @@ import { adapterDB } from "~/db"
 import { v4 as uuidv4 } from 'uuid'; // Para generar IDs únicos
 import type { RowDataPacket } from 'mysql2';
 import { isModuleNamespaceObject } from "util/types";
+import fetch from 'node-fetch';
 
 
-
+async function obtenerHTML(url: string): Promise<string | null> {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`Error al obtener la página: ${response.status}`);
+      return null;
+    }
+    const html = await response.text();
+    return html;
+  } catch (error) {
+    console.error(`Ocurrió un error: ${error}`);
+    return null;
+  }
+}
 
 function actualizarExcel(rutaArchivo: string, nuevoDato: DatosUsuario) {
     let agenda: xlsx.WorkBook;
@@ -363,4 +377,6 @@ async function sessionIdExiste(sessionId: string): Promise<boolean> {
     return false; // Retornar false en caso de error
   }
 }
-export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel,cargarIntencionUser,iniciarSesion,sessionIdExiste,getLastInteraction}
+export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,
+  descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel,
+  cargarIntencionUser,iniciarSesion,sessionIdExiste,getLastInteraction,obtenerHTML}
