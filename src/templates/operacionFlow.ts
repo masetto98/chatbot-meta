@@ -173,6 +173,9 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           const sessionID = await ctxFn.state.get('sessionId');
           const sourcewebname = await ctxFn.state.get('fromwebsite');
           const sourceweburl = await ctxFn.state.get('url');
+          console.log('carga interaccion')
+          console.log(sourcewebname)
+          console.log(sourceweburl)
           cargarIntencionUser(tipoProp,caracteristica,presupuesto,zona,'Alquiler',tel,sessionID,name,sourcewebname,sourceweburl)
           resp = resp.replace(patron3, '').trimStart();
           /*
