@@ -171,7 +171,9 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           const zona = coincidencia3[4]
           const tel = ctx.from
           const sessionID = await ctxFn.state.get('sessionId');
-          cargarIntencionUser(tipoProp,caracteristica,presupuesto,zona,'Alquiler',tel,sessionID,name)
+          const sourcewebname = await ctxFn.state.get('fromwebsite');
+          const sourceweburl = await ctxFn.state.get('url');
+          cargarIntencionUser(tipoProp,caracteristica,presupuesto,zona,'Alquiler',tel,sessionID,name,sourcewebname,sourceweburl)
           resp = resp.replace(patron3, '').trimStart();
           /*
           const values = [[ctx.from, coincidencia3[1], coincidencia3[2],coincidencia3[3]]];
