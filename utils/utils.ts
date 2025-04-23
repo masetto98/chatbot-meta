@@ -329,11 +329,13 @@ function formatDateForMySQL(dateString: string): string {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,zona:string,tipoOp:string,tel:string,sessionID:string,name:string,sourcewebname:string,sourceweburl:string){
+async function cargarIntencionUser(tipoProp: string,caracte: string,presup:string,zona:string,tipoOp:string,tel:string,sessionID:string,name:string,sourcewebname?:string,sourceweburl?:string){
         try{
           const date = new Date()
           const dateforMySql = formatDateForMySQL(date.toLocaleString())
-          const values = [[tel, tipoProp, caracte,presup,zona,tipoOp,sessionID,name,dateforMySql,sourcewebname,sourceweburl]];
+          const sourcewebname1 = sourcewebname ?? 'null'
+          const sourceweburl1 = sourceweburl ?? 'null'
+          const values = [[tel, tipoProp, caracte,presup,zona,tipoOp,sessionID,name,dateforMySql,sourcewebname1,sourceweburl1]];
           const sql = 'INSERT INTO interations (phoneNumber, propertyType, featureProperty,estimatedMoney,favoriteArea,operationType,sessionId,name,date,sourcewebname,sourceweburl) values ?';
           await adapterDB.db.promise().query(sql, [values]);  
         }
