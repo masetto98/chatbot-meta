@@ -17,7 +17,11 @@ import fetch from 'node-fetch';
 
 async function obtenerHTML(url: string): Promise<string | null> {
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+      },
+    });
     if (!response.ok) {
       console.error(`Error al obtener la página: ${response.status}`);
       return null;
