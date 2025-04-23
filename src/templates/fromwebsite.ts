@@ -57,14 +57,12 @@ const fromwebsite = addKeyword(['zonaprop','argenprop',])
                         .addAction(async (ctx,ctxFn) => {
                             console.log('flujo webflow')
                             const urlExtraida = extraerUrl(ctx.body);
-                            if (urlExtraida) {
-                                console.log('URL extraída:', urlExtraida);
-                                const htmlExt = await obtenerHTML(urlExtraida)
-                                const direccion = await extraerPalabraConGemini(htmlExt)
-                                console.log(direccion)
-                                // Ahora puedes usar esta URL para el siguiente paso (obtener el HTML)
-                            } else {
-                                console.log('No se encontró ninguna URL en el mensaje.');
+                            await ctxFn.state.update({url:urlExtraida})
+                            if(ctx.body.includes('zonaprop')){
+                                await ctxFn.state.update({fromwebsite:"zonaprop"})
+                            }
+                            else if(ctx.body.includes('argenprop')){
+                                await ctxFn.state.update({fromwebsite:"argenprop"})
                             }
                             await ctxFn.state.update({intention:"alq"})   
                             return ctxFn.gotoFlow(operacionFlow)
