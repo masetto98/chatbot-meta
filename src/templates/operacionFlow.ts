@@ -53,7 +53,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         if(!cache || expireTime < new Date().toISOString() || !modelo){
             console.log('Creando un nuevo caché...');
             const displayName = 'propiedades'
-            const model = 'models/gemini-2.0-flash-001'
+            const model = 'models/gemini-2.0-flash-lite-001'
             //const model = 'models/gemini-1.5-flash-001'
             //const model = 'models/gemini-1.5-flash-8b'
             //const model = 'models/gemini-1.5-flash-8b-001'
@@ -62,7 +62,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             const contexto = await generatePrompt(name)
             //const systemInstruction = `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`
             const systemInstruction = await cargarInstrucciones()
-            const ttlSeconds = 600 // Asignacion de la cantidad de segundos que esta disponible el cache
+            const ttlSeconds = 900 // Asignacion de la cantidad de segundos que esta disponible el cache
             cache = await cacheManager.create({
                         model,
                         displayName,
