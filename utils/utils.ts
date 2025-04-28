@@ -15,24 +15,7 @@ import { isModuleNamespaceObject } from "util/types";
 import fetch from 'node-fetch';
 
 
-async function obtenerHTML(url: string): Promise<string | null> {
-  try {
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-      },
-    });
-    if (!response.ok) {
-      console.error(`Error al obtener la página: ${response.status}`);
-      return null;
-    }
-    const html = await response.text();
-    return html;
-  } catch (error) {
-    console.error(`Ocurrió un error: ${error}`);
-    return null;
-  }
-}
+
 
 function actualizarExcel(rutaArchivo: string, nuevoDato: DatosUsuario) {
     let agenda: xlsx.WorkBook;
@@ -387,4 +370,4 @@ async function sessionIdExiste(sessionId: string): Promise<boolean> {
 }
 export{actualizarExcel,iso2text,text2iso,cargarInstrucciones,
   descargarYLeerExcel,cargarfaq,getUserVisits,descargarYLeerConfigExcel,
-  cargarIntencionUser,iniciarSesion,sessionIdExiste,getLastInteraction,obtenerHTML}
+  cargarIntencionUser,iniciarSesion,sessionIdExiste,getLastInteraction}
