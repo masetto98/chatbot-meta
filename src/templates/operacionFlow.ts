@@ -42,9 +42,9 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           console.warn('No hay mensaje del usuario.');
           return; // Salir del flujo si no hay mensaje
         }
-        let modelo = await ctxFn.state.get('modelo');
+        let model = await ctxFn.state.get('modelo');
         let chattest= await ctxFn.state.get('chattest')
-        
+        let chatActual = await ctxFn.state.get('chat')
         let useCache = false; //
         /*let cache = await ctxFn.state.get('cache')
         // Si el cache no está creado o si esta creado pero ya expiró inicializó todo nuevamente
@@ -129,42 +129,46 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         await ctxFn.state.update({ modelo: modelo });
         await ctxFn.state.update({ cache: cache });*/
         }
-        else {
+        else{
           // usa una nueva sesión de chat sin cache
-          console.log('Iniciando una nueva sesión de chat sin caché.');
-          const model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash-001' });
-          const systemInstruction = await cargarInstrucciones() || `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`;
-          const contexto = await generatePrompt(name) || {};
-          
-          const chat = model.startChat({
-              generationConfig: {
-                  maxOutputTokens: 400,
-              },
-              history: [
-                  {
-                      role: "user",
-                      parts: [{ text: systemInstruction }],
-                  },
-                  {
-                      role: "model",
-                      parts: [{ text: "Ok." }],
-                  },
-                  ...newHistory,
-                  {
-                      role: "user",
-                      parts: [{ text: JSON.stringify(contexto) }],
-                  }
-              ],
-          });
-          response = await chat.sendMessage(ctx.body.trimEnd());
+          if(!chatActual && !model){
+            console.log('Iniciando una nueva sesión de chat sin caché.');
+            model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash-001' });
+            const systemInstruction = await cargarInstrucciones() || `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`;
+            const contexto = await generatePrompt(name) || {};
+            
+            chatActual = model.startChat({
+                generationConfig: {
+                    maxOutputTokens: 400,
+                },
+                history: [
+                    {
+                        role: "user",
+                        parts: [{ text: systemInstruction }],
+                    },
+                    {
+                        role: "model",
+                        parts: [{ text: "Ok." }],
+                    },
+                    ...newHistory,
+                    {
+                        role: "user",
+                        parts: [{ text: JSON.stringify(contexto) }],
+                    }
+                ],
+            });
+          }
+          response = await chatActual.sendMessage(ctx.body.trimEnd());
           const updatedHistory = [...newHistory, { role: 'user', parts: [{ text: ctx.body }] }, { role: 'model', parts: [{ text: response.response.text() }] }];
           const limitedHistory = updatedHistory.slice(-20);
           await ctxFn.state.update({ history: limitedHistory });
           // Limpiar las variables relacionadas con la caché para la próxima iteración
-          await ctxFn.state.update({ chattest: undefined });
-          await ctxFn.state.update({ modelo: undefined });
+          await ctxFn.state.update({ chat: chatActual });
+          await ctxFn.state.update({ modelo: model });
           await ctxFn.state.update({ cache: undefined });
           await ctxFn.state.update({ expireTime: undefined });
+          
+          
         }
         // FRAGMENTO PARA AGENDAR VISITAS EN CALENDAR
 
@@ -256,8 +260,8 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         // Actualizar el timestamp de interacción
         await ctxFn.state.update({lastInteraction: new Date().toISOString() });
         await ctxFn.state.update({history:limitedHistory})
-        await ctxFn.state.update({chattest:chattest})
-        await ctxFn.state.update({modelo:modelo})
+        await ctxFn.state.update({chat:chatActual})
+        await ctxFn.state.update({modelo:model})
         //await ctxFn.state.update({cache:cache})
         console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
         console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
