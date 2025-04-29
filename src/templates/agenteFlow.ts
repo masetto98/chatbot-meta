@@ -46,7 +46,7 @@ const agenteFlow = addKeyword(EVENTS.ACTION)
                                 stop(ctx);
                                 await ctxFn.state.update({timer:undefined})
                                 await ctxFn.state.update({sessionId:undefined})
-                                ctxFn.flowDynamic(`¡Genial! 🤗 Un agente ya fue notificado y se contactará a la brevedad. Ante cualquier otra consulta no dudes en escribirme.`)
+                                ctxFn.flowDynamic(`🤗 Un agente ya fue notificado y se contactará a la brevedad. Ante cualquier otra consulta no dudes en escribirme.`)
                             }
                             catch(err){
                                 console.error('Error al procesar la solicitud:', err);
