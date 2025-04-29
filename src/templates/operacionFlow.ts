@@ -44,10 +44,10 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         }
         let modelo = await ctxFn.state.get('modelo');
         let chattest= await ctxFn.state.get('chattest')
-        //let cache;
-        let cache = await ctxFn.state.get('cache')
-        let useCache = true; //
-       // Si el cache no está creado o si esta creado pero ya expiró inicializó todo nuevamente
+        
+        let useCache = false; //
+        /*let cache = await ctxFn.state.get('cache')
+        // Si el cache no está creado o si esta creado pero ya expiró inicializó todo nuevamente
         if(!cache || expireTime < new Date().toISOString() || !modelo){
             console.log('Creando un nuevo caché...');
             const displayName = 'propiedades'
@@ -78,9 +78,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
             chattest = modelo.startChat({
             generationConfig: {
                 maxOutputTokens: 400,  // Adjust based on desired response length
-                /*temperature:0.3,
-                topP:0.2,
-                topK:2,*/
+                
             },
             history: [{
                   role: "user",
@@ -104,7 +102,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
 
           }   
         }
-        
+        */
         // Validar si el último mensaje del usuario está dentro de las 24 horas
        
         if (lastInteraction) {
@@ -118,7 +116,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         let response;
         
         if (useCache && chattest) {
-        // Usar la sesión de chat con caché
+        /*// Usar la sesión de chat con caché
         console.log('Usando la sesión de chat con caché.');
         //const response = await chattest.sendMessage(ctx.body.trimEnd());
         response = await chattest.sendMessage(ctx.body.trimEnd());
@@ -129,7 +127,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         await ctxFn.state.update({ history: limitedHistory });
         await ctxFn.state.update({ chattest: chattest });
         await ctxFn.state.update({ modelo: modelo });
-        await ctxFn.state.update({ cache: cache });
+        await ctxFn.state.update({ cache: cache });*/
         }
         else {
           // usa una nueva sesión de chat sin cache
@@ -260,7 +258,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         await ctxFn.state.update({history:limitedHistory})
         await ctxFn.state.update({chattest:chattest})
         await ctxFn.state.update({modelo:modelo})
-        await ctxFn.state.update({cache:cache})
+        //await ctxFn.state.update({cache:cache})
         console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
         console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
         console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
