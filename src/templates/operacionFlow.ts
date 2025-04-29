@@ -167,6 +167,9 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({ modelo: model });
           await ctxFn.state.update({ cache: undefined });
           await ctxFn.state.update({ expireTime: undefined });
+          console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
+          console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
+          console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
           
           
         }
@@ -242,7 +245,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           console.log(`tipoProp: ${coincidencia3[1]},caracte: ${coincidencia3[2]},presup:${coincidencia3[3]}`)*/
         }
         await ctxFn.flowDynamic(resp);
-        newHistory.push({
+        /*newHistory.push({
           role:'user',
           parts: [{ text: ctx.body}]
         })
@@ -250,22 +253,20 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         updatedHistory.push({
             role: 'model',
             parts: [{ text: response.response.text() }],
-        });
+        });*/
         
         //Limito el historial a los ultimos 10 mensajes(ultimas 5 interacciones completas user-model)
         
-        const limitedHistory = updatedHistory.slice(-20);
-        chattest.history = limitedHistory;
+        //const limitedHistory = updatedHistory.slice(-20);
+        //chattest.history = limitedHistory;
 
         // Actualizar el timestamp de interacción
         await ctxFn.state.update({lastInteraction: new Date().toISOString() });
-        await ctxFn.state.update({history:limitedHistory})
+        //await ctxFn.state.update({history:limitedHistory})
         await ctxFn.state.update({chat:chatActual})
         await ctxFn.state.update({modelo:model})
         //await ctxFn.state.update({cache:cache})
-        console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
-        console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
-        console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
+        
           
         }
         catch (error) {
