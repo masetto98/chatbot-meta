@@ -17,7 +17,16 @@ const trackUserInteraction = async (ctx, state) => {
 const mainFlow = addKeyword(EVENTS.WELCOME)
     .addAction(
         async (ctx,{gotoFlow,state}) => {
+            const lastInteraction = state.get('lastInteraction'); // Guardar timestamp del último mensaje del usuario
+            console.log('Ultima interaccion:' + lastInteraction)
+            if (lastInteraction) {
+                const lastInteractionDate = new Date(lastInteraction);
             
+                if (!isNaN(lastInteractionDate.getTime()) && (new Date().getTime() - lastInteractionDate.getTime() > 24 * 60 * 60 * 1000)) {
+                    console.warn('El usuario no interactuó en las últimas 24 horas. No se puede enviar mensaje.');
+                    return; // No enviar mensaje
+                }
+            }
             let sessionIdNew = await state.get('sessionId');
             if(!sessionIdNew){
                 sessionIdNew = await iniciarSesion();

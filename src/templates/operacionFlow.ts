@@ -36,6 +36,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         const newHistory = (ctxFn.state.getMyState()?.history ?? [])
         const expireTime = (ctxFn.state.getMyState()?.expireTime ?? String)
         const lastInteraction = ctxFn.state.get('lastInteraction'); // Guardar timestamp del último mensaje del usuario
+        console.log('Ultima interaccion:' + lastInteraction)
         
         // Validar si hay interacción del usuario
         if (!ctx.body || !ctx.body.trimEnd()) {
@@ -103,15 +104,15 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           }   
         }
         */
-        // Validar si el último mensaje del usuario está dentro de las 24 horas
-       
+          // Validar si el último mensaje del usuario está dentro de las 24 horas
+        
         if (lastInteraction) {
-          const lastInteractionDate = new Date(lastInteraction);
-      
-          if (!isNaN(lastInteractionDate.getTime()) && (new Date().getTime() - lastInteractionDate.getTime() > 24 * 60 * 60 * 1000)) {
-              console.warn('El usuario no interactuó en las últimas 24 horas. No se puede enviar mensaje.');
-              return; // No enviar mensaje
-          }
+            const lastInteractionDate = new Date(lastInteraction);
+        
+            if (!isNaN(lastInteractionDate.getTime()) && (new Date().getTime() - lastInteractionDate.getTime() > 24 * 60 * 60 * 1000)) {
+                console.warn('El usuario no interactuó en las últimas 24 horas. No se puede enviar mensaje.');
+                return; // No enviar mensaje
+            }
         }
         let response;
         
@@ -167,6 +168,9 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           await ctxFn.state.update({ modelo: model });
           await ctxFn.state.update({ cache: undefined });
           await ctxFn.state.update({ expireTime: undefined });
+           // Actualizar el timestamp de interacción
+          await ctxFn.state.update({lastInteraction: new Date().toISOString() });
+          
           console.log(`Cantidad Token Entrada:${response.response.usageMetadata.promptTokenCount}`);
           console.log(`Cantidad Token Resp:${response.response.usageMetadata.candidatesTokenCount}`);
           console.log(`Cantidad Total Token:${response.response.usageMetadata.totalTokenCount}`);
@@ -261,7 +265,7 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
         //chattest.history = limitedHistory;
 
         // Actualizar el timestamp de interacción
-        await ctxFn.state.update({lastInteraction: new Date().toISOString() });
+        
         //await ctxFn.state.update({history:limitedHistory})
         await ctxFn.state.update({chat:chatActual})
         await ctxFn.state.update({modelo:model})
