@@ -134,13 +134,15 @@ const operacionFlow = addKeyword(EVENTS.ACTION)
           // usa una nueva sesión de chat sin cache
           if(!chatActual && !model){
             console.log('Iniciando una nueva sesión de chat sin caché.');
-            model = genAI.getGenerativeModel({ model: 'models/gemini-2.0-flash-001' });
+            model = genAI.getGenerativeModel({ model: 'models/gemini-1.5-flash-001' });
             const systemInstruction = await cargarInstrucciones() || `Sos Santiago, el asistente virtual de la inmobiliaria "Martin + Tettamanzi" en Argentina. Utiliza solamente el contexto proporcionado para responder.`;
             const contexto = await generatePrompt(name) || {};
             
             chatActual = model.startChat({
                 generationConfig: {
                     maxOutputTokens: 400,
+                    temperature: 0.0, // Establecer la temperatura a 0 para respuestas más deterministas
+                    topP: 0.1, // Reducir la probabilidad de tokens menos probables
                 },
                 history: [
                     {
